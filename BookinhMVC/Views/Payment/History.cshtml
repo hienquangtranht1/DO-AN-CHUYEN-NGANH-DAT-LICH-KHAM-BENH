@@ -1,0 +1,84 @@
+﻿@model IEnumerable<BookinhMVC.Models.GiaoDichThanhToan>
+
+@{
+    ViewData["Title"] = "Lịch sử giao dịch";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-primary"><i class="fas fa-history me-2"></i>Lịch Sử Giao Dịch</h3>
+        <a asp-action="Index" class="btn btn-success rounded-pill shadow-sm">
+            <i class="fas fa-plus-circle me-2"></i>Nạp thêm tiền
+        </a>
+    </div>
+
+    <div class="card border-0 shadow rounded-4 overflow-hidden">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="py-3 ps-4">Mã giao dịch</th>
+                            <th class="py-3">Thời gian</th>
+                            <th class="py-3">Nội dung</th>
+                            <th class="py-3 text-end">Số tiền</th>
+                            <th class="py-3 text-center">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold text-secondary">#@item.MaThamChieu</td>
+                                    <td>
+                                        <div class="small text-muted">@item.NgayGiaoDich.ToString("HH:mm")</div>
+                                        <div>@item.NgayGiaoDich.ToString("dd/MM/yyyy")</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border me-1">@item.LoaiGiaoDich</span>
+                                        <span class="small text-muted d-block mt-1">@item.NoiDung</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="fw-bold text-primary">+@item.SoTien.ToString("N0") đ</span>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (item.TrangThai == "Thành công")
+                                        {
+                                            <span class="badge bg-success-subtle text-success border border-success px-3 py-2 rounded-pill">
+                                                <i class="fas fa-check-circle me-1"></i> Thành công
+                                            </span>
+                                        }
+                                        else if (item.TrangThai == "Đang xử lý")
+                                        {
+                                            <span class="badge bg-warning-subtle text-warning border border-warning px-3 py-2 rounded-pill">
+                                                <i class="fas fa-clock me-1"></i> Đang xử lý
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger-subtle text-danger border border-danger px-3 py-2 rounded-pill">
+                                                <i class="fas fa-times-circle me-1"></i> Thất bại
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="fas fa-folder-open fa-3x mb-3 text-secondary opacity-50"></i>
+                                    <p>Bạn chưa có giao dịch nào.</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

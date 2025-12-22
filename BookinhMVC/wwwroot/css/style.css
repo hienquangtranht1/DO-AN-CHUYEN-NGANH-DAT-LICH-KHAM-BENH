@@ -62,7 +62,7 @@ header {
     backdrop-filter: blur(10px);
     position: fixed;
     width: 100%;
-    z-index: 1000;
+    z-index: 1070;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
@@ -96,6 +96,7 @@ header {
     border-radius: 15px;
     backdrop-filter: blur(10px);
     background: rgba(255, 255, 255, 0.95);
+    z-index: 1080;
 }
 
 /* Hero Section - Removed blue overlay */

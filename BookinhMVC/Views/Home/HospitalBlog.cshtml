@@ -1,648 +1,81 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<BookinhMVC.Models.Article>
 @{
-    ViewData["Title"] = "Four Rock - Blog Y Tế";
+    ViewData["Title"] = "Tất Cả Bài Viết Y Tế";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!-- Blog Header Section -->
-<section class="blog-header fade-in">
-    <div class="container">
-        <h1>Blog Y Tế</h1>
-        <p>Cập nhật tin tức, kiến thức & chia sẻ kinh nghiệm sức khỏe</p>
-    </div>
-</section>
-
-<!-- Blog Posts Section -->
-<section id="blog-posts" class="fade-in">
-    <div class="container">
-        <h2>Tin tức & Bài viết</h2>
-        <div class="row" id="blog-list"></div>
-    </div>
-</section>
-
-<!-- Article Modal -->
-<div class="modal fade" id="articleModal" tabindex="-1" role="dialog" aria-labelledby="articleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="articleModalLabel">Tiêu đề bài viết</h5>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="article-meta">
-                    <div class="article-author">
-                        <i class="fas fa-user-md"></i>
-                        <span id="articleAuthor">BS. Nguyễn Văn A</span>
-                    </div>
-                    <div class="article-date">
-                        <i class="fas fa-calendar"></i>
-                        <span id="articleDate">15/05/2024</span>
-                    </div>
-                </div>
-                <img id="articleImage" src="" alt="Article Image" class="article-image">
-                <div id="articleContent" class="article-content"></div>
-                <div class="article-tags">
-                    <strong>Tags: </strong>
-                    <span id="articleTags"></span>
-                </div>
-                <div class="share-buttons">
-                    <strong>Chia sẻ: </strong>
-                    <a href="#" class="share-btn share-facebook" onclick="shareOnFacebook()">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="#" class="share-btn share-twitter" onclick="shareOnTwitter()">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" class="share-btn share-linkedin" onclick="shareOnLinkedIn()">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <button class="share-btn share-copy" onclick="copyArticleLink()">
-                        <i class="fas fa-link"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- CTA Section -->
-<section id="cta" class="fade-in">
-    <div class="container">
-        <h3>Đăng ký nhận tin tức</h3>
-        <p>Nhận cập nhật mới nhất từ chuyên gia và các tin tức y tế hàng đầu.</p>
-        <form class="cta-form">
-            <input type="email" class="form-control" placeholder="Nhập email của bạn" required>
-            <button type="submit" class="btn btn-primary">Đăng ký</button>
-        </form>
-    </div>
-</section>
-
-<!-- Contact Section -->
-<section id="contact" class="fade-in">
-    <div class="container">
-        <h2>Liên hệ với chúng tôi</h2>
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="contact-info">
-                    <i class="fas fa-phone-alt"></i>
-                    <p>Hotline: 1900 1234</p>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="contact-info">
-                    <i class="fas fa-envelope"></i>
-                    <p>Email: info@fourrockhospital.com</p>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="contact-info">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <p>Địa chỉ: 123 Đường Sức Khỏe, TP. HCM</p>
-                </div>
-            </div>
-        </div>
-        <div class="map-responsive">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.6696842978494!2d106.68006931474894!3d10.759922092332988!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f1b7c3ed289%3A0xa06651894598e488!2sHo%20Chi%20Minh%20City!5e0!3m2!1sen!2s!4v1601234567890!5m2!1sen!2s" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
-    </div>
-</section>
 
 <style>
-    :root {
-        --primary-color: #1e40af;
-        --secondary-color: #3b82f6;
-        --text-color: #1f2937;
-        --bg-light: #f8fafc;
-        --bg-accent: #e0f2fe;
-        --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    body {
-        font-family: 'Inter', sans-serif;
-        color: var(--text-color);
-    }
-
     .blog-header {
-        background: linear-gradient(135deg, var(--bg-accent), var(--bg-light));
-        padding: 4rem 0;
-        text-align: center;
-        border-radius: 0 0 1.5rem 1.5rem;
-        box-shadow: var(--shadow);
+        background-image: url('/images/background.png');
+        color: black;
+        padding: 80px 0;
+        margin-bottom: 50px;
+        border-radius: 0 0 20px 20px;
     }
 
-        .blog-header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .blog-header p {
-            font-size: 1.125rem;
-            opacity: 0.8;
-        }
-
-    #blog-posts {
-        padding: 3rem 0;
-    }
-
-        #blog-posts h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 2.5rem;
-        }
-
-        #blog-posts .card {
-            border-radius: 1rem;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-            #blog-posts .card:hover {
-                transform: translateY(-10px);
-                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            }
-
-        #blog-posts .card-img-top {
-            height: 200px;
-            object-fit: cover;
-        }
-
-        #blog-posts .badge {
-            font-size: 0.875rem;
-            padding: 0.5rem 1rem;
-            border-radius: 1rem;
-            font-weight: 600;
-        }
-
-        #blog-posts .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin: 0.75rem 0;
-        }
-
-        #blog-posts .btn-primary {
-            background: var(--secondary-color);
-            border: none;
-            border-radius: 1rem;
-            padding: 0.5rem 1.5rem;
-            font-weight: 600;
-        }
-
-            #blog-posts .btn-primary:hover {
-                background: var(--primary-color);
-            }
-
-    .modal-content {
-        border-radius: 1rem;
-        border: none;
-        box-shadow: var(--shadow);
-    }
-
-    .modal-header {
-        border-bottom: none;
-        padding: 1.5rem;
-        background: var(--bg-light);
-    }
-
-    .modal-title {
-        font-size: 1.75rem;
-        font-weight: 700;
-    }
-
-    .btn-close {
-        background: none;
-        font-size: 1.25rem;
-        opacity: 0.7;
-    }
-
-        .btn-close:hover {
-            opacity: 1;
-        }
-
-    .article-meta {
-        display: flex;
-        gap: 1.5rem;
-        font-size: 0.875rem;
-        color: var(--secondary-color);
-        padding: 0 1.5rem;
-        margin-bottom: 1rem;
-    }
-
-        .article-meta i {
-            margin-right: 0.5rem;
-        }
-
-    .article-image {
-        width: 100%;
-        max-height: 300px;
-        object-fit: cover;
-        border-radius: 0.75rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .article-content {
-        font-size: 1rem;
-        line-height: 1.8;
-        padding: 0 1.5rem;
-    }
-
-    .article-tags {
-        padding: 0 1.5rem;
-        margin: 1rem 0;
-    }
-
-        .article-tags span {
-            background: var(--bg-accent);
-            color: var(--primary-color);
-            border-radius: 0.5rem;
-            padding: 0.25rem 0.75rem;
-            margin: 0.25rem;
-            font-size: 0.875rem;
-        }
-
-    .share-buttons {
-        padding: 0 1.5rem 1.5rem;
-    }
-
-    .share-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: var(--bg-light);
-        color: var(--primary-color);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 0.75rem;
-        transition: all 0.3s ease;
-    }
-
-        .share-btn:hover {
-            background: var(--secondary-color);
-            color: white;
-        }
-
-    #cta {
-        background: var(--bg-accent);
-        padding: 3rem 0;
-        text-align: center;
-        border-radius: 1rem;
-        margin: 3rem 0;
-    }
-
-        #cta h3 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        #cta p {
-            font-size: 1rem;
-            opacity: 0.8;
-            margin-bottom: 1.5rem;
-        }
-
-    .cta-form {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        max-width: 500px;
-        margin: 0 auto;
-    }
-
-        .cta-form .form-control {
-            border-radius: 0.5rem;
-            border: 1px solid var(--primary-color);
-            padding: 0.75rem;
-        }
-
-        .cta-form .btn-primary {
-            background: var(--secondary-color);
-            border: none;
-            border-radius: 0.5rem;
-            padding: 0.75rem 2rem;
-        }
-
-            .cta-form .btn-primary:hover {
-                background: var(--primary-color);
-            }
-
-    #contact {
-        padding: 3rem 0;
-    }
-
-        #contact h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-    .contact-info {
-        background: var(--bg-light);
-        border-radius: 1rem;
-        padding: 2rem;
-        text-align: center;
-        box-shadow: var(--shadow);
-        transition: transform 0.3s ease;
-    }
-
-        .contact-info:hover {
-            transform: translateY(-5px);
-        }
-
-        .contact-info i {
-            color: var(--secondary-color);
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .contact-info p {
-            margin: 0;
-            font-size: 1rem;
-        }
-
-    .map-responsive {
-        border-radius: 1rem;
+    .blog-card {
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
         overflow: hidden;
-        box-shadow: var(--shadow);
-        margin-top: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
     }
 
-    .fade-in {
-        opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
 
-    @@media (max-width: 768px) {
-        .blog-header h1
-
-    {
-        font-size: 2rem;
-    }
-
-    .blog-header p {
-        font-size: 1rem;
-    }
-
-    #blog-posts h2, #contact h2 {
-        font-size: 1.75rem;
-    }
-
-    .modal-dialog {
-        margin: 1rem;
-    }
-
-    .article-content, .article-tags, .share-buttons {
-        padding: 0 1rem;
-    }
-
-    .cta-form {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-        .cta-form .form-control, .cta-form .btn-primary {
-            width: 100%;
-        }
-
-    }
-
-    @@media (max-width: 576px) {
-        .modal-content
-
-    {
-        margin: 0.5rem;
-    }
-
-    .modal-title {
-        font-size: 1.25rem;
-    }
-
-    .article-image {
-        max-height: 200px;
-    }
-
+    .blog-card-img {
+        height: 220px;
+        object-fit: cover;
+        width: 100%;
     }
 </style>
 
-@section Scripts {
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        // Danh sách bài viết blog (dữ liệu tĩnh, không cần database)
-        const blogArticles = [
+<div class="blog-header">
+    <div class="container text-center">
+        <h1>Blog Y Tế Chuyên Sâu</h1>
+        <p>Kho kiến thức và thông tin sức khỏe cập nhật nhất từ các chuyên gia</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row g-4" id="blogContainer">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var article in Model)
             {
-                id: 1,
-                title: "Các bệnh viện hàng đầu năm 2025",
-                author: "BS. Nguyễn Minh Hoàng",
-                date: "15/05/2024",
-                category: "Tin tức",
-                image: "/images/besthospital.png",
-                tags: ["Bệnh viện", "Y tế", "Tin tức", "2025"],
-                excerpt: "Khám phá danh sách các bệnh viện uy tín với tiêu chuẩn quốc tế đang dẫn đầu xu hướng.",
-                content: `
-                    <p>Năm 2025 đánh dấu một bước ngoặt quan trọng trong lĩnh vực chăm sóc sức khỏe tại Việt Nam. Với sự đầu tư mạnh mẽ vào công nghệ y tế hiện đại và nâng cao chất lượng dịch vụ, nhiều bệnh viện đã vươn lên dẫn đầu về tiêu chuẩn quốc tế.</p>
-                    <h3>Tiêu chí đánh giá bệnh viện hàng đầu</h3>
-                    <p>Để được xếp hạng trong danh sách các bệnh viện hàng đầu, các cơ sở y tế cần đáp ứng những tiêu chí nghiêm ngặt:</p>
-                    <ul>
-                        <li>Trang thiết bị y tế hiện đại, đồng bộ</li>
-                        <li>Đội ngũ bác sĩ giỏi, có trình độ chuyên môn cao</li>
-                        <li>Quy trình điều trị chuẩn quốc tế</li>
-                        <li>Tỷ lệ thành công cao trong các ca phẫu thuật phức tạp</li>
-                        <li>Dịch vụ chăm sóc khách hàng xuất sắc</li>
-                        <li>Môi trường điều trị an toàn, thân thiện</li>
-                    </ul>
-                    <h3>Xu hướng phát triển của ngành y tế</h3>
-                    <p>Các bệnh viện hàng đầu hiện nay đều hướng tới việc ứng dụng công nghệ 4.0 vào quy trình điều trị. Từ việc sử dụng trí tuệ nhân tạo trong chẩn đoán hình ảnh, robot phẫu thuật cho các ca bệnh phức tạp, đến hệ thống quản lý bệnh án điện tử toàn diện.</p>
-                    <p>Đặc biệt, xu hướng y học cá nhân hóa đang được nhiều bệnh viện áp dụng, giúp tối ưu hóa phương án điều trị cho từng bệnh nhân dựa trên đặc điểm sinh học và di truyền cá thể.</p>
-                    <h3>Lời khuyên cho bệnh nhân</h3>
-                    <p>Khi lựa chọn bệnh viện để điều trị, bệnh nhân nên tham khảo các yếu tố như chuyên khoa mạnh của bệnh viện, kinh nghiệm của đội ngũ y bác sĩ, cũng như các đánh giá từ bệnh nhân trước đó. Việc tìm hiểu kỹ thông tin sẽ giúp bạn đưa ra quyết định đúng đắn cho sức khỏe của mình.</p>
-                `
-            },
-            {
-                id: 2,
-                title: "Xu hướng công nghệ y tế 2025",
-                author: "TS. Phạm Thị Lan",
-                date: "10/05/2024",
-                category: "Công nghệ",
-                image: "/images/techhosptal.png",
-                tags: ["Công nghệ", "Y tế", "AI", "Robots"],
-                excerpt: "Các đột phá công nghệ thay đổi cách chăm sóc sức khỏe và cải thiện chất lượng dịch vụ.",
-                content: `
-                    <p>Năm 2025 chứng kiến sự bùng nổ của nhiều công nghệ đột phá trong lĩnh vực y tế. Từ trí tuệ nhân tạo đến công nghệ nano, các ứng dụng này đang thay đổi căn bản cách thức chẩn đoán và điều trị bệnh.</p>
-                    <h3>Trí tuệ nhân tạo trong chẩn đoán</h3>
-                    <p>AI đã trở thành công cụ đắc lực của các bác sĩ trong việc phân tích hình ảnh y khoa. Các hệ thống AI có thể:</p>
-                    <ul>
-                        <li>Phát hiện ung thư sớm qua hình ảnh X-quang, CT, MRI</li>
-                        <li>Dự đoán nguy cơ mắc bệnh dựa trên dữ liệu sức khỏe</li>
-                        <li>Hỗ trợ chẩn đoán các bệnh hiếm gặp</li>
-                        <li>Tối ưu hóa phác đồ điều trị cá nhân hóa</li>
-                    </ul>
-                    <h3>Robot phẫu thuật thế hệ mới</h3>
-                    <p>Các robot phẫu thuật hiện đại mang lại độ chính xác cao hơn, giảm thiểu chấn thương và thời gian hồi phục cho bệnh nhân. Công nghệ này đặc biệt hữu ích trong các ca phẫu thuật tim mạch, thần kinh và ung thư.</p>
-                    <h3>Y học từ xa (Telemedicine)</h3>
-                    <p>Dịch vụ y tế từ xa đã phát triển mạnh mẽ, cho phép bệnh nhân tương tác trực tiếp với bác sĩ qua video call, nhận tư vấn và theo dõi sức khỏe mà không cần đến bệnh viện. Điều này đặc biệt có ý nghĩa với những bệnh nhân ở vùng sâu, vùng xa.</p>
-                    <h3>Công nghệ wearable và IoT</h3>
-                    <p>Các thiết bị đeo thông minh như đồng hồ, vòng tay theo dõi sức khỏe đã trở nên phổ biến. Chúng có thể giám sát liên tục các chỉ số sinh hiệu, cảnh báo sớm các vấn đề sức khỏe và gửi dữ liệu trực tiếp cho bác sĩ điều trị.</p>
-                `
-            },
-            {
-                id: 3,
-                title: "Chăm sóc sức khỏe tại nhà",
-                author: "BS. Lê Văn Tùng",
-                date: "05/05/2024",
-                category: "Sức khỏe",
-                image: "/images/househospital.png",
-                tags: ["Sức khỏe", "Chăm sóc", "Tại nhà", "Phòng ngừa"],
-                excerpt: "Những mẹo và chiến lược để giữ gìn sức khỏe ngay tại nhà qua những biện pháp hiệu quả.",
-                content: `
-                    <p>Chăm sóc sức khỏe tại nhà không chỉ là xu hướng mà còn là nhu cầu thiết yếu trong cuộc sống hiện đại. Việc duy trì sức khỏe tốt ngay tại nhà giúp tiết kiệm thời gian, chi phí và giảm nguy cơ lây nhiễm bệnh tật.</p>
-                    <h3>Nguyên tắc cơ bản</h3>
-                    <p>Để chăm sóc sức khỏe hiệu quả tại nhà, bạn cần tuân thủ những nguyên tắc sau:</p>
-                    <ul>
-                        <li>Duy trì chế độ ăn uống cân bằng, đầy đủ dinh dưỡng</li>
-                        <li>Tập thể dục đều đặn ít nhất 30 phút mỗi ngày</li>
-                        <li>Đảm bảo giấc ngủ chất lượng 7-8 tiếng mỗi đêm</li>
-                        <li>Quản lý stress thông qua thiền định, yoga hoặc các hoạt động thư giãn</li>
-                        <li>Kiểm tra sức khỏe định kỳ và theo dõi các chỉ số quan trọng</li>
-                    </ul>
-                    <h3>Dinh dưỡng và chế độ ăn</h3>
-                    <p>Một chế độ ăn uống lành mạnh là nền tảng của sức khỏe tốt. Hãy ưu tiên:</p>
-                    <ul>
-                        <li>Tăng cường rau xanh, trái cây tươi</li>
-                        <li>Chọn protein nạc từ cá, gà, đậu hạt</li>
-                    </ul>
-                `
-            }
-        ];
-
-        // Scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Hiển thị bài viết trong modal
-        window.showArticle = function(articleId) {
-            const article = blogArticles.find(a => a.id === articleId);
-            if (!article) return;
-
-            document.getElementById('articleModalLabel').textContent = article.title;
-            document.getElementById('articleAuthor').textContent = article.author;
-            document.getElementById('articleDate').textContent = article.date;
-            document.getElementById('articleImage').src = article.image;
-            document.getElementById('articleContent').innerHTML = article.content;
-
-            const tagsHtml = article.tags.map(tag =>
-                `<span class="badge badge-secondary">${tag}</span>`
-            ).join(' ');
-            document.getElementById('articleTags').innerHTML = tagsHtml;
-
-            $('#articleModal').modal('show');
-        }
-
-        // Chức năng chia sẻ
-        window.shareOnFacebook = function() {
-            const url = encodeURIComponent(window.location.href);
-            const title = encodeURIComponent(document.getElementById('articleModalLabel').textContent);
-            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&t=${title}`, '_blank');
-        }
-
-        window.shareOnTwitter = function() {
-            const url = encodeURIComponent(window.location.href);
-            const title = encodeURIComponent(document.getElementById('articleModalLabel').textContent);
-            window.open(`https://twitter.com/intent/tweet?url=${url}&text=${title}`, '_blank');
-        }
-
-        window.shareOnLinkedIn = function() {
-            const url = encodeURIComponent(window.location.href);
-            const title = encodeURIComponent(document.getElementById('articleModalLabel').textContent);
-            window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${title}`, '_blank');
-        }
-
-        window.copyArticleLink = function() {
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                alert('Đã sao chép liên kết bài viết!');
-            });
-        }
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Initialize tooltips
-        $(function() {
-            $('[data-toggle="tooltip"]').tooltip();
-        });
-
-        // Render danh sách bài viết động từ blogArticles
-        function renderBlogList() {
-            const blogList = document.getElementById('blog-list');
-            blogList.innerHTML = blogArticles.map(article => `
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <img src="${article.image}" class="card-img-top" alt="${article.title}">
-                        <div class="card-body d-flex flex-column">
-                            <span class="badge mb-2" style="background:${getBadgeColor(article.category)};color:#fff;">${article.category}</span>
-                            <h4 class="card-title">${article.title}</h4>
-                            <p class="card-text">${article.excerpt}</p>
-                            <div class="d-flex justify-content-between align-items-center mt-auto">
-                                <small class="text-muted">
-                                    <i class="fas fa-calendar mr-1"></i>${article.date}
-                                </small>
-                                <button class="btn btn-primary btn-sm" onclick="showArticle(${article.id})">
-                                    <i class="fas fa-book-open mr-1"></i>Đọc tiếp
-                                </button>
+                <div class="col-md-4 col-lg-3">
+                    <div class="blog-card">
+                        <img src="@(string.IsNullOrEmpty(article.FeatureImageUrl) ? Url.Content("~/images/default-blog.png") : Url.Content(article.FeatureImageUrl))"
+                             class="blog-card-img" alt="@article.Title">
+                        <div class="p-3 p-md-4">
+                            <span class="badge bg-primary mb-2">@article.Category?.CategoryName</span>
+                            <h5 class="fw-bold mb-3" style="line-height: 1.4;">
+                                <a asp-action="ArticleDetail" asp-route-slug="@article.Slug" class="text-dark text-decoration-none">
+                                    @article.Title
+                                </a>
+                            </h5>
+                            <div class="d-flex justify-content-between small text-muted pt-2 border-top">
+                                <span><i class="fas fa-user-md me-1"></i> @article.Author?.TenDangNhap</span>
+                                <span><i class="far fa-calendar-alt me-1"></i> @article.PublishDate.ToString("dd/MM/yyyy")</span>
                             </div>
                         </div>
                     </div>
                 </div>
-            `).join('');
-        }
-
-        // Hàm chọn màu badge theo category
-        function getBadgeColor(category) {
-            switch(category) {
-                case 'Tin tức': return '#2563eb';
-                case 'Công nghệ': return '#22c55e';
-                case 'Sức khỏe': return '#f59e42';
-                default: return '#64748b';
             }
         }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                <p class="lead">Hiện tại chưa có bài viết nào được xuất bản.</p>
+            </div>
+        }
+    </div>
 
-        document.addEventListener('DOMContentLoaded', renderBlogList);
-    </script>
-}
+    @* <button id="loadMoreBtn" class="btn btn-outline-primary mt-5 mx-auto d-block">Tải Thêm</button> *@
+</div>

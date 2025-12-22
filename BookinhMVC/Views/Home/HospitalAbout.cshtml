@@ -1,52 +1,83 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@* File: Views/Home/HospitalAbout.cshtml *@
 @{
     ViewData["Title"] = "Giới thiệu - Four Rock";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<section class="about-hero fade-in" style="position:relative;">
-    <div class="container text-center position-relative" style="z-index:2;">
-        <h1 class="about-title">Four Rock Hospital</h1>
-        <p class="about-lead">Nâng tầm sức khỏe Việt - Tiên phong y tế hiện đại</p>
+@* HEADER & BREADCRUMB (Đồng bộ với các trang dịch vụ) *@
+<section class="blog-header fade-in" data-aos="fade-down" style="
+    background-image: url('/images/background.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0 0 1.5rem 1.5rem;
+    overflow: hidden;
+">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div> @* Overlay tối màu *@
+    <div class="container position-relative z-2 flex-grow-1 d-flex align-items-center justify-content-center text-center pt-5">
+        <div>
+            <h1 class="display-4 fw-bold text-dark mb-2">
+                <i class="fas fa-building me-3"></i>Giới thiệu về Four Rock
+            </h1>
+            <p class="lead text-dark-50">Nâng tầm sức khỏe Việt - Tiên phong y tế hiện đại</p>
+        </div>
+    </div>
+
+    <div class="breadcrumb-section position-absolute bottom-0 w-100 py-3 z-3">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0 justify-content-center">
+                    <li class="breadcrumb-item"><a href="/" class="text-dark text-decoration-none"><i class="fas fa-home me-1"></i>Trang chủ</a></li>
+                    <li class="breadcrumb-item active text-dark" aria-current="page"><i class="fas fa-info-circle me-1"></i>Giới thiệu</li>
+                </ol>
+            </nav>
+        </div>
     </div>
 </section>
 
-<section class="about-section fade-in">
+<section class="py-5 bg-white">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-7">
-                <h2 class="about-heading">Tổng quan</h2>
-                <p>Four Rock Hospital là bệnh viện đa khoa quốc tế, được thành lập với sứ mệnh mang đến dịch vụ y tế chất lượng cao, ứng dụng công nghệ tiên tiến và lấy bệnh nhân làm trung tâm. Chúng tôi tự hào là địa chỉ tin cậy của hàng triệu bệnh nhân trong và ngoài nước.</p>
-                <h3 class="about-subheading">Lịch sử phát triển</h3>
-                <p>Khởi đầu từ năm 2010, Four Rock Hospital không ngừng mở rộng quy mô, đầu tư trang thiết bị hiện đại và xây dựng đội ngũ chuyên gia đầu ngành. Đến nay, bệnh viện đã trở thành trung tâm y tế hàng đầu với nhiều chuyên khoa sâu và dịch vụ toàn diện.</p>
-                <h3 class="about-subheading">Thành tựu nổi bật</h3>
-                <ul>
-                    <li>Top 5 bệnh viện tư nhân xuất sắc tại Việt Nam (2023, 2024)</li>
-                    <li>Hơn 500.000 lượt khám/năm, 98% hài lòng khách hàng</li>
-                    <li>Tiên phong ứng dụng AI, robot phẫu thuật và y học cá thể hóa</li>
+        <div class="section-header text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 fw-bold mb-2">
+                <i class="fas fa-chart-line text-primary me-2"></i>Tổng quan & Thành tựu
+            </h2>
+            <div class="header-line mx-auto"></div>
+        </div>
+
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7" data-aos="fade-right">
+                <h3 class="fw-bold text-primary mb-3">Bệnh viện Đa khoa Quốc tế Four Rock</h3>
+                <p class="text-secondary fs-6">Four Rock Hospital là bệnh viện đa khoa quốc tế, được thành lập với sứ mệnh mang đến dịch vụ y tế chất lượng cao, ứng dụng công nghệ tiên tiến và lấy bệnh nhân làm trung tâm. Chúng tôi tự hào là địa chỉ tin cậy của hàng triệu bệnh nhân trong và ngoài nước.</p>
+
+                <h4 class="fw-bold text-dark mt-4 mb-2">Lịch sử phát triển & Thành tựu</h4>
+                <p class="text-secondary">Khởi đầu từ năm 2010, Four Rock Hospital không ngừng mở rộng quy mô, đầu tư trang thiết bị hiện đại và xây dựng đội ngũ chuyên gia đầu ngành. Đến nay, bệnh viện đã trở thành trung tâm y tế hàng đầu với nhiều chuyên khoa sâu và dịch vụ toàn diện.</p>
+                <ul class="list-unstyled text-secondary fs-6">
+                    <li class="mb-2"><i class="fas fa-award text-warning me-2"></i>**Top 5** bệnh viện tư nhân xuất sắc tại Việt Nam (2023, 2024).</li>
+                    <li class="mb-2"><i class="fas fa-users text-primary me-2"></i>Hơn **500.000** lượt khám/năm, 98% hài lòng khách hàng.</li>
+                    <li class="mb-2"><i class="fas fa-robot text-info me-2"></i>Tiên phong ứng dụng **AI**, robot phẫu thuật và y học cá thể hóa.</li>
                 </ul>
             </div>
-            <div class="col-lg-5 text-center">
-                <div class="about-stats">
-                    <div class="stat-item">
-                        <div class="stat-number">250+</div>
-                        <div class="stat-label">Bác sĩ & chuyên gia</div>
+
+            <div class="col-lg-5 text-center" data-aos="fade-left">
+                <div class="about-stats p-4 rounded-4 shadow-lg h-100 d-flex flex-wrap justify-content-around align-content-center">
+                    <div class="stat-item p-3">
+                        <div class="stat-number text-primary">250+</div>
+                        <div class="stat-label text-secondary fw-medium">Bác sĩ & chuyên gia</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">20+</div>
-                        <div class="stat-label">Chuyên khoa sâu</div>
+                    <div class="stat-item p-3">
+                        <div class="stat-number text-primary">20+</div>
+                        <div class="stat-label text-secondary fw-medium">Chuyên khoa sâu</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">500.000+</div>
-                        <div class="stat-label">Lượt khám/năm</div>
+                    <div class="stat-item p-3">
+                        <div class="stat-number text-primary">500K+</div>
+                        <div class="stat-label text-secondary fw-medium">Lượt khám/năm</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-number">98%</div>
-                        <div class="stat-label">Khách hàng hài lòng</div>
+                    <div class="stat-item p-3">
+                        <div class="stat-number text-primary">98%</div>
+                        <div class="stat-label text-secondary fw-medium">Hài lòng khách hàng</div>
                     </div>
                 </div>
             </div>
@@ -54,151 +85,174 @@
     </div>
 </section>
 
-<section class="about-section fade-in about-mission">
+<section class="py-5 bg-light">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h2 class="about-heading">Sứ mệnh & Tầm nhìn</h2>
-                <p><b>Sứ mệnh:</b> Chăm sóc sức khỏe cộng đồng bằng chất lượng dịch vụ y tế tốt nhất, lấy bệnh nhân làm trung tâm.</p>
-                <p><b>Tầm nhìn:</b> Trở thành bệnh viện tiên phong trong ứng dụng công nghệ và y học hiện đại tại Việt Nam.</p>
-                <h3 class="about-subheading">Giá trị cốt lõi</h3>
-                <ul>
-                    <li>Chuyên nghiệp & tận tâm</li>
-                    <li>Đổi mới & sáng tạo</li>
-                    <li>Minh bạch & trách nhiệm</li>
-                    <li>Hợp tác & phát triển bền vững</li>
-                </ul>
+        <div class="section-header text-center mb-5 " data-aos="fade-up">
+            <h2 class="display-5 fw-bold mb-2">
+                <i class="fas fa-bullseye text-primary me-2"></i>Sứ mệnh & Tầm nhìn
+            </h2>
+            <div class="header-line mx-auto"></div>
+        </div>
+
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6 order-lg-2 d-flex justify-content-center" data-aos="fade-left">
+                <img src="~/images/besthospital.png" alt="Sứ mệnh Four Rock" class="img-fluid rounded-4 shadow-lg" style="width:500px" height="500px" />
             </div>
-            <div class="col-lg-6">
-                <img src="~/images/besthospital.png" alt="Sứ mệnh Four Rock" class="img-fluid rounded shadow" />
+
+            <div class="col-lg-6 order-lg-1" data-aos="fade-right">
+                <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+                    <h3 class="fw-bold text-primary mb-3">Định hướng phát triển</h3>
+                    <p class="fs-5 text-dark"><i class="fas fa-rocket text-info me-2"></i><b>Sứ mệnh:</b> Chăm sóc sức khỏe cộng đồng bằng chất lượng dịch vụ y tế tốt nhất, lấy bệnh nhân làm trung tâm.</p>
+                    <p class="fs-5 text-dark"><i class="fas fa-eye text-info me-2"></i><b>Tầm nhìn:</b> Trở thành bệnh viện tiên phong trong ứng dụng công nghệ và y học hiện đại tại Việt Nam.</p>
+
+                    <h4 class="fw-bold text-dark mt-4 mb-2">Giá trị cốt lõi</h4>
+                    <ul class="list-unstyled text-secondary">
+                        <li class="mb-2"><i class="fas fa-star text-warning me-2"></i>Chuyên nghiệp & tận tâm</li>
+                        <li class="mb-2"><i class="fas fa-lightbulb text-warning me-2"></i>Đổi mới & sáng tạo</li>
+                        <li class="mb-2"><i class="fas fa-file-alt text-warning me-2"></i>Minh bạch & trách nhiệm</li>
+                        <li class="mb-2"><i class="fas fa-handshake text-warning me-2"></i>Hợp tác & phát triển bền vững</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 
-<section class="about-section fade-in about-commitment">
+<section class="py-5 bg-white">
     <div class="container">
-        <h2 class="about-heading text-center">Cam kết của chúng tôi</h2>
+        <div class="section-header text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 fw-bold mb-2">
+                <i class="fas fa-handshake text-primary me-2"></i>Cam kết của chúng tôi
+            </h2>
+            <div class="header-line mx-auto"></div>
+        </div>
+
         <div class="row justify-content-center">
-            <div class="col-md-6">
-                <ul class="about-commit-list">
-                    <li>Luôn đặt sức khỏe và sự an toàn của bệnh nhân lên hàng đầu</li>
-                    <li>Không ngừng đổi mới, cập nhật công nghệ y tế tiên tiến</li>
-                    <li>Đội ngũ y bác sĩ tận tâm, chuyên môn cao</li>
-                    <li>Dịch vụ chăm sóc khách hàng chuyên nghiệp, thân thiện</li>
+            <div class="col-lg-8" data-aos="zoom-in">
+                <ul class="list-group list-group-flush shadow-lg rounded-4 overflow-hidden">
+                    <li class="list-group-item d-flex align-items-center py-3 px-4 bg-light fw-medium"><i class="fas fa-heartbeat text-success me-3 fs-5"></i>Luôn đặt sức khỏe và sự an toàn của bệnh nhân lên hàng đầu.</li>
+                    <li class="list-group-item d-flex align-items-center py-3 px-4"><i class="fas fa-microchip text-success me-3 fs-5"></i>Không ngừng đổi mới, cập nhật công nghệ y tế tiên tiến.</li>
+                    <li class="list-group-item d-flex align-items-center py-3 px-4 bg-light fw-medium"><i class="fas fa-user-shield text-success me-3 fs-5"></i>Đội ngũ y bác sĩ tận tâm, chuyên môn cao, được đào tạo quốc tế.</li>
+                    <li class="list-group-item d-flex align-items-center py-3 px-4"><i class="fas fa-headset text-success me-3 fs-5"></i>Dịch vụ chăm sóc khách hàng chuyên nghiệp, thân thiện, hỗ trợ 24/7.</li>
                 </ul>
             </div>
         </div>
     </div>
 </section>
+
+@* KHÔNG CẦN THÊM CTA VÀ CONTACT VÌ SẼ LẤY TỪ _Layout.cshtml (như trang Blog) *@
 
 <style>
-.about-hero {
-    background: url('/images/hospital.png') center center/cover no-repeat;
-    padding: 3rem 0 2rem 0;
-    border-radius: 0 0 2rem 2rem;
-    box-shadow: 0 4px 24px rgba(37,99,235,0.08);
-    position: relative;
-}
-.about-title, .about-lead {
-    position: relative;
-    z-index: 2;
-    color: #1e40af;
-    text-shadow: 0 2px 8px #fff, 0 1px 0 #fff;
-}
-.about-title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    margin-bottom: 0.5rem;
-}
-.about-lead {
-    font-size: 1.25rem;
-    margin-bottom: 2rem;
-}
-.about-hero-img {
-    max-width: 420px;
-    margin-top: 1.5rem;
-    /* box-shadow: 0 2px 16px rgba(37,99,235,0.10); */
-}
-.about-section {
-    padding: 3rem 0;
-}
-.about-heading {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #1e40af;
-    margin-bottom: 1.5rem;
-}
-.about-subheading {
-    font-size: 1.15rem;
-    color: #2563eb;
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-}
-.about-content ul, .about-commit-list {
-    padding-left: 1.2rem;
-    margin-bottom: 1.5rem;
-}
-.about-content li, .about-commit-list li {
-    margin-bottom: 0.5rem;
-    font-size: 1.05rem;
-}
-.about-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    background: #f1f5f9;
-    border-radius: 1rem;
-    padding: 2rem 1rem;
-    box-shadow: 0 2px 12px rgba(37,99,235,0.06);
-}
-.stat-item {
-    text-align: center;
-}
-.stat-number {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #2563eb;
-}
-.stat-label {
-    font-size: 1rem;
-    color: #64748b;
-}
-.about-doctor-card {
-    background: #fff;
-    border-radius: 1rem;
-    box-shadow: 0 2px 12px rgba(37,99,235,0.08);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-.about-doctor-card:hover {
-    transform: translateY(-6px) scale(1.03);
-    box-shadow: 0 8px 32px rgba(37,99,235,0.15);
-}
-.about-doctor-img {
-    width: 90px;
-    height: 90px;
-    object-fit: cover;
-    border: 4px solid #e0f2fe;
-}
-.about-commit-list {
-    font-size: 1.1rem;
-    color: #222;
-    margin-top: 1rem;
-}
-@@media (max-width: 991px) {
-    .about-hero-img { max-width: 100%; }
-    .about-section { padding: 2rem 0; }
-    .about-heading { font-size: 1.5rem; }
-}
-@@media (max-width: 576px) {
-    .about-hero { padding: 2rem 0 1rem 0; }
-    .about-title { font-size: 1.5rem; }
-    .about-lead { font-size: 1rem; }
-    .about-section { padding: 1.2rem 0; }
-    .about-heading { font-size: 1.1rem; }
-    .about-stats { flex-direction: row; gap: 0.5rem; padding: 1rem 0.5rem; }
-    .stat-number { font-size: 1.1rem; }
-    .stat-label { font-size: 0.85rem; }
-}
+    /* Định nghĩa lại các biến màu theo trang blog */
+    :root {
+        --primary-color: #0d6efd; /* Blue */
+        --secondary-color: #6c757d; /* Gray */
+        --accent-color: #0dcaf0; /* Cyan/Light Blue */
+        --success-color: #198754;
+        --text-dark: #212529;
+        --light-gray: #f8f9fa;
+    }
+
+    /* === Đồng bộ Style từ Blog/Dịch vụ === */
+
+    /* Header Section */
+    .blog-header {
+        position: relative;
+        min-height: 250px !important;
+    }
+
+    /* Section Header */
+    .section-header {
+        margin-bottom: 3rem;
+    }
+
+        .section-header h2 {
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 2.5rem;
+        }
+
+    .header-line {
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        border-radius: 2px;
+        margin-top: 10px;
+    }
+
+    /* Stats Box Style (Tương tự Process Card nhưng cho mục thống kê) */
+    .about-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        background: var(--light-gray);
+        border: 1px solid #e9ecef;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-item {
+        background: white;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        transition: all 0.2s;
+    }
+
+        .stat-item:hover {
+            background: var(--bg-accent);
+            transform: translateY(-2px);
+        }
+
+    .stat-number {
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: var(--secondary-color);
+    }
+
+    /* Responsive */
+    @@media (max-width: 991px) {
+        .about-stats {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem;
+        }
+
+        .stat-item {
+            flex-basis: 45%;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .blog-header {
+            min-height: 220px !important;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+        }
+
+        .stat-item {
+            flex-basis: 100%;
+        }
+    }
 </style>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 50
+        });
+    </script>
+}

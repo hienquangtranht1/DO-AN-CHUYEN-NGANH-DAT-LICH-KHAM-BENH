@@ -3,117 +3,87 @@
     Layout = "_AdminLayout";
     ViewBag.Active = "Doctors";
     ViewBag.Title = "Quản lý Bác sĩ";
+
+    // --- PHẦN GIẢ ĐỊNH DỮ LIỆU PHÂN TRANG TỪ CONTROLLER ---
+    var totalPages = ViewBag.TotalPages ?? 3;
+    var currentPage = ViewBag.CurrentPage ?? 1;
+    var hasPreviousPage = currentPage > 1;
+    var hasNextPage = currentPage < totalPages;
 }
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="management-header">
-                <div class="header-content">
-                    <div class="title-section">
-                        <div class="icon-wrapper">
-                            <i class="fas fa-user-md"></i>
-                        </div>
-                        <div>
-                            <h2 class="main-title">Quản lý Bác sĩ</h2>
-                            <p class="subtitle">Danh sách và thông tin các bác sĩ trong hệ thống</p>
-                        </div>
-                    </div>
-                    <a href="/Admin/CreateDoctor" class="add-btn">
-                        <i class="fas fa-plus"></i>
-                        <span>Thêm bác sĩ mới</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="doctors-list">
-                @foreach (var doctor in Model)
-                {
-                    <div class="doctor-item">
-                        <div class="doctor-avatar">
-                            @if (!string.IsNullOrEmpty(doctor.HinhAnhBacSi))
-                            {
-                                var imgSrc = doctor.HinhAnhBacSi.StartsWith("/uploads") ? doctor.HinhAnhBacSi : "/uploads/" + doctor.HinhAnhBacSi;
-                                <img src="@imgSrc" alt="@doctor.HoTen" onerror="this.src='/images/default-doctor.png'" />
-                            }
-                            else
-                            {
-                                <div class="default-avatar">
-                                    <i class="fas fa-user-md"></i>
-                                </div>
-                            }
-                        </div>
-
-                        <div class="doctor-info">
-                            <div class="main-info">
-                                <h5 class="doctor-name">@doctor.HoTen</h5>
-                                <div class="info-tags">
-                                    <span class="department-tag"><i class="fas fa-building"></i> @doctor.Khoa?.TenKhoa</span> 
-                                </div>
-                            </div>
-                            <div class="contact-info">
-                                @if (!string.IsNullOrEmpty(doctor.SoDienThoai))
-                                {
-                                    <span class="contact-item">
-                                        <i class="fas fa-phone"></i>
-                                        @doctor.SoDienThoai
-                                    </span>
-                                }
-                                @if (!string.IsNullOrEmpty(doctor.MoTa))
-                                {
-                                    <div class="doctor-description mt-2 text-muted" style="font-size: 0.9rem;">
-                                        @Html.Raw(doctor.MoTa)
-                                    </div>
-                                }
-                            </div>
-                        </div>
-
-                        <div class="doctor-actions">
-                            <a href="/Admin/DoctorDetails/@doctor.MaBacSi" class="action-btn view-btn" title="Xem chi tiết">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <a href="/Admin/EditDoctor/@doctor.MaBacSi" class="action-btn edit-btn" title="Chỉnh sửa">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a href="/Admin/DeleteDoctor/@doctor.MaBacSi" class="action-btn delete-btn" title="Xóa">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </div>
-                    </div>
-                }
-            </div>
-
-            @if (!Model.Any())
-            {
-                <div class="empty-state">
-                    <div class="empty-icon">
-                        <i class="fas fa-user-md"></i>
-                    </div>
-                    <h3>Chưa có bác sĩ nào</h3>
-                    <p>Hãy thêm bác sĩ đầu tiên để bắt đầu quản lý</p>
-                    <a href="/Admin/CreateDoctor" class="empty-action-btn">
-                        <i class="fas fa-plus"></i>
-                        <span>Thêm bác sĩ đầu tiên</span>
-                    </a>
-                </div>
+@section Scripts {
+    <script>
+        // === HÀM BUỘC TẢI LẠI TRANG SAU KHI DÙNG BACK/FORWARD CACHE ===
+        window.addEventListener('pageshow', function (event) {
+            // Kiểm tra nếu trang được tải từ bộ nhớ đệm (bfcache)
+            if (event.persisted) {
+                window.location.reload();
             }
-        </div>
-    </div>
-</div>
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // === Logic Tìm kiếm cơ bản (Client-side) ===
+            const searchInput = document.getElementById('searchInput');
+            const doctorsTable = document.getElementById('doctorsTable');
+            const tableBody = doctorsTable ? doctorsTable.querySelector('tbody') : null;
+
+            if (searchInput && doctorsTable) {
+                searchInput.addEventListener('keyup', function () {
+                    const filter = searchInput.value.toUpperCase();
+                    const tableRows = tableBody.getElementsByTagName('tr');
+
+                    for (let i = 0; i < tableRows.length; i++) {
+                        // Bỏ qua hàng báo cáo rỗng
+                        if (tableRows[i].querySelector('.text-muted[colspan="6"]')) continue;
+
+                        // Lấy các thuộc tính data-name (cột Họ tên) và data-department (cột Khoa)
+                        const rowName = tableRows[i].getAttribute('data-name') || '';
+                        const rowDept = tableRows[i].getAttribute('data-department') || '';
+
+                        if (rowName.includes(filter) || rowDept.includes(filter)) {
+                            tableRows[i].style.display = "";
+                        } else {
+                            tableRows[i].style.display = "none";
+                        }
+                    }
+                });
+            }
+
+            // === Logic Xác nhận xóa (Client-side) ===
+            document.querySelectorAll('.delete-confirm').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const deleteUrl = this.href;
+
+                    if (confirm("Bạn có chắc chắn muốn xóa bác sĩ này không? Hành động này không thể hoàn tác và sẽ xóa tất cả dữ liệu liên quan.")) {
+                        // Chuyển hướng đến trang xác nhận (GET DeleteDoctor) để Admin thực hiện POST xóa cuối cùng
+                        window.location.href = deleteUrl;
+                    }
+                });
+            });
+        });
+    </script>
+}
 
 <style>
-    * {
-        box-sizing: border-box;
+    /* VARIABLES */
+    :root {
+        --primary-color: #4f46e5;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
     }
 
+    /* === HEADER MANAGEMENT SECTION STYLES === */
     .management-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, var(--primary-color) 0%, #6366f1 100%);
         border-radius: 20px;
-        padding: 2rem;
-        margin-bottom: 2rem;
+        padding: 1.5rem 2rem;
+        margin-bottom: 1.5rem;
         color: white;
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
     }
 
     .header-content {
@@ -132,36 +102,32 @@
 
     .icon-wrapper {
         background: rgba(255, 255, 255, 0.2);
-        padding: 1rem;
+        padding: 0.75rem;
         border-radius: 50%;
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(5px);
     }
 
         .icon-wrapper i {
-            font-size: 2rem;
+            font-size: 1.75rem;
             color: white;
         }
 
     .main-title {
-        font-size: 2rem;
+        font-size: 1.75rem;
         font-weight: 700;
         margin: 0;
-        background: linear-gradient(45deg, #fff, #f0f8ff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
     }
 
     .subtitle {
         margin-top: 0.25rem;
         opacity: 0.9;
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
 
     .add-btn {
-        background: linear-gradient(45deg, #4CAF50, #45a049);
+        background: var(--success-color);
         color: white;
-        padding: 0.75rem 1.5rem;
+        padding: 0.6rem 1.2rem;
         border-radius: 50px;
         text-decoration: none;
         display: flex;
@@ -169,192 +135,75 @@
         gap: 0.5rem;
         font-weight: 600;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
     }
 
         .add-btn:hover {
+            background: #059669;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
             color: white;
         }
 
-    .doctors-list {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        overflow: hidden;
+    /* === SEARCH BAR STYLES === */
+    .search-group input {
+        border-radius: 10px 0 0 10px !important;
     }
 
-    .doctor-item {
-        display: flex;
-        align-items: center;
-        padding: 1.5rem;
-        border-bottom: 1px solid #f1f5f9;
-        transition: all 0.3s ease;
-        position: relative;
-        flex-wrap: wrap;
+    .search-group .btn-search {
+        background: #f3f4f6;
+        border-color: #d1d5db;
+        color: var(--text-secondary);
+        border-radius: 0 10px 10px 0 !important;
+        transition: all 0.2s;
     }
 
-        .doctor-item:last-child {
-            border-bottom: none;
+        .search-group .btn-search:hover {
+            background: #e5e7eb;
         }
 
-        .doctor-item:hover {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            transform: translateX(5px);
+    /* === TABLE STYLES === */
+    .data-table-container {
+        overflow-x: auto;
+    }
+
+    .table th {
+        font-weight: 600;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .table td {
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+        /* CỘT MÔ TẢ: Cho phép hiển thị nội dung trên nhiều dòng */
+        .table td:nth-child(5) {
+            white-space: normal;
+            word-break: break-word;
         }
 
-    .doctor-avatar {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        overflow: hidden;
-        margin-right: 1.5rem;
-        flex-shrink: 0;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    .action-column {
+        min-width: 220px;
     }
 
-        .doctor-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-    .default-avatar {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
-        color: #64748b;
-    }
-
-        .default-avatar i {
-            font-size: 1.5rem;
-        }
-
-    .doctor-info {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .main-info {
-        margin-bottom: 0.75rem;
-    }
-
-    .doctor-name {
-        font-size: 1.125rem;
-        font-weight: 700;
-        color: #1e293b;
-        margin: 0 0 0.5rem 0;
-        background: linear-gradient(45deg, #667eea, #764ba2);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .info-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-bottom: 0.5rem;
-    }
-
-        .info-tags span {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-    .department-tag {
-        background: #dbeafe;
-        color: #1e40af;
-    }
-
-    .specialty-tag {
-        background: #cffafe;
-        color: #0e7490;
-    }
-
-    .degree-tag {
-        background: #f3e8ff;
-        color: #7c3aed;
-    }
-
-    .contact-info {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    .contact-item {
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-        color: #64748b;
-        font-size: 0.875rem;
-    }
-
-        .contact-item i {
-            color: #94a3b8;
-            width: 1rem;
-        }
-
-    .doctor-actions {
-        display: flex;
-        gap: 0.5rem;
-        margin-left: 1rem;
-        flex-shrink: 0;
-    }
-
-    .action-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .doctor-table-avatar {
         width: 40px;
         height: 40px;
-        border-radius: 10px;
-        text-decoration: none;
-        font-size: 0.875rem;
-        transition: all 0.3s ease;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
-    .view-btn {
-        background: #dbeafe;
-        color: #1e40af;
+    /* === ACTION BUTTONS (IN TABLE) === */
+    .action-column .btn {
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
     }
-
-        .view-btn:hover {
-            background: #3b82f6;
-            color: white;
-            transform: scale(1.1);
-        }
-
-    .edit-btn {
-        background: #fef3c7;
-        color: #d97706;
-    }
-
-        .edit-btn:hover {
-            background: #f59e0b;
-            color: white;
-            transform: scale(1.1);
-        }
-
-    .delete-btn {
-        background: #fee2e2;
-        color: #dc2626;
-    }
-
-        .delete-btn:hover {
-            background: #ef4444;
-            color: white;
-            transform: scale(1.1);
-        }
 
     .empty-state {
         text-align: center;
@@ -362,12 +211,13 @@
         background: white;
         border-radius: 20px;
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        margin-top: 2rem;
     }
 
     .empty-icon {
-        width: 80px;
-        height: 80px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, var(--primary-color), #6366f1);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -376,25 +226,26 @@
     }
 
         .empty-icon i {
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: white;
         }
 
     .empty-state h3 {
-        color: #1e293b;
+        color: var(--text-primary);
         margin-bottom: 0.5rem;
         font-weight: 700;
     }
 
     .empty-state p {
-        color: #64748b;
-        margin-bottom: 2rem;
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem; /* Điều chỉnh font size cho đẹp hơn */
     }
 
     .empty-action-btn {
-        background: linear-gradient(45deg, #667eea, #764ba2);
+        background: linear-gradient(45deg, var(--primary-color), #6366f1);
         color: white;
-        padding: 1rem 2rem;
+        padding: 0.75rem 1.5rem;
         border-radius: 50px;
         text-decoration: none;
         display: inline-flex;
@@ -402,49 +253,310 @@
         gap: 0.5rem;
         font-weight: 600;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
     }
 
         .empty-action-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
             color: white;
         }
 
-    @@media (max-width: 768px) {
-        .header-content, .title-section, .doctor-item, .info-tags, .contact-info, .doctor-actions
-
-    {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .doctor-avatar {
-        margin: 0 auto 1rem auto;
-    }
-
-    .doctor-actions {
-        margin-left: 0;
+    /* === FOOTER PAGINATION STYLES (MODIFIED) === */
+    .pagination-footer {
+        display: flex;
+        align-items: center;
         justify-content: center;
+        gap: 1.5rem;
+        padding: 1rem 0;
+        flex-wrap: wrap;
+        width: 100%;
     }
 
+    .pagination-arrow {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #6366f1 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.75rem;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        text-decoration: none;
     }
 
-    @@media (max-width: 480px) {
-        .container-fluid
+        .pagination-arrow:hover:not(.disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+            color: white;
+        }
 
-    {
-        padding: 0.5rem;
+        .pagination-arrow.disabled {
+            background: #e5e7eb;
+            color: #9ca3af;
+            cursor: not-allowed;
+            box-shadow: none;
+            pointer-events: none;
+        }
+
+    .pagination {
+        margin-bottom: 0 !important;
     }
 
-    .management-header {
-        padding: 1rem;
-        margin-bottom: 1rem;
+        .pagination .page-item .page-link {
+            border-radius: 8px !important;
+            margin: 0 4px;
+            border-color: #e5e7eb;
+            color: var(--text-primary);
+            font-weight: 600;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+    /* === RESPONSIVE === */
+    @@media (max-width: 991.98px) {
+        .action-column .d-none.d-lg-inline {
+            display: none !important;
+        }
+
+        .action-column .btn {
+            padding: 8px;
+            font-size: 0.9rem;
+        }
+
+        .action-column {
+            min-width: 150px;
+        }
     }
 
-    .doctor-description {
-        font-size: 0.85rem;
-    }
+    @@media (max-width: 768px) {
+        .pagination-footer {
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+        }
 
+        .pagination-arrow {
+            width: 100%;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .pagination-footer nav.d-none.d-sm-block {
+            display: none !important;
+        }
+
+        .management-header, .search-group {
+            padding: 1rem;
+        }
     }
 </style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success shadow-sm" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger shadow-sm" role="alert">
+                    <i class="fas fa-times-circle me-2"></i>@TempData["ErrorMessage"]
+                </div>
+            }
+
+            <div class="management-header">
+                <div class="header-content">
+                    <div class="title-section">
+                        <div class="icon-wrapper">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div>
+                            <h2 class="main-title">@ViewBag.Title</h2>
+                            <p class="subtitle">Danh sách và thông tin các bác sĩ trong hệ thống</p>
+                        </div>
+                    </div>
+                    <a href="/Admin/CreateDoctor" class="add-btn">
+                        <i class="fas fa-plus"></i>
+                        <span>Thêm bác sĩ mới</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="row mb-4 align-items-center">
+                <div class="col-md-6">
+                    <div class="input-group search-group">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm theo Tên bác sĩ hoặc Khoa...">
+                        <button class="btn btn-search" type="button"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="col-md-6 text-md-end mt-2 mt-md-0">
+                </div>
+            </div>
+
+            <div class="card shadow-lg rounded-4 data-table-container">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped mb-0" id="doctorsTable">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th style="width: 5%;">ID</th>
+                                    <th style="width: 10%;">Hình ảnh</th>
+                                    <th style="width: 25%;">Họ tên</th>
+                                    <th style="width: 20%;">Khoa</th>
+                                    <th style="width: 15%;">Mô tả</th>
+                                    <th class="action-column text-center" style="width: 25%;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var doctor in Model)
+                                    {
+                                        <tr data-name="@doctor.HoTen.ToUpper()" data-department="@doctor.Khoa?.TenKhoa.ToUpper()">
+                                            <td class="align-middle">@doctor.MaBacSi</td>
+                                            <td class="align-middle text-center">
+                                                @{
+                                                    var imgSrc = string.IsNullOrEmpty(doctor.HinhAnhBacSi)
+                                                    ? "/images/default-doctor.png"
+                                                    : (doctor.HinhAnhBacSi.StartsWith("/uploads") ? doctor.HinhAnhBacSi : "/uploads/" + doctor.HinhAnhBacSi);
+                                                }
+                                                <img src="@imgSrc" alt="Avatar" class="doctor-table-avatar" />
+                                            </td>
+                                            <td class="align-middle fw-bold text-dark">@doctor.HoTen</td>
+                                            <td class="align-middle">
+                                                <span class="badge bg-info text-dark p-2 rounded-pill">
+                                                    <i class="fas fa-building me-1"></i> @doctor.Khoa?.TenKhoa
+                                                </span>
+                                            </td>
+                                            <td class="align-middle text-secondary">
+                                                @{
+                                                    string moTa = doctor.MoTa ?? "";
+                                                    // Cắt chuỗi theo độ dài ký tự (khoảng 15 từ)
+                                                    int maxLength = 100;
+                                                    string truncatedMoTa = moTa.Length > maxLength ? moTa.Substring(0, maxLength) + "..." : moTa;
+                                                }
+                                                <div style="max-height: 3em; overflow: hidden; text-overflow: ellipsis;">
+                                                    @Html.Raw(truncatedMoTa)
+                                                </div>
+                                            </td>
+                                            <td class="align-middle action-column text-center">
+                                                <a href="/Admin/DoctorDetails/@doctor.MaBacSi" class="btn btn-sm btn-outline-info me-1" title="Xem chi tiết">
+                                                    <i class="fas fa-eye"></i> <span class="d-none d-lg-inline">Xem</span>
+                                                </a>
+                                                <a href="/Admin/EditDoctor/@doctor.MaBacSi" class="btn btn-sm btn-outline-warning me-1" title="Chỉnh sửa">
+                                                    <i class="fas fa-edit"></i> <span class="d-none d-lg-inline">Sửa</span>
+                                                </a>
+                                                <a href="/Admin/DeleteDoctor/@doctor.MaBacSi" class="btn btn-sm btn-outline-danger delete-confirm" title="Xóa">
+                                                    <i class="fas fa-trash-alt"></i> <span class="d-none d-lg-inline">Xóa</span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4 text-muted">Không có bác sĩ nào được tìm thấy.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        @if (Model == null || !Model.Any())
+                        {
+                            <div class="empty-state mt-0" style="border-radius: 0 0 15px 15px; margin-top:0 !important; box-shadow:none;">
+                                <div class="empty-icon">
+                                    <i class="fas fa-user-md"></i>
+                                </div>
+                                <h3>Chưa có bác sĩ nào</h3>
+                                <p>Hãy thêm bác sĩ đầu tiên để bắt đầu quản lý</p>
+                                <a href="/Admin/CreateDoctor" class="empty-action-btn">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Thêm bác sĩ đầu tiên</span>
+                                </a>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12 d-flex justify-content-center">
+        <div class="pagination-footer full-width">
+
+            <a href="/Admin/Doctors?page=@(currentPage - 1)" class="pagination-arrow prev-arrow @(!hasPreviousPage ? "disabled" : "")">
+                <i class="fas fa-chevron-left"></i>
+                <span>Trước</span>
+            </a>
+
+            <nav class="d-none d-sm-block">
+                <ul class="pagination justify-content-center mb-0">
+                    @{
+                        const int maxPageButtons = 5;
+                        int startPage = Math.Max(1, currentPage - (maxPageButtons / 2));
+                        int endPage = Math.Min(totalPages, startPage + maxPageButtons - 1);
+
+                        if (endPage - startPage < maxPageButtons - 1)
+                        {
+                            startPage = Math.Max(1, endPage - maxPageButtons + 1);
+                        }
+                    }
+
+                    @if (startPage > 1)
+                    {
+                        <li class="page-item"><a class="page-link page-num-link" href="/Admin/Doctors?page=1">1</a></li>
+                        if (startPage > 2)
+                        {
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        }
+                    }
+
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link page-num-link" href="/Admin/Doctors?page=@i">@i</a>
+                        </li>
+                    }
+
+                    @if (endPage < totalPages)
+                    {
+                        if (endPage < totalPages - 1)
+                        {
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        }
+                        <li class="page-item"><a class="page-link page-num-link" href="/Admin/Doctors?page=@totalPages">@totalPages</a></li>
+                    }
+                </ul>
+            </nav>
+
+            <a href="/Admin/Doctors?page=@(currentPage + 1)" class="pagination-arrow next-arrow @(!hasNextPage ? "disabled" : "")">
+                <span>Sau</span>
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+</div>

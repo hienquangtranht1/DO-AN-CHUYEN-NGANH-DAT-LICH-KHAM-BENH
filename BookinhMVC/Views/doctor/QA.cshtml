@@ -1,95 +1,205 @@
 ﻿@using BookinhMVC.Models
 @model IEnumerable<Question>
+
 @{
-    ViewData["Title"] = "Hỏi đáp với bác sĩ";
-    var isLoggedIn = Context.Session.GetInt32("UserId") != null;
-    var doctors = ViewBag.Doctors as List<BacSi>; // Truyền từ controller
+    ViewData["Title"] = "Tư vấn sức khỏe";
+    Layout = "~/Views/Shared/_LayoutDoctor.cshtml";
 }
 
-<div class="container my-5 pt-5">
-    <h2 class="text-center mb-4">Hỏi đáp với bác sĩ</h2>
-
-    @if (isLoggedIn)
-    {
-        <div class="question-form mb-5">
-            <h4>Đặt câu hỏi mới</h4>
-            <form asp-action="QA" asp-controller="Doctor" method="post">
-                <div class="form-group">
-                    <label for="doctor">Chọn bác sĩ</label>
-                    <select class="form-control" id="doctor" name="DoctorId" required>
-                        <option value="">Chọn bác sĩ</option>
-                        @if (doctors != null)
-                        {
-                            foreach (var doctor in doctors)
-                            {
-                                <option value="@doctor.MaBacSi">BS. @doctor.HoTen - @doctor.Khoa?.TenKhoa</option>
-                            }
-                        }
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="title">Tiêu đề câu hỏi</label>
-                    <input type="text" class="form-control" id="title" name="Title" required />
-                </div>
-                <div class="form-group">
-                    <label for="content">Nội dung chi tiết</label>
-                    <textarea class="form-control" id="content" name="Content" rows="4" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Gửi câu hỏi</button>
-            </form>
-            @if (TempData["Message"] != null)
-            {
-                <div class="alert alert-success mt-3">@TempData["Message"]</div>
-            }
-            @if (TempData["Error"] != null)
-            {
-                <div class="alert alert-danger mt-3">@TempData["Error"]</div>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="alert alert-info text-center mb-5">
-            <i class="fas fa-info-circle"></i>
-            Vui lòng <a asp-action="Login" asp-controller="User">đăng nhập</a> để đặt câu hỏi cho bác sĩ.
-        </div>
-    }
-
-    <div class="mb-4">
-        <h4 class="text-center">Các câu hỏi đã được trả lời</h4>
-        <p class="text-center text-muted">Danh sách những vấn đề đã được bác sĩ tư vấn và giải đáp</p>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0 text-gray-800"><i class="fas fa-question-circle me-2 text-primary"></i> Danh sách câu hỏi tư vấn</h4>
     </div>
 
-    <div class="qa-list">
-        @if (Model.Any(q => !string.IsNullOrEmpty(q.Answer)))
-        {
-            @foreach (var q in Model.Where(q => !string.IsNullOrEmpty(q.Answer)))
-            {
-                <div class="card question-card mb-4">
-                    <div class="question-header p-3 bg-light border-bottom">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title mb-0">@q.Title</h5>
-                            <span class="status-badge badge badge-success">Đã trả lời</span>
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <ul class="nav nav-tabs mb-4" id="qaTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab">
+                <i class="fas fa-hourglass-half text-warning me-2"></i> Chờ trả lời
+                <span class="badge bg-danger rounded-pill ms-2">@Model.Count(q => string.IsNullOrEmpty(q.Answer))</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold" id="answered-tab" data-bs-toggle="tab" data-bs-target="#answered" type="button" role="tab">
+                <i class="fas fa-check-circle text-success me-2"></i> Lịch sử đã trả lời
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="qaTabsContent">
+
+        <div class="tab-pane fade show active" id="pending" role="tabpanel">
+            <div class="card shadow border-0">
+                <div class="card-body">
+                    @{
+                        // Lọc danh sách chưa có câu trả lời
+                        var pendingList = Model.Where(q => string.IsNullOrEmpty(q.Answer)).ToList();
+                    }
+
+                    @if (pendingList.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 15%">Người hỏi</th>
+                                        <th style="width: 15%">Ngày gửi</th>
+                                        <th style="width: 20%">Tiêu đề</th>
+                                        <th style="width: 40%">Nội dung câu hỏi</th>
+                                        <th style="width: 10%">Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in pendingList)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="fw-bold">@(item.User?.TenDangNhap ?? "Ẩn danh")</div>
+                                                <small class="text-muted">ID: #@item.Id</small>
+                                            </td>
+                                            <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td class="fw-bold text-primary">@item.Title</td>
+                                            <td>
+                                                <div class="text-truncate-3" style="max-height: 80px; overflow:hidden;">
+                                                    @item.Content
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <button type="button"
+                                                        class="btn btn-primary btn-sm btn-answer"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#answerModal"
+                                                        data-id="@item.Id"
+                                                        data-patient="@(item.User?.TenDangNhap ?? "Ẩn danh")"
+                                                        data-content="@item.Content"
+                                                        data-title="@item.Title">
+                                                    <i class="fas fa-pen-nib me-1"></i> Trả lời
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="meta-info mt-2 text-muted">
-                            <i class="fas fa-user-circle"></i> @(q.User?.TenDangNhap ?? "Ẩn danh")
-                            <i class="fas fa-user-md ml-3"></i> BS. @(q.Doctor?.HoTen ?? "")
-                            <i class="far fa-clock ml-3"></i> @q.CreatedAt.ToString("dd/MM/yyyy")
+                    }
+                    else
+                    {
+                        <div class="text-center py-5 text-muted">
+                            <i class="far fa-check-circle fa-3x mb-3 text-success"></i>
+                            <p>Tuyệt vời! Bạn đã trả lời hết các câu hỏi.</p>
                         </div>
-                    </div>
-                    <div class="question-content p-3">
-                        <p class="card-text mt-2">@q.Content</p>
-                        <div class="answer-section bg-light p-3 mt-3 rounded">
-                            <h6 class="text-primary"><i class="fas fa-comment-medical"></i> Trả lời từ bác sĩ:</h6>
-                            <p class="mb-0">@q.Answer</p>
-                        </div>
-                    </div>
+                    }
                 </div>
-            }
-        }
-        else
-        {
-            <div class="alert alert-info">Chưa có câu hỏi nào được trả lời</div>
-        }
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="answered" role="tabpanel">
+            <div class="card shadow border-0">
+                <div class="card-body">
+                    @{
+                        // Lọc danh sách đã có câu trả lời
+                        var answeredList = Model.Where(q => !string.IsNullOrEmpty(q.Answer)).ToList();
+                    }
+
+                    @if (answeredList.Any())
+                    {
+                        @foreach (var item in answeredList)
+                        {
+                            <div class="border rounded p-3 mb-3 bg-light">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div>
+                                        <span class="badge bg-success me-2">Đã trả lời</span>
+                                        <span class="fw-bold text-dark">@item.Title</span>
+                                    </div>
+                                    <small class="text-muted">@item.CreatedAt.ToString("dd/MM/yyyy")</small>
+                                </div>
+                                <div class="mb-3">
+                                    <small class="text-muted d-block">Câu hỏi của: <strong>@(item.User?.TenDangNhap ?? "Ẩn danh")</strong></small>
+                                    <p class="mb-0 fst-italic">"@item.Content"</p>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-primary">
+                                    <div class="d-flex align-items-center mb-2 text-primary">
+                                        <i class="fas fa-user-md me-2"></i> <strong>Câu trả lời của bạn:</strong>
+                                        <small class="ms-auto text-muted">Trả lời lúc: @(item.AnsweredAt?.ToString("dd/MM/yyyy HH:mm"))</small>
+                                    </div>
+                                    <p class="mb-0">@item.Answer</p>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">Chưa có lịch sử trả lời nào.</div>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<div class="modal fade" id="answerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form asp-action="Answer" asp-controller="Doctor" method="post">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-reply me-2"></i>Trả lời tư vấn</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="questionId" id="modalQuestionId" />
+
+                    <div class="alert alert-secondary">
+                        <h6>Câu hỏi từ: <span id="modalPatientName" class="fw-bold"></span></h6>
+                        <p class="fw-bold text-primary mb-1" id="modalQuestionTitle"></p>
+                        <p class="mb-0" id="modalQuestionContent"></p>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label class="fw-bold mb-2">Nội dung tư vấn của bác sĩ:</label>
+                        <textarea class="form-control" name="answer" rows="6" placeholder="Nhập câu trả lời chi tiết tại đây..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane me-2"></i>Gửi câu trả lời</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Script để lấy dữ liệu từ nút bấm và điền vào Modal
+        var answerModal = document.getElementById('answerModal');
+        answerModal.addEventListener('show.bs.modal', function (event) {
+            // Nút kích hoạt modal
+            var button = event.relatedTarget;
+
+            // Lấy dữ liệu từ attribute data-*
+            var id = button.getAttribute('data-id');
+            var patient = button.getAttribute('data-patient');
+            var title = button.getAttribute('data-title');
+            var content = button.getAttribute('data-content');
+
+            // Tìm các element trong modal
+            var modalIdInput = answerModal.querySelector('#modalQuestionId');
+            var modalPatientName = answerModal.querySelector('#modalPatientName');
+            var modalTitle = answerModal.querySelector('#modalQuestionTitle');
+            var modalContent = answerModal.querySelector('#modalQuestionContent');
+
+            // Gán giá trị
+            modalIdInput.value = id;
+            modalPatientName.textContent = patient;
+            modalTitle.textContent = title;
+            modalContent.textContent = content;
+        });
+    </script>
+}

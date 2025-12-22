@@ -1,15 +1,12 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-@using Microsoft.AspNetCore.Http
+﻿@using Microsoft.AspNetCore.Http
+@using BookinhMVC.Models
 @model BookinhMVC.Models.LichHen
 @{
     ViewData["Title"] = "Đặt lịch hẹn";
     var doctors = ViewBag.Doctors as List<BookinhMVC.Models.BacSi>;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
+    // --- Biến kiểm tra và dữ liệu phiên ---
     int selectedDoctorId = 0;
     if (Context.Request.Query.ContainsKey("selectedDoctorId"))
     {
@@ -21,237 +18,435 @@
     }
     var doctor = (doctors != null && selectedDoctorId > 0) ? doctors.FirstOrDefault(d => d.MaBacSi == selectedDoctorId) : null;
     string message = ViewBag.Message as string ?? "";
-    var isLoggedIn = !string.IsNullOrEmpty(Context.Session.GetString("PatientName"));
+    string reviewMessage = TempData["ReviewMessage"] as string ?? ""; // Lấy thông báo đánh giá từ TempData
+    var isLoggedIn = Context.Session.GetInt32("UserId").HasValue; // Kiểm tra đăng nhập bằng UserId
     var patientName = Context.Session.GetString("PatientName");
-    var patientPhone = Context.Session.GetString("PatientPhone") ?? (ViewBag.PatientPhone as string) ?? "";
-    var patientEmail = Context.Session.GetString("PatientEmail") ?? (ViewBag.PatientEmail as string) ?? "";
+    var patientPhone = ViewBag.PatientPhone as string ?? "";
+    var patientEmail = ViewBag.PatientEmail as string ?? "";
+
 }
 
 <style>
-    .form-select:disabled {
-        background-color: #e9ecef;
-        cursor: not-allowed;
+    /* Styling cho các ô chọn giờ */
+    .time-slot-btn {
+        min-width: 80px;
     }
-    
-    #noTimeMsg {
-        color: #dc3545;
-        font-size: 0.875rem;
-        margin-top: 0.25rem;
+
+        .time-slot-btn.active {
+            background-color: var(--bs-primary);
+            color: white;
+            border-color: var(--bs-primary);
+        }
+
+    .doctor-info-card {
+        transition: transform 0.3s ease-in-out;
     }
-    
-    .time-slot {
-        display: inline-block;
-        padding: 0.375rem 0.75rem;
-        margin: 0.25rem;
-        border: 1px solid #dee2e6;
-        border-radius: 0.25rem;
+
+        .doctor-info-card:hover {
+            transform: translateY(-3px);
+        }
+    /* Thêm style cho sao rating */
+    .rating-star-btn {
+        font-size: 1.5rem;
+        color: #ffc107; /* Màu vàng */
         cursor: pointer;
+        transition: color 0.1s;
     }
-    
-    .time-slot:hover {
-        background-color: #e9ecef;
-    }
-    
-    .time-slot.selected {
-        background-color: #0d6efd;
-        color: white;
-        border-color: #0d6efd;
-    }
+
+        .rating-star-btn.far {
+            color: #e9ecef; /* Màu xám cho sao trống */
+        }
 </style>
 
-<div class="container py-4">
-    <h2 class="mb-4"><i class="fas fa-clipboard-check me-2"></i>Đặt lịch hẹn</h2>
-    <div class="row g-4">
-        <!-- Doctor Info -->
-        <div class="col-md-4">
-            <div class="bg-white rounded shadow-sm p-4 h-100">
-                @if (doctor != null)
-                {
-                    <div class="text-center mb-3">
-                        <img src="@(string.IsNullOrEmpty(doctor.HinhAnhBacSi) ? Url.Content("~/images/doctors/default.jpg") : Url.Content("~/uploads/" + doctor.HinhAnhBacSi))"
-                             alt="@doctor.HoTen"
-                             class="rounded-circle mb-2"
-                             style="width:90px;height:90px;object-fit:cover;" />
-                        <h5 class="mb-1 mt-2">@doctor.HoTen</h5>
-                        <div class="text-primary mb-2" style="font-size:1em;">@doctor.Khoa?.TenKhoa</div>
-                    </div>
-                    <div style="font-size:0.98em;white-space:pre-line;">
-                        @doctor.MoTa
-                    </div>
-                }
-                else
-                {
-                    <div class="text-muted">Vui lòng chọn bác sĩ để xem thông tin.</div>
-                }
+<div class="container py-5">
+    <h2 class="mb-5 text-center text-primary fw-bold"><i class="fas fa-calendar-check me-2"></i>Đặt Lịch Hẹn Khám Bệnh</h2>
+
+    @* Thông báo Đặt lịch *@
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            @message
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row g-5 justify-content-center">
+        @* Cột 1: Thông Tin Bác Sĩ *@
+        <div class="col-lg-4 col-md-5">
+            <div class="card shadow-lg border-0 h-100 doctor-info-card">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h5 class="mb-0"><i class="fas fa-user-md me-1"></i>Thông Tin Bác Sĩ</h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (doctor != null)
+                    {
+                        <div class="text-center mb-4">
+                            <img src="@(string.IsNullOrEmpty(doctor.HinhAnhBacSi) ? Url.Content("~/images/doctors/default.jpg") : Url.Content("~/uploads/" + doctor.HinhAnhBacSi))"
+                                 alt="@doctor.HoTen"
+                                 class="rounded-circle mb-3 border border-primary border-3"
+                                 style="width:120px;height:120px;object-fit:cover;" />
+                            <h4 class="mb-1 text-dark">@doctor.HoTen</h4>
+                            <p class="text-primary fw-bold mb-0">@doctor.Khoa?.TenKhoa</p>
+                        </div>
+                        <div class="border-top pt-3">
+                            <h6 class="text-secondary">Chuyên môn:</h6>
+                            <p style="font-size:0.95em;">@Html.Raw(doctor.MoTa)</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-secondary text-center">
+                            Vui lòng chọn bác sĩ để tiến hành đặt lịch.
+                        </div>
+                    }
+                </div>
             </div>
         </div>
-        <!-- Booking Form -->
-        <div class="col-md-8">
-            <div class="bg-white rounded shadow-sm p-4">
-                @if (!string.IsNullOrEmpty(message))
-                {
-                    <div class="alert alert-info">@message</div>
-                }
-                @if (!isLoggedIn)
-                {
-                    <div class="alert alert-warning">
-                        Vui lòng <a href="@Url.Action("Login", "User")" class="alert-link">đăng nhập</a> để đặt lịch khám bệnh.
-                    </div>
-                }
-                else
-                {
-                    <form asp-action="Book" method="post" id="appointmentForm" autocomplete="off">
-                        <input type="hidden" name="selectedDoctorId" value="@selectedDoctorId" />
-                        <div class="mb-3">
-                            <label class="form-label"><i class="fas fa-user-md me-1"></i>Bác sĩ</label>
-                            <input type="text" class="form-control" value="@(doctor?.HoTen ?? "")" readonly />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label"><i class="fas fa-user me-1"></i>Họ và tên bệnh nhân</label>
-                            <input type="text" class="form-control" value="@patientName" readonly />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label"><i class="fas fa-phone me-1"></i>Số điện thoại</label>
-                            <input type="tel" class="form-control" value="@patientPhone" readonly />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label"><i class="fas fa-envelope me-1"></i>Email</label>
-                            <input type="email" class="form-control" value="@patientEmail" readonly />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">
-                                <i class="fas fa-calendar-alt me-1"></i>Ngày hẹn
-                            </label>
-                            <select class="form-select" id="selectedDate" name="selectedDate" required>
-                                <option value="">Chọn ngày</option>
-                            </select>
-                            <div class="invalid-feedback">Vui lòng chọn ngày hẹn</div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">
-                                <i class="fas fa-clock me-1"></i>Giờ hẹn
-                            </label>
-                            <div id="timeSlots" class="mb-2"></div>
-                            <input type="hidden" id="selectedTime" name="selectedTime" required />
-                            <div class="invalid-feedback">Vui lòng chọn giờ hẹn</div>
+        @* Cột 2: Form Đặt Lịch & Đánh giá *@
+        <div class="col-lg-6 col-md-7">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-clipboard-list me-1"></i>Điền Thông Tin Lịch Hẹn</h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (!isLoggedIn)
+                    {
+                        <div class="alert alert-danger text-center" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            **Chức năng đặt lịch chỉ dành cho bệnh nhân đã đăng nhập.** Vui lòng <a href="@Url.Action("Login", "User")" class="alert-link fw-bold">Đăng nhập</a> hoặc <a href="@Url.Action("Register", "User")" class="alert-link fw-bold">Đăng ký</a>.
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label"><i class="fas fa-notes-medical me-1"></i>Triệu chứng</label>
-                            <textarea class="form-control" name="symptoms" rows="3" placeholder="Mô tả triệu chứng của bạn" required></textarea>
+                    }
+                    else if (doctor == null)
+                    {
+                        <div class="alert alert-danger text-center" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            **Lỗi:** Không tìm thấy thông tin bác sĩ đã chọn. Vui lòng quay lại và chọn lại.
                         </div>
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-calendar-check me-1"></i>Đặt lịch</button>
-                            <a href="javascript:history.back()" class="btn btn-outline-primary"><i class="fas fa-arrow-left me-1"></i>Quay lại</a>
-                        </div>
-                    </form>
-                }
+                    }
+                    else
+                    {
+                        @* FORM ĐẶT LỊCH *@
+                        <form asp-action="Book" method="post" id="appointmentForm" autocomplete="off" class="needs-validation" novalidate>
+                            <input type="hidden" name="selectedDoctorId" value="@selectedDoctorId" />
+                            <div class="row mb-3">
+                                <div class="col-md-6 mb-3 mb-md-0">
+                                    <label class="form-label"><i class="fas fa-user me-1"></i>Họ và tên bệnh nhân</label>
+                                    <input type="text" class="form-control" value="@patientName" readonly />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="fas fa-phone me-1"></i>Số điện thoại</label>
+                                    <input type="tel" class="form-control" value="@patientPhone" readonly />
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label"><i class="fas fa-envelope me-1"></i>Email</label>
+                                <input type="email" class="form-control" value="@patientEmail" readonly />
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3 mb-md-0">
+                                    <label for="selectedDate" class="form-label fw-bold"><i class="fas fa-calendar-alt me-1"></i>Chọn Ngày Hẹn</label>
+                                    <select class="form-select" id="selectedDate" name="selectedDate" required aria-label="Chọn ngày hẹn">
+                                        <option value="">-- Đang tải ngày... --</option>
+                                    </select>
+                                    <div class="invalid-feedback">Vui lòng chọn ngày hẹn.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold"><i class="fas fa-user-md me-1"></i>Bác sĩ phụ trách</label>
+                                    <input type="text" class="form-control" value="@(doctor?.HoTen ?? "")" readonly />
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-clock me-1"></i>Chọn Khung Giờ Hẹn
+                                </label>
+                                <div id="timeSlots" class="border p-3 rounded bg-light">
+                                    <div class="text-muted">Vui lòng chọn ngày để xem các khung giờ trống.</div>
+                                </div>
+                                <input type="hidden" id="selectedTime" name="selectedTime" required />
+                                <div class="invalid-feedback d-block text-danger mt-1" id="timeErrorMsg" style="display:none;">Vui lòng chọn giờ hẹn.</div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="defaultSymptomSelect" class="form-label fw-bold"><i class="fas fa-list-ul me-1"></i>Chọn triệu chứng (nếu có)</label>
+                                <select class="form-select" id="defaultSymptomSelect">
+                                    <option value="">-- Chọn từ danh sách --</option>
+                                    <option value="Đau đầu, chóng mặt.">Đau đầu, chóng mặt</option>
+                                    <option value="Ho, sốt, sổ mũi.">Ho, sốt, sổ mũi</option>
+                                    <option value="Đau bụng, khó tiêu.">Đau bụng, khó tiêu</option>
+                                    <option value="Đau mỏi cơ khớp.">Đau mỏi cơ khớp</option>
+                                    <option value="Khám sức khỏe tổng quát.">Khám sức khỏe tổng quát</option>
+                                    <option value="Tái khám theo lịch hẹn.">Tái khám theo lịch hẹn</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label for="symptoms" class="form-label fw-bold"><i class="fas fa-notes-medical me-1"></i>Triệu chứng bệnh (Mô tả chi tiết)</label>
+                                <textarea class="form-control" id="symptoms" name="symptoms" rows="3" placeholder="Mô tả ngắn gọn về các triệu chứng (bắt buộc)" required></textarea>
+                                <div class="invalid-feedback">Vui lòng mô tả triệu chứng.</div>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-success btn-lg"><i class="fas fa-check-circle me-2"></i>Xác Nhận Đặt Lịch</button>
+                                <a href="javascript:history.back()" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-2"></i>Quay lại trang trước</a>
+                            </div>
+                        </form>
+                    }
+                </div>
             </div>
+
+            @* PHẦN MỚI: FORM ĐÁNH GIÁ BÁC SĨ *@
+            @if (isLoggedIn && doctor != null)
+            {
+                <div class="card shadow-lg border-0 mt-4">
+                    <div class="card-header bg-warning text-dark py-3">
+                        <h5 class="mb-0"><i class="fas fa-star me-1"></i>Đánh Giá Bác Sĩ @doctor.HoTen</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        @if (!string.IsNullOrEmpty(reviewMessage))
+                        {
+                            <div class="alert alert-@(reviewMessage.Contains("Cảm ơn") ? "success" : "danger") alert-dismissible fade show" role="alert">
+                                @reviewMessage
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+
+                        <form asp-action="SubmitReview" method="post" class="needs-validation" novalidate>
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="doctorId" value="@selectedDoctorId" />
+                            <input type="hidden" name="diemDanhGia" id="reviewRating" value="0" required />
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Điểm đánh giá:</label>
+                                <div id="starRating" class="d-flex gap-2">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <i class="far fa-star rating-star-btn" data-rating="@i"></i>
+                                    }
+                                </div>
+                                <div class="invalid-feedback d-block text-danger mt-1" id="ratingErrorMsg" style="display:none;">Vui lòng chọn điểm đánh giá (1-5 sao).</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="nhanXet" class="form-label fw-bold">Nhận xét chi tiết:</label>
+                                @* Thêm ID cho TinyMCE *@
+                                <textarea class="form-control" id="nhanXet" name="nhanXet" rows="5" placeholder="Chia sẻ trải nghiệm của bạn (bắt buộc)" required></textarea>
+                                <div class="invalid-feedback">Vui lòng nhập nội dung nhận xét.</div>
+                            </div>
+
+                            <button type="submit" class="btn btn-warning mt-3"><i class="fas fa-paper-plane me-2"></i>Gửi Đánh Giá</button>
+                        </form>
+                    </div>
+                </div>
+            }
+            @* KẾT THÚC PHẦN ĐÁNH GIÁ *@
+
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @* Thêm TinyMCE CDN *@
+    <script src="https://cdn.tiny.cloud/1/rkfxe461o9rhm9y5pasyuukghsi6ftjy9ohpay9bhwzulh89/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+
+
     <script>
         $(function () {
             var doctorId = '@selectedDoctorId';
+            var $selectedDate = $('#selectedDate');
+            var $timeSlots = $('#timeSlots');
+            var $selectedTime = $('#selectedTime');
+            var $timeErrorMsg = $('#timeErrorMsg');
+            var $defaultSymptomSelect = $('#defaultSymptomSelect');
+            var $symptomsTextArea = $('#symptoms');
 
-            // Format date để hiển thị theo định dạng Việt Nam
-            function formatDate(date) {
-                return new Date(date).toLocaleDateString('vi-VN', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
-                });
-            }
+            // --- Hàm tiện ích ---
 
-            // Format time để hiển thị đẹp hơn
-            function formatTime(time) {
-                return time.substring(0, 5); // Chỉ lấy HH:mm
+            function formatDateForDisplay(dateString) {
+                try {
+                    var parts = dateString.split('-');
+                    var date = new Date(parts[0], parts[1] - 1, parts[2]);
+                    return date.toLocaleDateString('vi-VN', {
+                        weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit'
+                    });
+                } catch (e) {
+                    return dateString;
+                }
             }
 
             // Load danh sách ngày có lịch làm việc
-            if (doctorId) {
+            function loadAvailableDates() {
+                if (!doctorId || doctorId == 0) {
+                    $selectedDate.empty().append('<option value="">Vui lòng chọn bác sĩ trước</option>').prop('disabled', true);
+                    return;
+                }
+
+                $selectedDate.empty().append('<option value="">-- Đang tải ngày... --</option>').prop('disabled', true);
+
                 $.get('@Url.Action("GetAvailableDates", "Appointment")', { doctorId: doctorId })
                     .done(function (data) {
-                        $('#selectedDate').empty().append('<option value="">Chọn ngày</option>');
+                        $selectedDate.empty().append('<option value="">Chọn ngày</option>').prop('disabled', false);
                         if (data && data.length > 0) {
                             data.forEach(function (date) {
-                                // Lấy phần ngày trước ký tự T (nếu có), không dùng new Date để tránh lệch múi giờ
                                 var val = date.split('T')[0];
-                                $('#selectedDate').append(
-                                    `<option value="${val}">${formatDate(date)}</option>`
+                                $selectedDate.append(
+                                    `<option value="${val}">${formatDateForDisplay(val)}</option>`
                                 );
                             });
                         } else {
-                            $('#selectedDate').append('<option value="">Không có lịch làm việc</option>');
+                            $selectedDate.empty().append('<option value="">Không có lịch làm việc trong tương lai gần</option>').prop('disabled', true);
                         }
                     })
                     .fail(function (error) {
                         console.error("Error loading dates:", error);
-                        $('#selectedDate').append('<option value="">Lỗi tải ngày</option>');
+                        $selectedDate.empty().append('<option value="">Lỗi tải ngày</option>').prop('disabled', true);
                     });
             }
 
             // Xử lý khi chọn ngày
-            $('#selectedDate').change(function () {
+            $selectedDate.change(function () {
                 var date = $(this).val();
-                var $timeSlots = $('#timeSlots');
-                $('#selectedTime').val('');
+                $selectedTime.val(''); // Reset giờ
                 $timeSlots.empty();
-                $('#noTimeMsg').hide();
-                if (!date) return;
-                if (doctorId && date) {
-                    $timeSlots.html('<span>Đang tải...</span>');
-                    $.get('@Url.Action("GetAvailableTimes", "Appointment")', {
-                        doctorId: doctorId,
-                        date: date
-                    })
+                $timeErrorMsg.hide();
+
+                if (!date) {
+                    $timeSlots.html('<div class="text-muted">Vui lòng chọn ngày để xem các khung giờ trống.</div>');
+                    return;
+                }
+
+                $timeSlots.html('<div class="text-center text-primary"><i class="fas fa-spinner fa-spin me-2"></i>Đang tải khung giờ...</div>');
+
+                $.get('@Url.Action("GetAvailableTimes", "Appointment")', {
+                    doctorId: doctorId,
+                    date: date
+                })
                     .done(function (data) {
                         $timeSlots.empty();
                         var times = Array.isArray(data) ? data : (data.times || []);
+
                         if (!times || times.length === 0) {
-                            $timeSlots.html('<span class="text-danger">Không có khung giờ trống</span>');
-                            if (data.debug) {
-                                $timeSlots.append(`<div class="text-muted small">${data.debug}</div>`);
-                            }
-                            $('#noTimeMsg').show();
+                            $timeSlots.html('<span class="text-danger fw-bold"><i class="fas fa-exclamation-circle me-1"></i>Không có khung giờ trống vào ngày này.</span>');
                         } else {
                             times.forEach(function (time) {
                                 var btn = $('<button type="button" class="btn btn-outline-primary m-1 time-slot-btn"></button>');
-                                btn.text(time.substring(0,5));
+                                btn.text(time.substring(0, 5)); // Chỉ hiển thị HH:mm
                                 btn.data('value', time);
-                                btn.on('click', function() {
+
+                                btn.on('click', function () {
+                                    // Logic chọn giờ
                                     $('.time-slot-btn').removeClass('active');
                                     $(this).addClass('active');
-                                    $('#selectedTime').val($(this).data('value'));
+                                    $selectedTime.val($(this).data('value'));
+                                    $timeErrorMsg.hide();
                                 });
                                 $timeSlots.append(btn);
                             });
                         }
                     })
                     .fail(function (error) {
-                        $timeSlots.html('<span class="text-danger">Lỗi tải khung giờ</span>');
+                        console.error("Error loading times:", error);
+                        $timeSlots.html('<span class="text-danger">Lỗi tải khung giờ. Vui lòng thử lại.</span>');
                     });
+            });
+
+            // MỚI: Xử lý khi chọn/nhập triệu chứng
+            $('#defaultSymptomSelect').change(function () {
+                var selectedSymptomText = $(this).val();
+                $symptomsTextArea.val(selectedSymptomText);
+                var form = document.getElementById('appointmentForm');
+                if (form && form.classList.contains('was-validated')) {
+                    $symptomsTextArea.get(0).checkValidity();
+                }
+                $symptomsTextArea.focus();
+            });
+
+            $symptomsTextArea.on('input', function () {
+                if ($('#defaultSymptomSelect').val() !== "") {
+                    $('#defaultSymptomSelect').val('');
                 }
             });
 
-            // Validate form trước khi submit
-            $('#appointmentForm').submit(function(e) {
-                var date = $('#selectedDate').val();
-                var time = $('#selectedTime').val();
-                if (!date || !time) {
-                    e.preventDefault();
-                    alert('Vui lòng chọn ngày và giờ hẹn');
-                    return false;
-                }
-                if (!$('textarea[name="symptoms"]').val().trim()) {
-                    e.preventDefault();
-                    alert('Vui lòng nhập triệu chứng');
-                    return false;
-                }
+
+            // --- LOGIC ĐÁNH GIÁ (MỚI) ---
+            var $reviewRating = $('#reviewRating');
+            var $ratingErrorMsg = $('#ratingErrorMsg');
+            var selectedRating = 0;
+
+            // Khởi tạo TinyMCE cho trường nhận xét
+            tinymce.init({
+                selector: '#nhanXet', // ID của textarea nhận xét
+                plugins: 'autolink lists link charmap print preview',
+                toolbar_mode: 'floating',
+                toolbar: 'undo redo | bold italic | bullist numlist | link',
+                menubar: false,
+                height: 150
             });
+
+
+            $('#starRating .rating-star-btn').on('click', function() {
+                selectedRating = parseInt($(this).data('rating'));
+                $reviewRating.val(selectedRating);
+                updateStars(selectedRating);
+                $ratingErrorMsg.hide();
+            });
+
+            function updateStars(rating) {
+                $('#starRating .rating-star-btn').each(function() {
+                    var starValue = parseInt($(this).data('rating'));
+                    if (starValue <= rating) {
+                        $(this).removeClass('far').addClass('fas');
+                    } else {
+                        $(this).removeClass('fas').addClass('far');
+                    }
+                });
+            }
+
+            // Gán logic validation cho form đánh giá
+            $('form[asp-action="SubmitReview"]').on('submit', function (event) {
+                // Đảm bảo lấy nội dung từ TinyMCE trước khi submit và kiểm tra
+                var content = tinymce.get('nhanXet').getContent();
+                $('#nhanXet').val(content);
+
+                if (parseInt($reviewRating.val()) === 0) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    $ratingErrorMsg.show();
+                } else {
+                    $ratingErrorMsg.hide();
+                }
+
+                // Kiểm tra validation của Bootstrap
+                if (!this.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                $(this).addClass('was-validated');
+            });
+            // --- KẾT THÚC LOGIC ĐÁNH GIÁ ---
+
+
+            // --- Khởi tạo ---
+            loadAvailableDates();
+
+            // --- Form Validation Đặt Lịch (Bootstrap 5) ---
+            var form = document.getElementById('appointmentForm');
+            if (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity() || !$selectedTime.val()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        if (!$selectedTime.val()) {
+                            $timeErrorMsg.show();
+                        } else {
+                            $timeErrorMsg.hide();
+                        }
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            }
         });
     </script>
 }

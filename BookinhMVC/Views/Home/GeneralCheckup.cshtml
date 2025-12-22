@@ -1,382 +1,231 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-@{
+﻿@{
     ViewData["Title"] = "Khám Tổng Quát - Four Rock";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@* Phần Header Blog đã được thiết kế lại để đồng bộ với trang Blog Y Tế 
+    Sử dụng background image và hiệu ứng AOS
+*@
+<section class="blog-header fade-in" data-aos="fade-down" style="background-image: url('/images/background.png'); background-size: cover; background-position: center; position: relative; min-height: 300px; display: flex; flex-direction: column; border-radius: 1.5rem; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0"></div> @* Overlay tối màu *@
+    <div class="container position-relative z-2 flex-grow-1 d-flex align-items-center justify-content-center text-center">
+        <div>
+            <h1 class="display-4 fw-bold text-dark mb-2">
+                <i class="fas fa-file-medical me-3"></i>Khám Tổng Quát
+            </h1>
+            <p class="lead text-dark-50">Phát hiện sớm, chăm sóc sức khỏe toàn diện</p>
+        </div>
+    </div>
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <link rel="stylesheet" href="~/css/style.css" />
-    <style>
-        :root {
-            --primary-color: #2563eb;
-            --secondary-color: #1e40af;
-            --accent-color: #0ea5e9;
-            --success-color: #059669;
-            --warning-color: #d97706;
-            --danger-color: #dc2626;
-            --light-gray: #f8fafc;
-            --medium-gray: #e2e8f0;
-            --dark-gray: #475569;
-            --text-dark: #1e293b;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        }
+    <div class="breadcrumb-section position-absolute bottom-0 w-100 py-3 z-3" ">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0 justify-content-center">
+                    <li class="breadcrumb-item"><a href="/" class="text-dark text-decoration-none"><i class="fas fa-home me-1"></i>Trang chủ</a></li>
+                    <li class="breadcrumb-item active text-dark" aria-current="page"><i class="fas fa-file-medical me-1"></i>Khám Tổng Quát</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</section>
 
-        body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
+<section id="service-intro" class="py-5 bg-white">
+    <div class="container">
+        <div class="section-header text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 fw-bold mb-2">
+                <i class="fas fa-info-circle text-primary me-2"></i>Giới thiệu dịch vụ
+            </h2>
+            <div class="header-line mx-auto"></div>
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-4 mb-md-0" data-aos="fade-right">
+                <img src="../images/khamtongquat.png" alt="Khám Tổng Quát" class="img-fluid rounded-4 shadow-lg" />
+            </div>
+            <div class="col-md-6" data-aos="fade-left">
+                <h3 class="fw-bold text-primary mb-3">Tổng Quan Dịch Vụ Khám Tổng Quát</h3>
+                <p class="text-secondary fs-5">Khám tổng quát là bước đầu tiên nhằm đánh giá sức khỏe của bạn. Tại Four Rock, chúng tôi sử dụng trang thiết bị hiện đại kết hợp với các phương pháp kiểm tra chuẩn mực để:</p>
+                <ul class="list-unstyled text-secondary fs-6">
+                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Đo huyết áp, BMI, và các chỉ số cơ bản khác;</li>
+                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Xét nghiệm máu và nước tiểu để phát hiện sớm bệnh lý;</li>
+                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Đánh giá chức năng tim mạch và phổi.</li>
+                </ul>
+                <p class="text-secondary">Kết quả được tự động tổng hợp và trình bày một cách trực quan, giúp bác sĩ và bạn có thể lập kế hoạch chăm sóc sức khỏe tốt nhất.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="process" class="py-5 bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 fw-bold mb-2">
+                <i class="fas fa-steps text-primary me-2"></i>Quy trình khám tổng quát
+            </h2>
+            <div class="header-line mx-auto"></div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card h-100 shadow-sm border-0 rounded-4 process-card">
+                    <div class="card-body p-4 text-center">
+                        <i class="fas fa-edit fa-5x mb-3 text-primary"></i>
+                        <h4 class="card-title text-primary">Bước 1: Đăng ký</h4>
+                        <p class="card-text text-secondary">Đăng ký dịch vụ trực tuyến hoặc tại phòng khám một cách nhanh chóng.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card h-100 shadow-sm border-0 rounded-4 process-card">
+                    <div class="card-body p-4 text-center">
+                        <i class="fas fa-stethoscope fa-5x mb-3 text-primary"></i>
+                        <h4 class="card-title text-primary">Bước 2: Khám & Xét nghiệm</h4>
+                        <p class="card-text text-secondary">Khám lâm sàng và tiến hành các xét nghiệm chuyên sâu cần thiết theo chuẩn y khoa.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card h-100 shadow-sm border-0 rounded-4 process-card">
+                    <div class="card-body p-4 text-center">
+                        <i class="fas fa-file-alt fa-5x mb-3 text-primary"></i>
+                        <h4 class="card-title text-primary">Bước 3: Báo cáo & Tư vấn</h4>
+                        <p class="card-text text-secondary">Nhận kết quả chi tiết và nhận tư vấn, hướng dẫn chăm sóc sức khỏe từ bác sĩ chuyên khoa.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="benefits" class="py-5 bg-white">
+    <div class="container">
+        <div class="section-header text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 fw-bold mb-2">
+                <i class="fas fa-heart text-primary me-2"></i>Lợi ích khi khám tổng quát
+            </h2>
+            <div class="header-line mx-auto"></div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8" data-aos="zoom-in">
+                <ul class="list-group list-group-flush shadow-lg rounded-4 overflow-hidden">
+                    <li class="list-group-item d-flex align-items-center py-3 px-4 bg-light fw-medium"><i class="fas fa-shield-alt text-primary me-3 fs-5"></i>Phát hiện sớm bệnh lý tiềm ẩn, tăng khả năng điều trị thành công.</li>
+                    <li class="list-group-item d-flex align-items-center py-3 px-4"><i class="fas fa-chart-line text-primary me-3 fs-5"></i>Theo dõi sức khỏe định kỳ, đánh giá hiệu quả lối sống hiện tại.</li>
+                    <li class="list-group-item d-flex align-items-center py-3 px-4 bg-light fw-medium"><i class="fas fa-user-friends text-primary me-3 fs-5"></i>Tư vấn và thiết lập kế hoạch chăm sóc sức khỏe cá nhân hóa.</li>
+                    <li class="list-group-item d-flex align-items-center py-3 px-4"><i class="fas fa-check-double text-primary me-3 fs-5"></i>Giúp bạn yên tâm hoàn toàn về tình trạng sức khỏe của bản thân và gia đình.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="cta" class="py-5 text-white text-center transition-all" data-aos="zoom-in" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);">
+    <div class="container">
+        <h2 class="fw-bold mb-3 text-white"><i class="fas fa-calendar-check me-2"></i>Đặt lịch khám ngay hôm nay!</h2>
+        <p class="lead mb-4 text-white-50">Đừng trì hoãn việc chăm sóc sức khỏe của bạn. Đặt lịch khám tổng quát chuyên nghiệp từ Four Rock ngay bây giờ.</p>
+        <a asp-controller="User" asp-action="Register" class="btn btn-warning btn-lg fw-bold text-dark rounded-pill shadow-lg transition-all">
+            <i class="fas fa-user-plus me-2"></i>Đăng ký và Đặt lịch
+        </a>
+    </div>
+</section>
+
+<style>
+    /* Định nghĩa lại các biến màu theo trang blog */
+    :root {
+        --primary-color: #0d6efd; /* Blue */
+        --secondary-color: #6c757d; /* Gray */
+        --accent-color: #0dcaf0; /* Cyan/Light Blue */
+        --text-dark: #212529;
+        --light-gray: #f8f9fa;
+    }
+
+    /* Style cho Header/Section */
+    .section-header {
+        margin-bottom: 3rem;
+    }
+
+        .section-header h2 {
             color: var(--text-dark);
-            background-color: #fff;
-        }
-
-        .hero-section {
-            position: relative;
-            height: 60vh;
-            overflow: hidden;
-            background: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)), url('~/images/general-checkup-hero.jpg') no-repeat center center;
-            background-size: cover;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-            .hero-section h1 {
-                font-size: 3.5rem;
-                font-weight: 700;
-                margin-bottom: 1rem;
-                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            }
-
-            .hero-section p {
-                font-size: 1.3rem;
-                font-weight: 400;
-                text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-                opacity: 0.95;
-            }
-
-        #service-intro {
-            padding: 5rem 0;
-            background: white;
-        }
-
-            #service-intro h2, #process h2, #benefits h2, #cta h2 {
-                font-size: 2.5rem;
-                font-weight: 700;
-                color: var(--text-dark);
-                margin-bottom: 3rem;
-                position: relative;
-                text-align: center;
-            }
-
-                #service-intro h2::after, #process h2::after, #benefits h2::after, #cta h2::after {
-                    content: '';
-                    position: absolute;
-                    bottom: -10px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    width: 60px;
-                    height: 4px;
-                    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                    border-radius: 2px;
-                }
-
-            #service-intro img {
-                border-radius: 16px;
-                box-shadow: var(--shadow);
-                max-width: 100%;
-            }
-
-        #process {
-            padding: 5rem 0;
-            background: var(--light-gray);
-        }
-
-            #process .card {
-                border: none;
-                border-radius: 16px;
-                overflow: hidden;
-                transition: all 0.4s ease;
-                background: white;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-                height: 100%;
-            }
-
-                #process .card:hover {
-                    transform: translateY(-8px);
-                    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-                }
-
-            #process .card-body {
-                padding: 2rem;
-                text-align: center;
-            }
-
-                #process .card-body i {
-                    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    background-clip: text;
-                    margin-bottom: 1.5rem;
-                }
-
-            #process .card-title {
-                font-size: 1.4rem;
-                font-weight: 600;
-                margin-bottom: 1rem;
-                color: var(--text-dark);
-            }
-
-        #benefits {
-            padding: 5rem 0;
-            background: white;
-        }
-
-            #benefits .list-group-item {
-                border: none;
-                padding: 1rem 1.5rem;
-                font-size: 1.1rem;
-                color: var(--dark-gray);
-                background: var(--light-gray);
-                border-radius: 8px;
-                margin-bottom: 0.5rem;
-                transition: all 0.3s ease;
-            }
-
-                #benefits .list-group-item:hover {
-                    background: var(--medium-gray);
-                    transform: translateX(5px);
-                }
-
-        #cta {
-            padding: 5rem 0;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            text-align: center;
-        }
-
-            #cta .btn {
-                font-size: 1rem;
-                padding: 0.75rem 2rem;
-                border-radius: 8px;
-                font-weight: 500;
-            }
-
-        footer {
-            background: linear-gradient(135deg, var(--text-dark), #334155);
-            padding: 2rem 0;
-        }
-
-            footer p {
-                margin: 0;
-                font-size: 1rem;
-                opacity: 0.9;
-            }
-            .hero-section h1
-
-        {
+            font-weight: 700;
             font-size: 2.5rem;
         }
 
-        .hero-section p {
-            font-size: 1.1rem;
+    .header-line {
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        border-radius: 2px;
+        margin-top: 10px;
+    }
+
+    /* Style cho Hero Section (Giống Blog) */
+    .blog-header {
+        position: relative;
+        /* margin-top và border-radius đã được đặt inline để hoạt động với Layout */
+        min-height: 350px !important;
+    }
+
+    .hero-section h1 {
+        font-size: 3rem;
+    }
+
+    .hero-section p {
+        font-size: 1.25rem;
+    }
+
+
+    /* Style cho Process Card */
+    .process-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid var(--light-gray) !important;
+    }
+
+        .process-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(13, 110, 253, 0.15) !important;
         }
 
-        .hero-section {
-            height: 50vh;
+        .process-card i {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        #service-intro h2, #process h2, #benefits h2, #cta h2 {
+    /* Style cho Benefits List */
+    #benefits .list-group-item {
+        background: none;
+        border-bottom: 1px solid #e9ecef;
+        transition: background-color 0.2s;
+    }
+
+        #benefits .list-group-item:hover {
+            background-color: var(--light-gray);
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .blog-header {
+            min-height: 250px !important;
+        }
+
+        .section-header h2 {
             font-size: 2rem;
         }
 
+        .hero-section h1 {
+            font-size: 2.5rem;
         }
+    }
+</style>
 
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.6s ease;
-        }
-
-            .fade-in.visible {
-                opacity: 1;
-                transform: translateY(0);
-            }
-    </style>
-</head>
-<body>
-    <!-- Header Navigation -->
-    <!-- Hero Section -->
-    <section class="hero-section fade-in">
-        <div class="container">
-            <h1>Khám Tổng Quát</h1>
-            <p>Phát hiện sớm, chăm sóc sức khỏe toàn diện</p>
-        </div>
-    </section>
-
-    <!-- Service Introduction Section -->
-    <section id="service-intro" class="fade-in">
-        <div class="container">
-            <h2>Giới thiệu dịch vụ</h2>
-            <div class="row align-items-center">
-                <div class="col-md-6 mb-4 mb-md-0">
-                    <img src="~/images/khamtongquat.png" alt="Khám Tổng Quát" class="img-fluid" />
-                </div>
-                <div class="col-md-6">
-                    <h3>Tổng Quan Dịch Vụ Khám Tổng Quát</h3>
-                    <p>Khám tổng quát là bước đầu tiên nhằm đánh giá sức khỏe của bạn. Tại Four Rock, chúng tôi sử dụng trang thiết bị hiện đại kết hợp với các phương pháp kiểm tra chuẩn mực để:</p>
-                    <ul>
-                        <li>Đo huyết áp, BMI, và các chỉ số cơ bản khác;</li>
-                        <li>Xét nghiệm máu và nước tiểu để phát hiện sớm bệnh lý;</li>
-                        <li>Đánh giá chức năng tim mạch và phổi.</li>
-                    </ul>
-                    <p>Kết quả được tự động tổng hợp và trình bày một cách trực quan, giúp bác sĩ và bạn có thể lập kế hoạch chăm sóc sức khỏe tốt nhất.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Process Section -->
-    <section id="process" class="fade-in">
-        <div class="container">
-            <h2>Quy trình khám tổng quát</h2>
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <i class="fas fa-edit fa-4x mb-3"></i>
-                            <h4 class="card-title">Bước 1: Đăng ký</h4>
-                            <p class="card-text">Đăng ký dịch vụ trực tuyến hoặc tại phòng khám.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <i class="fas fa-stethoscope fa-4x mb-3"></i>
-                            <h4 class="card-title">Bước 2: Khám & Xét nghiệm</h4>
-                            <p class="card-text">Khám và tiến hành các xét nghiệm cần thiết theo chuẩn y khoa.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <i class="fas fa-file-alt fa-4x mb-3"></i>
-                            <h4 class="card-title">Bước 3: Báo cáo & Tư vấn</h4>
-                            <p class="card-text">Nhận kết quả và nhận tư vấn chi tiết từ bác sĩ.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Benefits Section -->
-    <section id="benefits" class="fade-in">
-        <div class="container">
-            <h2>Lợi ích khi khám tổng quát</h2>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">Phát hiện sớm bệnh lý tiềm ẩn.</li>
-                <li class="list-group-item">Theo dõi sức khỏe định kỳ một cách hiệu quả.</li>
-                <li class="list-group-item">Tư vấn chăm sóc sức khỏe cá nhân hóa.</li>
-                <li class="list-group-item">Giúp bạn yên tâm về tình trạng sức khỏe.</li>
-            </ul>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section id="cta" class="fade-in">
-        <div class="container">
-            <h2>Đăng ký khám ngay hôm nay!</h2>
-            <p>Trải nghiệm khám tổng quát chuyên nghiệp từ Four Rock.</p>
-            <a asp-controller="User" asp-action="Register" class="btn btn-light btn-lg">
-                <i class="fas fa-user-plus mr-2"></i>Đăng ký ngay
-            </a>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="text-white text-center">
-        <div class="container">
-            <div class="row py-4">
-                <div class="col-md-4">
-                    <h5><i class="fas fa-hospital-alt mr-2"></i>Four Rock</h5>
-                    <p>Chăm sóc sức khỏe hàng đầu với công nghệ hiện đại và đội ngũ y bác sĩ chuyên nghiệp.</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Liên kết nhanh</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="~/#services" class="text-white-50">Dịch vụ</a></li>
-                        <li><a href="~/#about" class="text-white-50">Giới thiệu</a></li>
-                        <li><a href="~/#news" class="text-white-50">Tin tức</a></li>
-                        <li><a href="~/#contact" class="text-white-50">Liên hệ</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>Theo dõi chúng tôi</h5>
-                    <div class="social-links">
-                        <a href="#" class="text-white-50 mr-3"><i class="fab fa-facebook fa-2x"></i></a>
-                        <a href="#" class="text-white-50 mr-3"><i class="fab fa-youtube fa-2x"></i></a>
-                        <a href="#" class="text-white-50 mr-3"><i class="fab fa-instagram fa-2x"></i></a>
-                        <a href="#" class="text-white-50"><i class="fab fa-twitter fa-2x"></i></a>
-                    </div>
-                </div>
-            </div>
-            <hr class="bg-white-50" />
-            <p>© 2025 Four Rock Hospital. All Rights Reserved. | Thiết kế bởi Four Rock Team</p>
-        </div>
-    </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
-        // Scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-        // Initialize tooltips
-        $(function() {
-            $('[data-toggle="tooltip"]').tooltip();
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 50
         });
     </script>
-</body>
-</html>
+}

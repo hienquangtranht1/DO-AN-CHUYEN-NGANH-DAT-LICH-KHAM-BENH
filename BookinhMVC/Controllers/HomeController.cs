@@ -3,6 +3,10 @@ using System.Linq;
 using BookinhMVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace BookinhMVC.Controllers
 {
@@ -11,124 +15,177 @@ namespace BookinhMVC.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly BookingContext _context;
 
+        // Cấu hình giới hạn và phí
+        private const int QA_FREE_LIMIT = 3;
+        private const long QA_FEE_AMOUNT = 10000; // 
+
         public HomeController(ILogger<HomeController> logger, BookingContext context)
         {
             _logger = logger;
             _context = context;
         }
 
-        // Trang chủ: truyền danh sách bác sĩ cho Index.cshtml
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var doctors = _context.BacSis.Include(b => b.Khoa).ToList();
+            // Tải Bác sĩ nổi bật
+            var doctors = await _context.BacSis
+                .Include(b => b.Khoa)
+                .OrderByDescending(b => b.MaBacSi)
+                .Take(8)
+                .ToListAsync();
             ViewBag.Doctors = doctors;
+
+            // Tải Đánh giá
+            var reviews = await _context.DanhGias
+                .Include(r => r.BenhNhan)
+                .Include(r => r.BacSi)
+                .OrderByDescending(r => r.NgayDanhGia)
+                .Take(3)
+                .ToListAsync();
+            ViewBag.Reviews = reviews;
+
+            // Tải Blog
+            var latestArticles = await _context.Articles
+                .Where(a => a.IsPublished)
+                .Include(a => a.Category)
+                .Include(a => a.Author)
+                .OrderByDescending(a => a.PublishDate)
+                .Take(3)
+                .ToListAsync();
+            ViewBag.Articles = latestArticles;
+
             return View();
         }
 
-        // Trang giới thiệu
-        public IActionResult HospitalAbout()
+        // Action xem chi tiết Blog
+        public async Task<IActionResult> ArticleDetail(string slug)
         {
-            return View();
+            if (string.IsNullOrEmpty(slug)) return RedirectToAction("HospitalBlog");
+
+            var article = await _context.Articles
+                .Include(a => a.Category)
+                .Include(a => a.Author)
+                .FirstOrDefaultAsync(a => a.Slug == slug && a.IsPublished);
+
+            if (article == null) return RedirectToAction("NotFound", "Home");
+
+            article.ViewsCount++;
+            _context.Update(article);
+            await _context.SaveChangesAsync();
+
+            return View(article);
         }
 
-        // Trang blog
-        public IActionResult HospitalBlog()
+        public async Task<IActionResult> HospitalBlog()
         {
-            return View();
+            var allArticles = await _context.Articles
+                .Where(a => a.IsPublished)
+                .Include(a => a.Category)
+                .Include(a => a.Author)
+                .OrderByDescending(a => a.PublishDate)
+                .ToListAsync();
+            return View(allArticles);
         }
 
-        // Trang xét nghiệm
-        public IActionResult Testing()
+        public async Task<IActionResult> Reviews()
         {
-            return View();
+            var allReviews = await _context.DanhGias
+                .Include(r => r.BenhNhan)
+                .Include(r => r.BacSi)
+                .OrderByDescending(r => r.NgayDanhGia)
+                .ToListAsync();
+            return View(allReviews);
         }
 
-        // Trang khám tổng quát
-        public IActionResult GeneralCheckup()
-        {
-            return View();
-        }
-
-        // Trang tim mạch
-        public IActionResult Cardiology()
-        {
-            return View();
-        }
-
-        // Trang liên hệ
-        public IActionResult Contact()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        // Trang danh sách bác sĩ với tìm kiếm
-        public IActionResult Doctors(string name, int departmentId = 0)
-        {
-            var doctors = _context.BacSis.Include(b => b.Khoa).AsQueryable();
-
-            if (!string.IsNullOrEmpty(name))
-            {
-                doctors = doctors.Where(d => d.HoTen.Contains(name));
-            }
-            if (departmentId > 0)
-            {
-                doctors = doctors.Where(d => d.MaKhoa == departmentId);
-            }
-
-            var departments = _context.Khoas.ToList();
-            ViewBag.Departments = departments;
-            ViewBag.SearchName = name;
-            ViewBag.SelectedDepartment = departmentId;
-
-            return View(doctors.ToList());
-        }
-
-        // Trang hỏi đáp với bác sĩ (bệnh nhân đặt câu hỏi, xem câu trả lời)
+        // ==========================================
+        // ACTION QA (GET) - ĐÃ CẬP NHẬT LẤY SỐ DƯ
+        // ==========================================
         [HttpGet]
-        public IActionResult QA()
+        public async Task<IActionResult> QA()
         {
-            var doctors = _context.BacSis.Include(b => b.Khoa).ToList();
-            var answeredQuestions = _context.Questions
-                .Include(q => q.User)
-                .Include(q => q.Doctor)
-                .Where(q => !string.IsNullOrEmpty(q.Answer))
-                .OrderByDescending(q => q.AnsweredAt)
-                .ToList();
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            decimal currentBalance = 0;
+            bool hasPaid = false; // Biến kiểm tra: Đã trả tiền cho lượt này chưa?
+
+            if (userId.HasValue)
+            {
+                // 1. Lấy số dư ví hiện tại
+                var wallet = await _context.TaiKhoanBenhNhan.FirstOrDefaultAsync(x => x.MaBenhNhan == userId.Value);
+                if (wallet != null) currentBalance = wallet.SoDuHienTai;
+
+                // 2. Kiểm tra số lượng câu hỏi đã hỏi
+                int totalQuestionsSent = await _context.Questions.CountAsync(q => q.UserId == userId.Value);
+                int remainingFreeQuestions = QA_FREE_LIMIT - totalQuestionsSent;
+
+                // 3. KIỂM TRA SESSION: User đã thanh toán ở PaymentController chưa?
+                var paidSession = HttpContext.Session.GetString("HasPaidQA");
+                if (paidSession == "true")
+                {
+                    hasPaid = true; // Đã trả tiền -> Cho phép hiện form
+                }
+
+                // 4. Truyền dữ liệu sang View
+                ViewBag.QuestionsInQueue = totalQuestionsSent;
+                ViewBag.CanAskFree = totalQuestionsSent < QA_FREE_LIMIT;
+                ViewBag.RemainingFreeQuestions = remainingFreeQuestions > 0 ? remainingFreeQuestions : 0;
+            }
+            else
+            {
+                ViewBag.CanAskFree = false;
+            }
+
+            ViewBag.CurrentBalance = currentBalance;
+            ViewBag.QaFeeAmount = QA_FEE_AMOUNT; // 10.000
+            ViewBag.QaFreeLimit = QA_FREE_LIMIT;
+            ViewBag.HasPaid = hasPaid; // <--- QUAN TRỌNG: View sẽ dùng biến này để quyết định hiển thị
+
+            // Load danh sách bác sĩ và câu hỏi cũ
+            var doctors = await _context.BacSis.Include(b => b.Khoa).ToListAsync();
+            var answeredQuestions = await _context.Questions
+                .Include(q => q.User).Include(q => q.Doctor)
+                .Where(q => q.Status == "Đã trả lời")
+                .OrderByDescending(q => q.AnsweredAt).ToListAsync();
 
             ViewBag.Doctors = doctors;
             return View(answeredQuestions);
         }
 
+        // ==========================================
+        // ACTION QA (POST) - XỬ LÝ GỬI CÂU HỎI
+        // ==========================================
         [HttpPost]
-        public IActionResult QA(int DoctorId, string Title, string Content)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> QA(int DoctorId, string Title, string Content)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
             {
+                TempData["Error"] = "Vui lòng đăng nhập.";
                 return RedirectToAction("QA");
             }
-            if (DoctorId == 0)
+
+            int totalQuestionsSent = await _context.Questions.CountAsync(q => q.UserId == userId.Value);
+
+            // --- KIỂM TRA ĐIỀU KIỆN ---
+            if (totalQuestionsSent >= QA_FREE_LIMIT)
             {
-                TempData["Error"] = "Vui lòng chọn bác sĩ.";
-                return RedirectToAction("QA");
+                // Nếu hết lượt free, bắt buộc phải có session HasPaidQA
+                var hasPaid = HttpContext.Session.GetString("HasPaidQA");
+                if (hasPaid != "true")
+                {
+                    TempData["Error"] = "Bạn chưa thanh toán phí tư vấn.";
+                    return RedirectToAction("QA");
+                }
             }
-            if (string.IsNullOrWhiteSpace(Title) || string.IsNullOrWhiteSpace(Content))
+
+            if (DoctorId == 0 || string.IsNullOrWhiteSpace(Title) || string.IsNullOrWhiteSpace(Content))
             {
                 TempData["Error"] = "Vui lòng nhập đầy đủ thông tin.";
                 return RedirectToAction("QA");
             }
 
+            // --- LƯU CÂU HỎI ---
             var question = new Question
             {
                 UserId = userId.Value,
@@ -137,14 +194,71 @@ namespace BookinhMVC.Controllers
                 Content = Content,
                 Status = "Chờ trả lời",
                 CreatedAt = DateTime.Now,
-                Answer = "", 
-                Category = "" 
+                Answer = "",
+                Category = ""
             };
             _context.Questions.Add(question);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            TempData["Message"] = "Câu hỏi của bạn đã được gửi thành công!";
+            // --- XỬ LÝ SAU KHI LƯU ---
+            // Nếu đây là câu hỏi trả phí, xóa Session xác nhận để lần sau user phải trả tiếp
+            if (totalQuestionsSent >= QA_FREE_LIMIT)
+            {
+                HttpContext.Session.Remove("HasPaidQA");
+            }
+
+            TempData["Message"] = "Gửi câu hỏi thành công!";
             return RedirectToAction("QA");
+        }
+
+        public IActionResult HospitalAbout() => View();
+        public IActionResult Testing() => View();
+        public IActionResult GeneralCheckup() => View();
+        public IActionResult Cardiology()
+        {
+            var doctors = _context.BacSis.Include(b => b.Khoa).ToList();
+            return View(doctors);
+        }
+        public IActionResult Contact() => View();
+        public IActionResult Privacy() => View();
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error() => View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+
+        public IActionResult Doctors(string name, int departmentId = 0)
+        {
+            var doctorsQuery = _context.BacSis.Include(b => b.Khoa).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                string searchName = name.ToLower().Trim();
+                doctorsQuery = doctorsQuery.Where(d => d.HoTen.ToLower().Contains(searchName));
+            }
+
+            if (departmentId > 0)
+            {
+                doctorsQuery = doctorsQuery.Where(d => d.MaKhoa == departmentId);
+            }
+
+            var filteredDoctors = doctorsQuery.ToList();
+
+            if (filteredDoctors == null || !filteredDoctors.Any())
+            {
+                return RedirectToAction("NotFound", "Home");
+            }
+
+            var departments = _context.Khoas.ToList();
+            ViewBag.Departments = departments;
+            ViewBag.SearchName = name;
+            ViewBag.SelectedDepartment = departmentId;
+
+            return View(filteredDoctors);
+        }
+
+        public IActionResult NotFound()
+        {
+            Response.StatusCode = 404;
+            return View();
         }
     }
 }

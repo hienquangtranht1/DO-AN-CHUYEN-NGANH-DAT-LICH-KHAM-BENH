@@ -1,36 +1,142 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 using BookinhMVC.Models;
+using BookinhMVC.Hubs;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Globalization;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 namespace BookinhMVC.Controllers
 {
     public class AppointmentController : Controller
     {
         private readonly BookingContext _context;
-        public AppointmentController(BookingContext context) => _context = context;
+        private readonly IHubContext<BookingHub> _hubContext;
 
+        public AppointmentController(BookingContext context, IHubContext<BookingHub> hubContext)
+        {
+            _context = context;
+            _hubContext = hubContext;
+        }
+
+        // =============================================================
+        // PHẦN 1: WEB MVC (Xử lý giao diện trình duyệt)
+        // =============================================================
+
+        // 1.1 Hiển thị trang đặt lịch (GET)
         [HttpGet]
         public async Task<IActionResult> Book(int? selectedDoctorId = null)
         {
+            // Lấy danh sách bác sĩ
             ViewBag.Doctors = await _context.BacSis.Include(b => b.Khoa).ToListAsync();
             ViewBag.SelectedDoctorId = selectedDoctorId ?? 0;
 
-            int? userId = HttpContext.Session.GetInt32("UserId");
-            if (userId != null)
+            // --- LẤY THÔNG TIN BỆNH NHÂN TỪ DB ĐỂ ĐIỀN EMAIL/SĐT ---
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId.HasValue)
             {
-                var patient = await _context.BenhNhans.FindAsync(userId.Value);
-                ViewBag.PatientPhone = patient?.SoDienThoai ?? "";
-                ViewBag.PatientEmail = patient?.Email ?? "";
+                // Sử dụng DbSet BenhNhans (hoặc TaiKhoanBenhNhan tùy vào BookingContext của bạn)
+                // Dựa vào model bạn cung cấp, tên bảng thường là BenhNhans
+                var patient = await _context.BenhNhans.FirstOrDefaultAsync(p => p.MaBenhNhan == userId.Value);
+                if (patient != null)
+                {
+                    ViewBag.PatientPhone = patient.SoDienThoai;
+                    ViewBag.PatientEmail = patient.Email;
+                }
             }
-            else
-            {
-                ViewBag.PatientPhone = "";
-                ViewBag.PatientEmail = "";
-            }
+            // -------------------------------------------------------------
+
             return View();
         }
 
+        // 1.2 Xử lý Form đặt lịch từ Web (POST)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Book(int selectedDoctorId, DateTime selectedDate, TimeSpan selectedTime, string symptoms)
+        {
+            // 1. Kiểm tra đăng nhập
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue)
+            {
+                return RedirectToAction("Login", "User");
+            }
+
+            // 2. Ghép ngày + giờ
+            DateTime finalDateTime = selectedDate.Date + selectedTime;
+
+            // 3. Kiểm tra trùng lịch (Concurrency Check)
+            bool isTaken = await _context.LichHens.AnyAsync(l => l.MaBacSi == selectedDoctorId && l.NgayGio == finalDateTime && l.TrangThai != "Đã hủy");
+
+            if (isTaken)
+            {
+                ViewBag.Message = "Rất tiếc, khung giờ này vừa có người khác đặt. Vui lòng chọn giờ khác.";
+                // Load lại dữ liệu bác sĩ để hiển thị lại View
+                return await Book(selectedDoctorId);
+            }
+
+            // 4. Lưu vào Database
+            var appt = new LichHen
+            {
+                MaBenhNhan = userId.Value,
+                MaBacSi = selectedDoctorId,
+                NgayGio = finalDateTime,
+                TrieuChung = symptoms,
+                TrangThai = "Chờ xác nhận",
+                NgayTao = DateTime.Now,
+                DaThongBao = false
+            };
+
+            _context.LichHens.Add(appt);
+            await _context.SaveChangesAsync();
+
+            // 5. Gửi SignalR thông báo cho Bác sĩ (Giống Mobile App)
+            var patientName = HttpContext.Session.GetString("PatientName") ?? "Khách hàng Web";
+            await _hubContext.Clients.Group("Doctors").SendAsync("ReceiveNewBooking", new
+            {
+                maLich = appt.MaLich,
+                tenBenhNhan = patientName,
+                ngayGio = appt.NgayGio,
+                noiDung = $"WEB: Bệnh nhân {patientName} vừa đặt lịch lúc {appt.NgayGio:HH:mm dd/MM}!"
+            });
+
+            ViewBag.Message = "Đặt lịch thành công! Vui lòng chờ xác nhận.";
+            return await Book(selectedDoctorId);
+        }
+
+        // 1.3 Xử lý đánh giá bác sĩ (POST)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SubmitReview(int doctorId, int diemDanhGia, string nhanXet)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue) return RedirectToAction("Login", "User");
+
+            var review = new DanhGia
+            {
+                MaBacSi = doctorId,
+                MaBenhNhan = userId.Value,
+                DiemDanhGia = diemDanhGia,
+                NhanXet = nhanXet,
+                NgayDanhGia = DateTime.Now
+            };
+
+            _context.DanhGias.Add(review);
+            await _context.SaveChangesAsync();
+
+            TempData["ReviewMessage"] = "Cảm ơn bạn đã gửi đánh giá!";
+            return RedirectToAction("Book", new { selectedDoctorId = doctorId });
+        }
+
+
+        // =============================================================
+        // PHẦN 2: SHARED DATA & API (Dùng chung cho cả Web JS & Mobile)
+        // =============================================================
+
+        // API Lấy ngày rảnh (Web JQuery và Flutter đều gọi cái này)
         [HttpGet]
         public async Task<JsonResult> GetAvailableDates(int doctorId)
         {
@@ -41,144 +147,165 @@ namespace BookinhMVC.Controllers
                 .OrderBy(d => d)
                 .ToListAsync();
 
-            return Json(dates);
+            return Json(dates.Select(d => d.ToString("yyyy-MM-dd")).ToList());
         }
 
+        // API Lấy giờ rảnh (Web JQuery và Flutter đều gọi cái này)
         [HttpGet]
         public async Task<JsonResult> GetAvailableTimes(int doctorId, string date)
         {
             if (!DateTime.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime selectedDate))
-                return Json(new List<string>());
+                return Json(new { times = new List<string>() });
 
-            // Tạm thời bỏ hết filter, chỉ lấy tất cả lịch làm việc của bác sĩ này
+            // 1. Lấy ca làm việc
             var workSchedules = await _context.LichLamViecs
-                .Where(lv => lv.MaBacSi == doctorId)
+                .Where(lv => lv.MaBacSi == doctorId && lv.NgayLamViec.Date == selectedDate.Date && lv.TrangThai == "Đã xác nhận")
                 .ToListAsync();
 
+            // 2. Lấy giờ đã bị đặt
             var bookedTimes = await _context.LichHens
-                .Where(l => l.MaBacSi == doctorId)
+                .Where(l => l.MaBacSi == doctorId && l.NgayGio.Date == selectedDate.Date && l.TrangThai != "Đã hủy")
                 .Select(l => l.NgayGio.TimeOfDay)
                 .ToListAsync();
 
-            // DEBUG: Trả về số lượng workSchedules và bookedTimes để kiểm tra
-            if (workSchedules.Count == 0)
-                return Json(new { times = new List<string>(), debug = "No workSchedules" });
-
             var availableTimes = new List<string>();
+
+            // 3. Tính toán Slot trống
             foreach (var schedule in workSchedules)
             {
-                var start = schedule.GioBatDau;
-                var end = schedule.GioKetThuc;
-                for (var t = start; t < end; t = t.Add(TimeSpan.FromMinutes(30)))
+                for (var t = schedule.GioBatDau; t < schedule.GioKetThuc; t = t.Add(TimeSpan.FromMinutes(30)))
                 {
-                    bool isBooked = bookedTimes.Any(bt => Math.Abs((bt - t).TotalMinutes) < 1);
-                    if (!isBooked)
+                    // Không lấy quá khứ nếu là hôm nay
+                    if (selectedDate.Date == DateTime.Today && t <= DateTime.Now.TimeOfDay) continue;
+
+                    // Kiểm tra xem giờ này có bị trùng với bookedTimes không
+                    if (!bookedTimes.Any(bt => Math.Abs((bt - t).TotalMinutes) < 1))
                     {
                         availableTimes.Add(t.ToString(@"hh\:mm"));
                     }
                 }
             }
-            // Nếu không có giờ nào, trả về debug
-            if (availableTimes.Count == 0)
-                return Json(new { times = availableTimes, debug = $"workSchedules: {workSchedules.Count}, bookedTimes: {bookedTimes.Count}" });
 
             return Json(new { times = availableTimes });
         }
 
-        private async Task<List<string>> GetAvailableTimesForDoctor(int doctorId, DateTime date)
-        {
-            var workSchedules = await _context.LichLamViecs
-                .Where(lv => lv.MaBacSi == doctorId && lv.NgayLamViec >= date.Date && lv.NgayLamViec < date.Date.AddDays(1) && lv.TrangThai == "Đã xác nhận")
-                .OrderBy(lv => lv.GioBatDau)
-                .ToListAsync();
 
-            var bookedTimes = await _context.LichHens
-                .Where(l => l.MaBacSi == doctorId
-                    && l.NgayGio.Date == date.Date
-                    && l.TrangThai != "Đã hủy")
-                .Select(l => l.NgayGio.TimeOfDay)
-                .ToListAsync();
+        // =============================================================
+        // PHẦN 3: API RIÊNG CHO MOBILE APP
+        // =============================================================
 
-            var availableTimes = new List<string>();
-            foreach (var schedule in workSchedules)
-            {
-                var start = schedule.GioBatDau;
-                var end = schedule.GioKetThuc;
-                for (var t = start; t < end; t = t.Add(TimeSpan.FromMinutes(30)))
-                {
-                    bool isBooked = bookedTimes.Any(bt => Math.Abs((bt - t).TotalMinutes) < 1);
-                    if (!isBooked)
-                    {
-                        availableTimes.Add(t.ToString(@"hh\:mm"));
-                    }
-                }
-            }
-            return availableTimes;
-        }
-
+        // API Đặt lịch từ Mobile
         [HttpPost]
-        public async Task<IActionResult> Book(int selectedDoctorId, string selectedDate, string selectedTime, string symptoms)
+        [Route("api/Appointment/Book")]
+        public async Task<IActionResult> BookApi([FromBody] BookAppointmentRequest request)
         {
-            ViewBag.Doctors = await _context.BacSis.Include(b => b.Khoa).ToListAsync();
-            ViewBag.SelectedDoctorId = selectedDoctorId;
+            Console.WriteLine("📲 [API] Mobile gọi BookApi...");
+            if (request == null) return BadRequest(new { message = "Dữ liệu trống" });
 
-            int? selectedPatientId = HttpContext.Session.GetInt32("UserId");
+            // Mobile cần cơ chế Auth riêng (Token), ở đây tạm dùng Session giả định
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null) return Unauthorized(new { message = "Vui lòng đăng nhập lại." });
 
-            if (selectedDoctorId == 0 || selectedPatientId == null || string.IsNullOrEmpty(selectedDate) || string.IsNullOrEmpty(selectedTime))
-            {
-                ViewBag.Message = "Vui lòng điền đầy đủ thông tin.";
-                return View();
-            }
+            if (!int.TryParse(request.SelectedDoctorId, out int doctorId)) return BadRequest(new { message = "Lỗi ID bác sĩ" });
+            if (!DateTime.TryParse(request.SelectedDate, out DateTime date)) return BadRequest(new { message = "Lỗi ngày" });
+            if (!TimeSpan.TryParse(request.SelectedTime, out TimeSpan time)) return BadRequest(new { message = "Lỗi giờ" });
 
-            // Parse ngày và giờ đúng định dạng, không chuyển đổi múi giờ
-            DateTime date;
-            try
-            {
-                date = DateTime.ParseExact(selectedDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-            }
-            catch
-            {
-                ViewBag.Message = "Ngày không hợp lệ.";
-                return View();
-            }
+            var apptDate = date.Date.Add(time);
 
-            TimeSpan time;
-            try
-            {
-                time = TimeSpan.Parse(selectedTime);
-            }
-            catch
-            {
-                ViewBag.Message = "Giờ không hợp lệ.";
-                return View();
-            }
+            // Check trùng
+            bool exists = await _context.LichHens.AnyAsync(l => l.MaBacSi == doctorId && l.NgayGio == apptDate && l.TrangThai != "Đã hủy");
+            if (exists) return BadRequest(new { message = "Giờ này đã có người đặt." });
 
-            var appointmentDateTime = date.Date.Add(time);
-
-            // Kiểm tra trùng lịch
-            var exists = await _context.LichHens.AnyAsync(l =>
-                l.MaBacSi == selectedDoctorId &&
-                l.NgayGio == appointmentDateTime &&
-                l.TrangThai != "Đã hủy");
-            if (exists)
+            var appt = new LichHen
             {
-                ViewBag.Message = "Thời gian này đã có lịch hẹn. Vui lòng chọn thời gian khác.";
-                return View();
-            }
-
-            var appointment = new LichHen
-            {
-                MaBenhNhan = selectedPatientId.Value,
-                MaBacSi = selectedDoctorId,
-                NgayGio = appointmentDateTime,
-                TrieuChung = symptoms,
-                TrangThai = "Chờ xác nhận"
+                MaBenhNhan = userId.Value,
+                MaBacSi = doctorId,
+                NgayGio = apptDate,
+                TrieuChung = request.Symptoms ?? "Đặt từ Mobile App",
+                TrangThai = "Chờ xác nhận",
+                NgayTao = DateTime.Now,
+                DaThongBao = false
             };
 
-            _context.LichHens.Add(appointment);
-            await _context.SaveChangesAsync();
-            ViewBag.Message = "Đặt lịch thành công! Vui lòng chờ xác nhận.";
-            return View();
+            try
+            {
+                _context.LichHens.Add(appt);
+                await _context.SaveChangesAsync();
+
+                var patient = await _context.BenhNhans.FindAsync(userId.Value);
+                var patientName = patient?.HoTen ?? "Khách Mobile";
+
+                // SignalR Notification
+                await _hubContext.Clients.Group("Doctors").SendAsync("ReceiveNewBooking", new
+                {
+                    maLich = appt.MaLich,
+                    tenBenhNhan = patientName,
+                    ngayGio = appt.NgayGio,
+                    noiDung = $"MOBILE: Bệnh nhân {patientName} đặt lịch lúc {appt.NgayGio:HH:mm dd/MM}!"
+                });
+
+                return Ok(new { success = true, message = "Đặt lịch thành công" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi Server: " + ex.Message });
+            }
+        }
+
+        // API Hủy lịch từ Mobile
+        [HttpPost]
+        [Route("api/Appointment/Cancel")]
+        public async Task<IActionResult> CancelApi([FromBody] CancelRequest request)
+        {
+            try
+            {
+                var appt = await _context.LichHens.Include(l => l.BenhNhan).FirstOrDefaultAsync(l => l.MaLich == request.Id);
+                if (appt == null) return NotFound(new { message = "Không tìm thấy lịch hẹn" });
+
+                appt.TrangThai = "Đã hủy";
+
+                var notif = new ThongBao
+                {
+                    MaNguoiDung = appt.MaBenhNhan,
+                    TieuDe = "Đã hủy lịch",
+                    NoiDung = $"Lịch hẹn #{appt.MaLich} đã hủy thành công.",
+                    NgayTao = DateTime.Now,
+                    MaLichHen = appt.MaLich,
+                    DaXem = false
+                };
+                _context.ThongBaos.Add(notif);
+                await _context.SaveChangesAsync();
+
+                // SignalR Updates
+                await _hubContext.Clients.Group("Doctors").SendAsync("ReceiveStatusChange", new
+                {
+                    maLich = appt.MaLich,
+                    trangThaiMoi = "Đã hủy",
+                    noiDung = $"Lịch hẹn #{appt.MaLich} đã bị hủy bởi bệnh nhân."
+                });
+
+                await _hubContext.Clients.Group($"User_{appt.MaBenhNhan}").SendAsync("ReceiveAppointmentUpdate", "Đã hủy lịch thành công");
+
+                return Ok(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        // --- DTO Classes ---
+        public class BookAppointmentRequest
+        {
+            public string SelectedDoctorId { get; set; }
+            public string SelectedDate { get; set; }
+            public string SelectedTime { get; set; }
+            public string Symptoms { get; set; }
+        }
+
+        public class CancelRequest
+        {
+            public int Id { get; set; }
         }
     }
 }

@@ -14,17 +14,21 @@ namespace BookinhMVC.Controllers
     public class AdminController : Controller
     {
         private readonly BookingContext _context;
+
         public AdminController(BookingContext context) => _context = context;
 
+        // 1. MIDDLEWARE: KIỂM TRA QUYỀN ADMIN CHO MỌI ACTION
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var actionName = context.ActionDescriptor.RouteValues["action"];
+            var actionName = context.ActionDescriptor.RouteValues["action"]?.ToString();
             if (actionName == "Login" || actionName == "Logout")
             {
                 base.OnActionExecuting(context);
                 return;
             }
+
             var role = HttpContext.Session.GetString("UserRole");
+            // Kiểm tra: Phải có Role và Role phải là "Admin"
             if (string.IsNullOrEmpty(role) || role != "Admin")
             {
                 context.Result = RedirectToAction("Login", "Admin");
@@ -33,6 +37,7 @@ namespace BookinhMVC.Controllers
             base.OnActionExecuting(context);
         }
 
+        // 2. AUTHENTICATION (LOGIN / LOGOUT)
         [HttpGet]
         public IActionResult Login() => View();
 
@@ -45,8 +50,10 @@ namespace BookinhMVC.Controllers
             var hasher = new PasswordHasher<NguoiDung>();
             if (admin != null && hasher.VerifyHashedPassword(admin, admin.MatKhau, password) == PasswordVerificationResult.Success)
             {
+                // Lưu session cho Admin
                 HttpContext.Session.SetString("UserRole", "Admin");
                 HttpContext.Session.SetString("AdminName", admin.TenDangNhap);
+                HttpContext.Session.SetInt32("AdminId", admin.MaNguoiDung);
                 return RedirectToAction("Index");
             }
 
@@ -61,7 +68,7 @@ namespace BookinhMVC.Controllers
             return RedirectToAction("Login", "Admin");
         }
 
-        // Dashboard admin
+        // 3. DASHBOARD
         public IActionResult Index()
         {
             ViewBag.UserCount = _context.NguoiDungs.Count();
@@ -70,13 +77,44 @@ namespace BookinhMVC.Controllers
             ViewBag.DepartmentCount = _context.Khoas.Count();
             ViewBag.AppointmentCount = _context.LichHens.Count();
             ViewBag.ReviewCount = _context.DanhGias.Count();
+            // Thêm thống kê bài viết từ Demo 1
+            ViewBag.ArticleCount = _context.Articles.Count();
             return View();
         }
 
-        // --------- CRUD Khoa ---------
-        public async Task<IActionResult> Departments()
+        // =========================================================
+        // CRUD KHOA (Departments)
+        // =========================================================
+        public async Task<IActionResult> Departments(int page = 1)
         {
-            var departments = await _context.Khoas.AsNoTracking().ToListAsync();
+            // 1. Cấu hình số lượng bản ghi hiển thị
+            int pageSize = 8; // Hiển thị 8 khoa mỗi trang
+
+            // 2. Tạo Query (Chưa truy vấn DB ngay)
+            var query = _context.Khoas.AsNoTracking().AsQueryable();
+
+            // 3. Tính toán tổng số trang
+            int totalItems = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            // 4. Lấy dữ liệu phân trang
+            // Lưu ý: Bắt buộc phải OrderBy trước khi Skip/Take
+            var departments = await query
+                .OrderBy(k => k.MaKhoa) // Sắp xếp theo Mã Khoa hoặc Tên Khoa
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            // 5. Truyền dữ liệu sang View để vẽ nút phân trang
+            ViewBag.TotalPages = totalPages;
+            ViewBag.CurrentPage = page;
+
+            // Nếu trang hiện tại > tổng số trang (vd: xóa hết dữ liệu trang cuối), quay về trang 1
+            if (page > totalPages && totalPages > 0)
+            {
+                return RedirectToAction("Departments", new { page = 1 });
+            }
+
             return View(departments);
         }
 
@@ -146,7 +184,9 @@ namespace BookinhMVC.Controllers
             return View(dep);
         }
 
-        // --------- CRUD NguoiDung ---------
+        // =========================================================
+        // CRUD NGƯỜI DÙNG (Users)
+        // =========================================================
         public async Task<IActionResult> Users()
         {
             var users = await _context.NguoiDungs.AsNoTracking().ToListAsync();
@@ -227,10 +267,40 @@ namespace BookinhMVC.Controllers
             return View(user);
         }
 
-        // --------- CRUD BacSi ---------
-        public async Task<IActionResult> Doctors()
+        // =========================================================
+        // CRUD BÁC SĨ (Doctors)
+        // =========================================================
+        public async Task<IActionResult> Doctors(int page = 1)
         {
-            var doctors = await _context.BacSis.Include(b => b.Khoa).AsNoTracking().ToListAsync();
+            // 1. CẤU HÌNH SỐ LƯỢNG
+            int pageSize = 8;
+
+            // 2. QUERY (Giữ Include để lấy tên Khoa)
+            var query = _context.BacSis
+                .Include(b => b.Khoa) // Quan trọng: lấy thông tin khoa đi kèm
+                .AsNoTracking()
+                .AsQueryable();
+
+            // 3. TÍNH TOÁN SỐ TRANG
+            int totalItems = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            // Xử lý trường hợp trang yêu cầu vượt quá tổng số trang (vd: xóa item ở trang cuối)
+            if (page > totalPages && totalPages > 0) page = totalPages;
+            if (page < 1) page = 1;
+
+            // 4. LẤY DỮ LIỆU PHÂN TRANG
+            var doctors = await query
+                .OrderByDescending(b => b.MaBacSi) // Sắp xếp bác sĩ mới nhất lên đầu
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            // 5. TRUYỀN DỮ LIỆU SANG VIEW
+            ViewBag.TotalPages = totalPages;
+            ViewBag.CurrentPage = page;
+            ViewBag.Title = "Quản lý Bác sĩ";
+
             return View(doctors);
         }
 
@@ -242,15 +312,9 @@ namespace BookinhMVC.Controllers
 
         [HttpPost]
         public async Task<IActionResult> CreateDoctor(
-            string tenDangNhap,
-            string hoTen,
-            int maKhoa,
-            string soDienThoai,
-            string email,
-            string moTa,
-            IFormFile file)
+            string tenDangNhap, string hoTen, int maKhoa, string soDienThoai, string email, string moTa, IFormFile file)
         {
-            // Tạo tài khoản người dùng cho bác sĩ với mật khẩu mặc định
+            // 1. Tạo tài khoản User trước
             var nguoiDung = new NguoiDung
             {
                 TenDangNhap = tenDangNhap,
@@ -258,31 +322,29 @@ namespace BookinhMVC.Controllers
                 NgayTao = DateTime.Now
             };
             var hasher = new PasswordHasher<NguoiDung>();
-            nguoiDung.MatKhau = hasher.HashPassword(nguoiDung, "123456"); // Mật khẩu mặc định
+            nguoiDung.MatKhau = hasher.HashPassword(nguoiDung, "123456");
 
             _context.NguoiDungs.Add(nguoiDung);
             await _context.SaveChangesAsync();
 
-            // Lưu file ảnh như hiện tại...
+            // 2. Upload ảnh
             string fileName = null;
             if (file != null && file.Length > 0)
             {
                 var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-                if (!Directory.Exists(uploads))
-                    Directory.CreateDirectory(uploads);
+                if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
 
                 fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                var filePath = Path.Combine(uploads, fileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                using (var stream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
                 }
             }
 
-            // Tạo bác sĩ
+            // 3. Tạo thông tin Bác sĩ
             var model = new BacSi
             {
-                MaNguoiDung = nguoiDung.MaNguoiDung, // Tự động lấy MaNguoiDung vừa tạo
+                MaNguoiDung = nguoiDung.MaNguoiDung,
                 HoTen = hoTen,
                 MaKhoa = maKhoa,
                 SoDienThoai = soDienThoai,
@@ -310,17 +372,14 @@ namespace BookinhMVC.Controllers
             var existing = await _context.BacSis.AsNoTracking().FirstOrDefaultAsync(b => b.MaBacSi == id);
             if (existing == null) return NotFound();
 
-            // Xử lý upload file nếu có
-            string fileName = hinhAnhBacSi; // Giữ tên file cũ nếu không upload file mới
+            string fileName = hinhAnhBacSi;
             if (file != null && file.Length > 0)
             {
                 var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-                if (!Directory.Exists(uploads))
-                    Directory.CreateDirectory(uploads);
+                if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
 
                 fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                var filePath = Path.Combine(uploads, fileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                using (var stream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
                 }
@@ -345,19 +404,51 @@ namespace BookinhMVC.Controllers
 
         public async Task<IActionResult> DeleteDoctor(int id)
         {
-            var doctor = await _context.BacSis.FindAsync(id);
+            var doctor = await _context.BacSis.Include(b => b.Khoa).FirstOrDefaultAsync(b => b.MaBacSi == id);
             if (doctor == null) return NotFound();
             return View(doctor);
         }
 
         [HttpPost, ActionName("DeleteDoctor")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteDoctorConfirmed(int id)
         {
             var doctor = await _context.BacSis.FindAsync(id);
-            if (doctor != null)
+            if (doctor == null) return RedirectToAction("Doctors");
+
+            try
             {
+                var maNguoiDung = doctor.MaNguoiDung;
+
+                // Xóa dữ liệu liên quan để tránh lỗi khóa ngoại
+                var reviews = _context.DanhGias.Where(r => r.MaBacSi == id);
+                _context.DanhGias.RemoveRange(reviews);
+
+                var appointments = _context.LichHens.Where(l => l.MaBacSi == id);
+                _context.LichHens.RemoveRange(appointments);
+
+                var schedules = _context.LichLamViecs.Where(l => l.MaBacSi == id);
+                _context.LichLamViecs.RemoveRange(schedules);
+
+                await _context.SaveChangesAsync();
+
+                // Xóa Bác sĩ
                 _context.BacSis.Remove(doctor);
                 await _context.SaveChangesAsync();
+
+                // Xóa User
+                var user = await _context.NguoiDungs.FindAsync(maNguoiDung);
+                if (user != null)
+                {
+                    _context.NguoiDungs.Remove(user);
+                    await _context.SaveChangesAsync();
+                }
+
+                TempData["SuccessMessage"] = "Xóa bác sĩ thành công.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Lỗi khi xóa bác sĩ: " + ex.Message;
             }
             return RedirectToAction("Doctors");
         }
@@ -369,7 +460,9 @@ namespace BookinhMVC.Controllers
             return View(doctor);
         }
 
-        // --------- CRUD BenhNhan ---------
+        // =========================================================
+        // CRUD BỆNH NHÂN (Patients)
+        // =========================================================
         public async Task<IActionResult> Patients()
         {
             var patients = await _context.BenhNhans.AsNoTracking().ToListAsync();
@@ -418,12 +511,8 @@ namespace BookinhMVC.Controllers
             {
                 fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                 var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-                if (!Directory.Exists(uploads))
-                {
-                    Directory.CreateDirectory(uploads);
-                }
-                var filePath = Path.Combine(uploads, fileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
+                using (var stream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
                 }
@@ -440,7 +529,6 @@ namespace BookinhMVC.Controllers
 
             _context.BenhNhans.Update(patient);
             await _context.SaveChangesAsync();
-
             return RedirectToAction("Patients");
         }
 
@@ -470,62 +558,84 @@ namespace BookinhMVC.Controllers
             return View(patient);
         }
 
-        // --------- CRUD LichHen ---------
+        // =========================================================
+        // CRUD LỊCH HẸN (Appointments)
+        // =========================================================
         public async Task<IActionResult> Appointments()
         {
             var appts = await _context.LichHens
                 .Include(l => l.BenhNhan)
-                .Include(l => l.BacSi)
+                .Include(l => l.BacSi).ThenInclude(bs => bs.Khoa)
                 .AsNoTracking()
                 .ToListAsync();
             return View(appts);
         }
 
-        public IActionResult CreateAppointment() => View();
+        [HttpGet]
+        public async Task<IActionResult> CreateAppointment()
+        {
+            ViewBag.Doctors = await _context.BacSis.Include(b => b.Khoa).ToListAsync();
+            ViewBag.Patients = await _context.BenhNhans.ToListAsync();
+            return View();
+        }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAppointment(int maBenhNhan, int maBacSi, DateTime ngayGio, string trieuChung, string trangThai)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateAppointment(LichHen appointment)
         {
-            var model = new LichHen
+            if (ModelState.IsValid)
             {
-                MaBenhNhan = maBenhNhan,
-                MaBacSi = maBacSi,
-                NgayGio = ngayGio,
-                TrieuChung = trieuChung,
-                TrangThai = trangThai
-            };
-            _context.LichHens.Add(model);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Appointments");
+                var exists = await _context.LichHens.AnyAsync(l =>
+                    l.MaBacSi == appointment.MaBacSi &&
+                    l.NgayGio == appointment.NgayGio &&
+                    l.TrangThai != "Đã hủy");
+
+                if (exists)
+                {
+                    ModelState.AddModelError("", "Thời gian này đã có lịch hẹn.");
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(appointment.TrangThai)) appointment.TrangThai = "Chờ xác nhận";
+                    _context.Add(appointment);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Appointments");
+                }
+            }
+            ViewBag.Doctors = await _context.BacSis.Include(b => b.Khoa).ToListAsync();
+            ViewBag.Patients = await _context.BenhNhans.ToListAsync();
+            return View(appointment);
         }
 
         public async Task<IActionResult> EditAppointment(int id)
         {
             var appt = await _context.LichHens.FindAsync(id);
             if (appt == null) return NotFound();
+            ViewBag.Doctors = await _context.BacSis.Include(b => b.Khoa).ToListAsync();
+            ViewBag.Patients = await _context.BenhNhans.ToListAsync();
             return View(appt);
         }
 
         [HttpPost]
         public async Task<IActionResult> EditAppointment(int id, int maBenhNhan, int maBacSi, DateTime ngayGio, string trieuChung, string trangThai)
         {
-            var model = new LichHen
-            {
-                MaLich = id,
-                MaBenhNhan = maBenhNhan,
-                MaBacSi = maBacSi,
-                NgayGio = ngayGio,
-                TrieuChung = trieuChung,
-                TrangThai = trangThai
-            };
-            _context.LichHens.Update(model);
+            var existing = await _context.LichHens.FindAsync(id);
+            if (existing == null) return NotFound();
+
+            existing.MaBenhNhan = maBenhNhan;
+            existing.MaBacSi = maBacSi;
+            existing.NgayGio = ngayGio;
+            existing.TrieuChung = trieuChung;
+            existing.TrangThai = trangThai;
+
+            _context.LichHens.Update(existing);
             await _context.SaveChangesAsync();
             return RedirectToAction("Appointments");
         }
 
         public async Task<IActionResult> DeleteAppointment(int id)
         {
-            var appt = await _context.LichHens.FindAsync(id);
+            var appt = await _context.LichHens.Include(l => l.BenhNhan).Include(l => l.BacSi).FirstOrDefaultAsync(l => l.MaLich == id);
             if (appt == null) return NotFound();
             return View(appt);
         }
@@ -544,70 +654,73 @@ namespace BookinhMVC.Controllers
 
         public async Task<IActionResult> AppointmentDetails(int id)
         {
-            var appt = await _context.LichHens
-                .Include(l => l.BenhNhan)
-                .Include(l => l.BacSi)
-                .FirstOrDefaultAsync(l => l.MaLich == id);
+            var appt = await _context.LichHens.Include(l => l.BenhNhan).Include(l => l.BacSi).ThenInclude(bs => bs.Khoa).FirstOrDefaultAsync(l => l.MaLich == id);
             if (appt == null) return NotFound();
             return View(appt);
         }
 
-        // --------- CRUD DanhGia ---------
+        // =========================================================
+        // CRUD ĐÁNH GIÁ (Reviews)
+        // =========================================================
         public async Task<IActionResult> Reviews()
         {
-            var reviews = await _context.DanhGias
-                .Include(r => r.BacSi)
-                .Include(r => r.BenhNhan)
-                .AsNoTracking()
-                .ToListAsync();
+            var reviews = await _context.DanhGias.Include(r => r.BacSi).Include(r => r.BenhNhan).AsNoTracking().ToListAsync();
             return View(reviews);
         }
 
-        public IActionResult CreateReview() => View();
-
-        [HttpPost]
-        public async Task<IActionResult> CreateReview(int maBacSi, int maBenhNhan, int diemDanhGia, string nhanXet, DateTime ngayDanhGia)
+        [HttpGet]
+        public async Task<IActionResult> CreateReview()
         {
-            var model = new DanhGia
-            {
-                MaBacSi = maBacSi,
-                MaBenhNhan = maBenhNhan,
-                DiemDanhGia = diemDanhGia,
-                NhanXet = nhanXet,
-                NgayDanhGia = ngayDanhGia
-            };
-            _context.DanhGias.Add(model);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Reviews");
+            ViewBag.Doctors = await _context.BacSis.Include(b => b.Khoa).ToListAsync();
+            ViewBag.Patients = await _context.BenhNhans.ToListAsync();
+            return View(new DanhGia());
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateReview(DanhGia model)
+        {
+            ModelState.Remove("BacSi");
+            ModelState.Remove("BenhNhan");
+
+            if (model.MaBacSi == 0 || model.MaBenhNhan == 0 || model.DiemDanhGia == 0)
+                ModelState.AddModelError("", "Vui lòng nhập đầy đủ thông tin.");
+
+            if (ModelState.IsValid)
+            {
+                if (model.NgayDanhGia == default) model.NgayDanhGia = DateTime.Now;
+                _context.DanhGias.Add(model);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Thêm đánh giá thành công!";
+                return RedirectToAction("Reviews");
+            }
+            ViewBag.Doctors = await _context.BacSis.Include(b => b.Khoa).ToListAsync();
+            ViewBag.Patients = await _context.BenhNhans.ToListAsync();
+            return View(model);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> EditReview(int id)
         {
             var review = await _context.DanhGias.FindAsync(id);
             if (review == null) return NotFound();
+            ViewBag.Doctors = await _context.BacSis.Include(b => b.Khoa).ToListAsync();
+            ViewBag.Patients = await _context.BenhNhans.ToListAsync();
             return View(review);
         }
 
         [HttpPost]
         public async Task<IActionResult> EditReview(int id, int maBacSi, int maBenhNhan, int diemDanhGia, string nhanXet, DateTime ngayDanhGia)
         {
-            var model = new DanhGia
-            {
-                MaDanhGia = id,
-                MaBacSi = maBacSi,
-                MaBenhNhan = maBenhNhan,
-                DiemDanhGia = diemDanhGia,
-                NhanXet = nhanXet,
-                NgayDanhGia = ngayDanhGia
-            };
+            var model = new DanhGia { MaDanhGia = id, MaBacSi = maBacSi, MaBenhNhan = maBenhNhan, DiemDanhGia = diemDanhGia, NhanXet = nhanXet, NgayDanhGia = ngayDanhGia };
             _context.DanhGias.Update(model);
             await _context.SaveChangesAsync();
             return RedirectToAction("Reviews");
         }
 
-        public async Task<IActionResult> DeleteReview(int id)
+        public async Task<IActionResult> ReviewDetails(int id)
         {
-            var review = await _context.DanhGias.FindAsync(id);
+            var review = await _context.DanhGias.Include(r => r.BacSi).Include(r => r.BenhNhan).FirstOrDefaultAsync(r => r.MaDanhGia == id);
             if (review == null) return NotFound();
             return View(review);
         }
@@ -624,46 +737,16 @@ namespace BookinhMVC.Controllers
             return RedirectToAction("Reviews");
         }
 
-        public async Task<IActionResult> ReviewDetails(int id)
-        {
-            var review = await _context.DanhGias
-                .Include(r => r.BacSi)
-                .Include(r => r.BenhNhan)
-                .FirstOrDefaultAsync(r => r.MaDanhGia == id);
-            if (review == null) return NotFound();
-            return View(review);
-        }
-
-        // --------- CRUD LichLamViec ---------
+        // =========================================================
+        // CRUD LỊCH LÀM VIỆC (Work Schedules)
+        // =========================================================
         public IActionResult WorkSchedules(int? doctorId, DateTime? weekStart)
         {
-            var query = _context.LichLamViecs
-                .Include(l => l.BacSi)
-                .ThenInclude(bs => bs.NguoiDung)
-                .AsQueryable();
+            var query = _context.LichLamViecs.Include(l => l.BacSi).ThenInclude(bs => bs.NguoiDung).AsQueryable();
+            if (doctorId.HasValue) query = query.Where(l => l.MaBacSi == doctorId.Value);
 
-            if (doctorId.HasValue)
-                query = query.Where(l => l.MaBacSi == doctorId.Value);
-
-            // Sửa: Tính lại tuần bắt đầu từ thứ 2 gần nhất của weekStart (hoặc hôm nay nếu null)
-            DateTime start;
-            if (weekStart.HasValue)
-            {
-                int daysFromMonday = ((int)weekStart.Value.DayOfWeek + 6) % 7;
-                start = weekStart.Value.AddDays(-daysFromMonday);
-            }
-            else
-            {
-                var today = DateTime.Today;
-                int daysFromMonday = ((int)today.DayOfWeek + 6) % 7;
-                start = today.AddDays(-daysFromMonday);
-            }
-
-            var schedules = query
-                .Where(l => l.NgayLamViec >= start && l.NgayLamViec <= start.AddDays(6))
-                .OrderBy(l => l.MaBacSi)
-                .ThenBy(l => l.NgayLamViec)
-                .ToList();
+            DateTime start = weekStart ?? DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + 1);
+            var schedules = query.Where(l => l.NgayLamViec >= start && l.NgayLamViec <= start.AddDays(6)).OrderBy(l => l.MaBacSi).ThenBy(l => l.NgayLamViec).ToList();
 
             ViewBag.Doctors = _context.BacSis.Include(bs => bs.NguoiDung).ToList();
             ViewBag.SelectedDoctor = doctorId;
@@ -683,7 +766,6 @@ namespace BookinhMVC.Controllers
             return RedirectToAction("WorkSchedules");
         }
 
-        // GET: Admin/CreateWorkSchedule
         public IActionResult CreateWorkSchedule(int? doctorId, string date)
         {
             ViewBag.Doctors = _context.BacSis.Include(b => b.Khoa).ToList();
@@ -693,7 +775,6 @@ namespace BookinhMVC.Controllers
             return View(model);
         }
 
-        // POST: Admin/CreateWorkSchedule
         [HttpPost]
         public async Task<IActionResult> CreateWorkSchedule(int MaBacSi, DateTime NgayLamViec, string GioBatDau, string GioKetThuc, string TrangThai)
         {
@@ -712,7 +793,6 @@ namespace BookinhMVC.Controllers
             return RedirectToAction("WorkSchedules");
         }
 
-        // GET: Admin/EditWorkSchedule/{id}
         [HttpGet]
         public IActionResult EditWorkSchedule(int id)
         {
@@ -722,7 +802,6 @@ namespace BookinhMVC.Controllers
             return View(model);
         }
 
-        // POST: Admin/EditWorkSchedule
         [HttpPost]
         public async Task<IActionResult> EditWorkSchedule(int MaLich, int MaBacSi, DateTime NgayLamViec, string GioBatDau, string GioKetThuc, string TrangThai)
         {
@@ -738,7 +817,6 @@ namespace BookinhMVC.Controllers
             return RedirectToAction("WorkSchedules");
         }
 
-        // GET: Admin/DeleteWorkSchedule/{id}
         [HttpGet]
         public IActionResult DeleteWorkSchedule(int id)
         {
@@ -747,7 +825,6 @@ namespace BookinhMVC.Controllers
             return View(model);
         }
 
-        // POST: Admin/DeleteWorkSchedule
         [HttpPost, ActionName("DeleteWorkSchedule")]
         public async Task<IActionResult> DeleteWorkScheduleConfirmed(int MaLich)
         {
@@ -760,11 +837,289 @@ namespace BookinhMVC.Controllers
             return RedirectToAction("WorkSchedules");
         }
 
-        // [HttpPost]
-        public async Task<IActionResult> EditWorkSchedule(int? id, int? doctorId, string Ngay, string GioBatDau, string GioKetThuc, string actionType)
+        // =========================================================
+        // ADMIN PROFILE & SETTINGS
+        // =========================================================
+        public async Task<IActionResult> Profile()
         {
-            // ...
-            return View();
+            ViewBag.Title = "Thông tin cá nhân";
+            var adminName = HttpContext.Session.GetString("AdminName");
+            if (string.IsNullOrEmpty(adminName)) return RedirectToAction("Login");
+
+            var admin = await _context.NguoiDungs.AsNoTracking().FirstOrDefaultAsync(u => u.TenDangNhap == adminName && u.VaiTro == "Admin");
+            if (admin == null)
+            {
+                HttpContext.Session.Clear();
+                return RedirectToAction("Login");
+            }
+            return View(admin);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateProfile()
+        {
+            ViewBag.Title = "Cập nhật hồ sơ";
+            var adminName = HttpContext.Session.GetString("AdminName");
+            var admin = await _context.NguoiDungs.FirstOrDefaultAsync(u => u.TenDangNhap == adminName && u.VaiTro == "Admin");
+            if (admin == null) return NotFound();
+            return View(admin);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile(int maNguoiDung, string tenDangNhap)
+        {
+            var existing = await _context.NguoiDungs.FindAsync(maNguoiDung);
+            if (existing == null || existing.VaiTro != "Admin") return NotFound();
+
+            existing.TenDangNhap = tenDangNhap;
+            try
+            {
+                _context.NguoiDungs.Update(existing);
+                await _context.SaveChangesAsync();
+                HttpContext.Session.SetString("AdminName", existing.TenDangNhap);
+                TempData["SuccessMessage"] = "Cập nhật hồ sơ thành công!";
+                return RedirectToAction("Profile");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = $"Lỗi: {ex.Message}";
+            }
+            return View(existing);
+        }
+
+        [HttpGet]
+        public IActionResult ChangePassword() => View();
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword, string confirmNewPassword)
+        {
+            var adminName = HttpContext.Session.GetString("AdminName");
+            var admin = await _context.NguoiDungs.FirstOrDefaultAsync(u => u.TenDangNhap == adminName && u.VaiTro == "Admin");
+            if (admin == null) return RedirectToAction("Login");
+
+            if (newPassword != confirmNewPassword)
+            {
+                ViewBag.Error = "Mật khẩu mới không khớp.";
+                return View();
+            }
+
+            var hasher = new PasswordHasher<NguoiDung>();
+            if (hasher.VerifyHashedPassword(admin, admin.MatKhau, currentPassword) == PasswordVerificationResult.Failed)
+            {
+                ViewBag.Error = "Mật khẩu hiện tại không đúng.";
+                return View();
+            }
+
+            admin.MatKhau = hasher.HashPassword(admin, newPassword);
+            _context.NguoiDungs.Update(admin);
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Đổi mật khẩu thành công!";
+            return RedirectToAction("Profile");
+        }
+
+        public IActionResult Settings() => View();
+
+        // =========================================================
+        // CRUD DANH MỤC BLOG (Categories) - TÍCH HỢP TỪ DEMO 1
+        // =========================================================
+        public async Task<IActionResult> BlogCategories()
+        {
+            var categories = await _context.Categories.AsNoTracking().ToListAsync();
+            return View(categories);
+        }
+
+        public IActionResult CreateBlogCategory() => View();
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateBlogCategory(string categoryName, string slug)
+        {
+            var model = new Category
+            {
+                CategoryName = categoryName,
+                Slug = string.IsNullOrEmpty(slug) ? categoryName.ToLower().Replace(" ", "-") : slug,
+                NgayTao = DateTime.Now
+            };
+            _context.Categories.Add(model);
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Thêm danh mục thành công!";
+            return RedirectToAction("BlogCategories");
+        }
+
+        public async Task<IActionResult> EditBlogCategory(int id)
+        {
+            var cat = await _context.Categories.FindAsync(id);
+            if (cat == null) return NotFound();
+            return View(cat);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditBlogCategory(int id, string categoryName, string slug)
+        {
+            var existing = await _context.Categories.AsNoTracking().FirstOrDefaultAsync(c => c.CategoryId == id);
+            if (existing == null) return NotFound();
+
+            var model = new Category
+            {
+                CategoryId = id,
+                CategoryName = categoryName,
+                Slug = string.IsNullOrEmpty(slug) ? categoryName.ToLower().Replace(" ", "-") : slug,
+                NgayTao = existing.NgayTao
+            };
+            _context.Categories.Update(model);
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Cập nhật danh mục thành công!";
+            return RedirectToAction("BlogCategories");
+        }
+
+        [HttpPost, ActionName("DeleteBlogCategory")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteBlogCategoryConfirmed(int id)
+        {
+            var hasArticles = await _context.Articles.AnyAsync(a => a.CategoryId == id);
+            if (hasArticles)
+            {
+                TempData["ErrorMessage"] = "Không thể xóa danh mục này vì còn bài viết.";
+                return RedirectToAction("BlogCategories");
+            }
+
+            var cat = await _context.Categories.FindAsync(id);
+            if (cat != null)
+            {
+                _context.Categories.Remove(cat);
+                await _context.SaveChangesAsync();
+            }
+            TempData["SuccessMessage"] = "Xóa danh mục thành công!";
+            return RedirectToAction("BlogCategories");
+        }
+
+        // =========================================================
+        // CRUD BÀI VIẾT (Articles) - TÍCH HỢP TỪ DEMO 1
+        // =========================================================
+        public async Task<IActionResult> Articles()
+        {
+            var articles = await _context.Articles
+                .Include(a => a.Category)
+                .Include(a => a.Author)
+                .AsNoTracking()
+                .OrderByDescending(a => a.PublishDate)
+                .ToListAsync();
+            return View(articles);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateArticle()
+        {
+            ViewBag.Categories = await _context.Categories.ToListAsync();
+            ViewBag.Authors = await _context.NguoiDungs.Where(u => u.VaiTro == "Admin" || u.VaiTro == "Editor").ToListAsync();
+            return View(new Article());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateArticle(Article model, IFormFile featureImage)
+        {
+            ModelState.Remove("Author");
+            ModelState.Remove("Category");
+            ModelState.Remove("FeatureImageUrl");
+
+            if (ModelState.IsValid)
+            {
+                if (featureImage != null && featureImage.Length > 0)
+                {
+                    var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/blog");
+                    if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
+
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(featureImage.FileName);
+                    using (var stream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
+                    {
+                        await featureImage.CopyToAsync(stream);
+                    }
+                    model.FeatureImageUrl = "/uploads/blog/" + fileName;
+                }
+
+                model.PublishDate = DateTime.Now;
+                _context.Articles.Add(model);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Thêm bài viết thành công!";
+                return RedirectToAction("Articles");
+            }
+
+            ViewBag.Categories = await _context.Categories.ToListAsync();
+            ViewBag.Authors = await _context.NguoiDungs.Where(u => u.VaiTro == "Admin" || u.VaiTro == "Editor").ToListAsync();
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditArticle(int id)
+        {
+            var article = await _context.Articles.FindAsync(id);
+            if (article == null) return NotFound();
+
+            ViewBag.Categories = await _context.Categories.ToListAsync();
+            ViewBag.Authors = await _context.NguoiDungs.Where(u => u.VaiTro == "Admin" || u.VaiTro == "Editor").ToListAsync();
+            return View(article);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditArticle(Article model, IFormFile featureImage)
+        {
+            ModelState.Remove("Author");
+            ModelState.Remove("Category");
+            ModelState.Remove("FeatureImageUrl");
+
+            var existingArticle = await _context.Articles.FindAsync(model.ArticleId);
+            if (existingArticle == null) return NotFound();
+
+            string fileName = existingArticle.FeatureImageUrl;
+            if (featureImage != null && featureImage.Length > 0)
+            {
+                var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/blog");
+                if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
+
+                var newFileName = Guid.NewGuid().ToString() + Path.GetExtension(featureImage.FileName);
+                using (var stream = new FileStream(Path.Combine(uploads, newFileName), FileMode.Create))
+                {
+                    await featureImage.CopyToAsync(stream);
+                }
+                fileName = "/uploads/blog/" + newFileName;
+            }
+
+            existingArticle.Title = model.Title;
+            existingArticle.Slug = model.Slug;
+            existingArticle.Summary = model.Summary;
+            existingArticle.Content = model.Content;
+            existingArticle.CategoryId = model.CategoryId;
+            existingArticle.AuthorId = model.AuthorId;
+            existingArticle.IsPublished = model.IsPublished;
+            existingArticle.FeatureImageUrl = fileName;
+
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Cập nhật bài viết thành công!";
+            return RedirectToAction("Articles");
+        }
+
+        [HttpPost, ActionName("DeleteArticle")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteArticleConfirmed(int id)
+        {
+            var article = await _context.Articles.FindAsync(id);
+            if (article != null)
+            {
+                _context.Articles.Remove(article);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Xóa bài viết thành công!";
+            }
+            return RedirectToAction("Articles");
+        }
+
+        public async Task<IActionResult> ArticleDetails(int id)
+        {
+            var article = await _context.Articles.Include(a => a.Category).Include(a => a.Author).FirstOrDefaultAsync(a => a.ArticleId == id);
+            if (article == null) return NotFound();
+            return View(article);
         }
     }
 }

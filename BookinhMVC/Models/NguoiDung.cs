@@ -14,5 +14,6 @@ namespace BookinhMVC.Models
         public BacSi BacSi { get; set; }
         public BenhNhan BenhNhan { get; set; }
         public ICollection<Question> Questions { get; set; }
+        public ICollection<Article> Articles { get; set; }
     }
 }

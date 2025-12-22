@@ -1,0 +1,39 @@
+﻿@using BookinhMVC.Models
+@model OrderInfoModel
+@{
+    ViewData["Title"] = "Thanh toán đơn hàng";
+    // Giả định bạn đã lấy được dữ liệu cần thiết từ DB hoặc Session
+
+    // Ví dụ về dữ liệu cần truyền (thường được lấy từ Model chính của trang Checkout)
+    long grandTotal = 150000; // Số tiền (đơn vị: VNĐ)
+    string orderDetails = "Thanh toán phí khám cho lịch hẹn #12345";
+    string userName = "Nguyen Van A"; // Tên người dùng hiện tại
+}
+
+<h2>Thanh toán Đơn hàng/Lịch hẹn</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Chi tiết đơn hàng</h4>
+        <p><strong>Tổng tiền:</strong> @(grandTotal.ToString("N0")) VNĐ</p>
+        <p><strong>Nội dung:</strong> @orderDetails</p>
+    </div>
+    <div class="col-md-6">
+        <h4>Chọn Phương thức Thanh toán</h4>
+
+        <form method="POST" asp-action="CreatePaymentUrl" asp-controller="Payment">
+
+            <input type="hidden" name="FullName" value="@userName" />
+            <input type="hidden" name="Amount" value="@grandTotal" />
+            <input type="hidden" name="OrderInfo" value="@orderDetails" />
+
+            <div class="form-group">
+                <button class="btn btn-lg btn-danger" type="submit">
+                    <i class="fas fa-wallet"></i> Thanh toán với MoMo
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>

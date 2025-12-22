@@ -3,26 +3,201 @@
     Layout = "_AdminLayout";
     ViewBag.Active = "Appointments";
     ViewBag.Title = "Sửa Lịch hẹn";
+
+    // YÊU CẦU: Controller phải truyền các danh sách này vào ViewBag
+    var doctors = ViewBag.Doctors as List<BookinhMVC.Models.BacSi>;
+    var patients = ViewBag.Patients as List<BookinhMVC.Models.BenhNhan>;
+
+    // Format DateTime cho input type="datetime-local"
+    string dateTimeValue = Model.NgayGio.ToString("yyyy-MM-ddTHH:mm");
 }
-<h2>Sửa Lịch hẹn</h2>
-<form asp-action="EditAppointment" method="post">
-    <input type="hidden" asp-for="MaLich" />
-    <div class="mb-2">
-        <label>Mã bệnh nhân</label>
-        <input asp-for="MaBenhNhan" class="form-control" />
+
+@section Scripts {
+    <script src="https://cdn.tiny.cloud/1/rkfxe461o9rhm9y5pasyuukghsi6ftjy9ohpay9bhwzulh89/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // KHỞI TẠO TINYMCE CHO TEXTAREA CÓ ID LÀ 'TrieuChung'
+            tinymce.init({
+                selector: '#TrieuChung', // ID của phần tử textarea
+                plugins: 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount',
+                toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+                height: 300, // Chiều cao của editor
+                menubar: 'file edit view insert format tools help',
+                content_css: [
+                    'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css',
+                ]
+            });
+        });
+    </script>
+}
+
+<style>
+    /* VARIABLES */
+    :root {
+        --primary-color: #4f46e5;
+        --success-color: #10b981;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --warning-color: #f59e0b;
+    }
+
+    /* === FORM CARD STYLES === */
+    .form-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #6366f1 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        border-radius: 15px 15px 0 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+
+    .form-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.25);
+        }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-action {
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+        .btn-primary:hover {
+            background-color: #4338ca;
+            border-color: #4338ca;
+        }
+
+    .btn-secondary {
+        border-radius: 10px;
+    }
+
+    .btn-warning {
+        background-color: var(--warning-color);
+        border-color: var(--warning-color);
+        color: var(--text-primary);
+    }
+
+        .btn-warning:hover {
+            background-color: #e69100;
+            border-color: #e69100;
+        }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <div class="card form-card">
+            <div class="form-header">
+                <i class="fas fa-calendar-alt me-2"></i> @ViewBag.Title: #@Model.MaLich
+            </div>
+            <div class="card-body p-4 p-md-5">
+
+                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                <form asp-action="EditAppointment" method="post" class="row g-4">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="MaLich" />
+
+                    <div class="col-12">
+                        <label asp-for="MaBenhNhan" class="form-label">Bệnh nhân</label>
+                        <select asp-for="MaBenhNhan" class="form-select" required>
+                            <option value="">-- Chọn Bệnh nhân --</option>
+                            @if (patients != null)
+                            {
+                                @foreach (var p in patients)
+                                {
+                                    <option value="@p.MaBenhNhan" selected="@(Model.MaBenhNhan == p.MaBenhNhan)">
+                                        @p.HoTen
+                                    </option>
+                                }
+                            }
+                            else
+                            {
+                                <option value="" disabled>-- Lỗi: Không tải được danh sách bệnh nhân --</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="MaBacSi" class="form-label">Bác sĩ</label>
+                        <select asp-for="MaBacSi" class="form-select" required>
+                            <option value="">-- Chọn Bác sĩ --</option>
+                            @if (doctors != null)
+                            {
+                                @foreach (var bs in doctors)
+                                {
+                                    <option value="@bs.MaBacSi" selected="@(Model.MaBacSi == bs.MaBacSi)">
+                                        @bs.HoTen (@bs.Khoa?.TenKhoa)
+                                    </option>
+                                }
+                            }
+                            else
+                            {
+                                <option value="" disabled>-- Lỗi: Không tải được danh sách bác sĩ --</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="NgayGio" class="form-label">Ngày giờ</label>
+                        <input asp-for="NgayGio" class="form-control" type="datetime-local" value="@dateTimeValue" required />
+                    </div>
+
+                    <div class="col-12">
+                        <label for="TrieuChung" class="form-label">Triệu chứng/Ghi chú</label>
+                        <textarea name="TrieuChung" id="TrieuChung" class="form-control" rows="10">@Model.TrieuChung</textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="TrangThai" class="form-label">Trạng thái</label>
+                        <select asp-for="TrangThai" class="form-select">
+                            @{
+                                var statuses = new List<string> { "Chờ xác nhận", "Đã xác nhận" };
+                            }
+                            @foreach (var status in statuses)
+                            {
+                                <option value="@status" selected="@(Model.TrangThai == status)">@status</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-12 d-flex justify-content-end pt-3 border-top mt-5">
+                        <a href="/Admin/Appointments" class="btn btn-secondary btn-action me-3">
+                            <i class="fas fa-arrow-left me-1"></i> Quay lại
+                        </a>
+                        <button type="submit" class="btn btn-warning btn-action">
+                            <i class="fas fa-save me-1"></i> Lưu thay đổi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <div class="mb-2">
-        <label>Mã bác sĩ</label>
-        <input asp-for="MaBacSi" class="form-control" />
-    </div>
-    <div class="mb-2">
-        <label>Ngày giờ</label>
-        <input asp-for="NgayGio" class="form-control" type="datetime-local" />
-    </div>
-    <div class="mb-2">
-        <label>Trạng thái</label>
-        <input asp-for="TrangThai" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary">Lưu</button>
-    <a href="/Admin/Appointments" class="btn btn-secondary">Quay lại</a>
-</form> 
+</div>

@@ -1,29 +1,85 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using BookinhMVC.Models
-@inject BookingContext _db
+@inject BookinhMVC.Models.BookingContext _context
+
 @{
     var userRole = Context.Session.GetString("UserRole");
     var cskhName = Context.Session.GetString("CSKHName");
     var userId = Context.Session.GetInt32("UserId");
-    string patientName = null;
-    if (userRole == "Bệnh nhân" && userId != null)
-    {
-        var patient = _db.BenhNhans.FirstOrDefault(b => b.MaBenhNhan == userId);
-        patientName = patient?.HoTen;
-    }
+    string patientName = Context.Session.GetString("PatientName");
     bool isLoggedIn = !string.IsNullOrEmpty(userRole);
+
+    decimal currentBalance = 0;
+    if (userId != null && userRole == "Bệnh nhân")
+    {
+        var wallet = _context.TaiKhoanBenhNhan.FirstOrDefault(x => x.MaBenhNhan == userId);
+        currentBalance = wallet?.SoDuHienTai ?? 0;
+    }
 }
+
+@functions {
+    public string IsActive(string controller, string action)
+    {
+        var routeData = ViewContext.RouteData.Values;
+        var currentController = routeData["controller"]?.ToString();
+        var currentAction = routeData["action"]?.ToString();
+
+        if (string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase))
+        {
+            return "active";
+        }
+
+        if (string.Equals(controller, "Home", StringComparison.OrdinalIgnoreCase) && action == "GeneralCheckup")
+        {
+            var services = new[] { "GeneralCheckup", "Cardiology", "Testing" };
+            if (string.Equals(currentController, "Home", StringComparison.OrdinalIgnoreCase) &&
+                services.Contains(currentAction, StringComparer.OrdinalIgnoreCase))
+            {
+                return "active";
+            }
+        }
+
+        if (string.Equals(controller, "Home", StringComparison.OrdinalIgnoreCase) && action == "HospitalAbout")
+        {
+            var abouts = new[] { "HospitalAbout", "Doctors" };
+            if (string.Equals(currentController, "Home", StringComparison.OrdinalIgnoreCase) &&
+                abouts.Contains(currentAction, StringComparer.OrdinalIgnoreCase))
+            {
+                return "active";
+            }
+        }
+
+        var role = ViewContext.HttpContext.Session.GetString("UserRole");
+        if (!string.IsNullOrEmpty(role) && role == "Bệnh nhân" && controller == "User" && string.IsNullOrEmpty(action))
+        {
+            if ((string.Equals(currentController, "User", StringComparison.OrdinalIgnoreCase) &&
+                 (currentAction == "Appointments" || currentAction == "UpdateProfile" || currentAction == "ChangePassword")) ||
+                (string.Equals(currentController, "Payment", StringComparison.OrdinalIgnoreCase)))
+            {
+                return "active";
+            }
+        }
+
+        return "";
+    }
+}
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Four Rock Hospital</title>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --primary: #1e40af;
+            --primary-dark: #1e3a8a;
             --secondary: #6b7280;
             --accent: #22c55e;
             --background: #f9fafb;
@@ -31,34 +87,37 @@
             --border: #e5e7eb;
         }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        html, body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
             background: var(--background);
             color: var(--text);
-            line-height: 1.6;
-            margin: 0;
+            display: flex;
+            flex-direction: column;
         }
 
+        /* --- Navbar --- */
         .navbar {
-            background: rgba(255, 255, 255, 0.98) !important;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            padding: 1rem 0;
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
         }
 
         .navbar-brand {
-            font-size: 1.6rem;
             font-weight: 800;
             color: var(--primary) !important;
-            transition: color 0.2s;
+            font-size: 1.3rem;
         }
 
         .nav-link {
             font-weight: 500;
-            color: var(--text) !important;
-            padding: 0.5rem 1rem;
-            transition: color 0.2s, background 0.2s;
+            color: #374151 !important;
+            padding: 0.4rem 0.7rem !important;
             border-radius: 6px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
         }
 
             .nav-link:hover, .nav-link.active {
@@ -66,142 +125,188 @@
                 background: rgba(30, 64, 175, 0.05);
             }
 
+        /* ========== FIX NAVBAR 1 HÀNG - COMPACT ========== */
+        .navbar-nav {
+            gap: 0.3rem !important;
+        }
+
+            .navbar-nav .nav-item.dropdown > .nav-link {
+                max-width: 160px;
+                white-space: nowrap;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 0.4rem 0.6rem !important;
+            }
+
+                .navbar-nav .nav-item.dropdown > .nav-link span {
+                    max-width: 90px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    font-size: 0.9rem;
+                }
+
+            .navbar-nav .nav-item.dropdown .rounded-circle {
+                width: 28px !important;
+                height: 28px !important;
+                flex-shrink: 0;
+            }
+
+            .navbar-nav .dropdown-menu.dropdown-menu-end {
+                min-width: 280px;
+                max-width: 320px;
+            }
+
+        /* Search bar compact */
+        #search-input {
+            width: 150px;
+            font-size: 0.85rem;
+            padding: 0.35rem 0.5rem;
+        }
+
+        #voice-search-btn {
+            padding: 0.35rem 0.5rem;
+        }
+
+        /* Buttons compact */
+        .btn-sm {
+            padding: 0.35rem 0.7rem !important;
+            font-size: 0.85rem !important;
+        }
+
+        /* Notification bell compact */
+        .nav-link .fa-bell {
+            font-size: 1rem;
+        }
+
+        /* --- Dropdown Desktop Hover --- */
+        @@media (min-width: 992px) {
+            .navbar-nav .dropdown:hover > .dropdown-menu
+
+        {
+            display: block;
+            margin-top: 0;
+            animation: fadeInUp 0.2s ease-out;
+        }
+
+        }
+
         .dropdown-menu {
             border: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             border-radius: 8px;
-            margin-top: 0.5rem;
         }
 
         .dropdown-item {
+            padding: 0.6rem 1.2rem;
             font-weight: 500;
-            padding: 0.5rem 1.5rem;
-            transition: background 0.2s, color 0.2s;
         }
 
             .dropdown-item:hover {
-                background: rgba(30, 64, 175, 0.05);
+                background-color: #f3f4f6;
                 color: var(--primary);
             }
 
+        /* --- Search Bar --- */
+        #search-input {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            border-color: #d1d5db;
+        }
+
+            #search-input:focus {
+                border-color: var(--primary);
+                box-shadow: none;
+            }
+
+        #voice-search-btn {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            border-left: none;
+            border-color: #d1d5db;
+        }
+
+            #voice-search-btn:hover {
+                background-color: var(--primary);
+                color: white;
+                border-color: var(--primary);
+            }
+
+        /* --- Buttons --- */
         .btn-primary {
-            background: var(--primary);
-            border: none;
-            padding: 0.6rem 1.2rem;
-            font-weight: 600;
-            transition: background 0.2s, transform 0.1s;
-            border-radius: 6px;
+            background-color: var(--primary);
+            border-color: var(--primary);
         }
 
             .btn-primary:hover {
-                background: #1e3a8a;
-                transform: translateY(-1px);
+                background-color: var(--primary-dark);
+                border-color: var(--primary-dark);
             }
 
         .btn-outline-primary {
-            border-color: var(--primary);
             color: var(--primary);
-            font-weight: 600;
-            transition: background 0.2s, color 0.2s;
+            border-color: var(--primary);
         }
 
             .btn-outline-primary:hover {
-                background: var(--primary);
+                background-color: var(--primary);
                 color: white;
             }
 
-        .btn-success {
-            background: var(--accent);
-            border: none;
-            font-weight: 600;
-            transition: background 0.2s, transform 0.1s;
+        /* --- Main Content --- */
+        .container-main {
+            margin-top: 80px;
+            flex: 1;
         }
 
-            .btn-success:hover {
-                background: #16a34a;
-                transform: translateY(-1px);
-            }
-
-        .container {
-            padding-top: 5rem;
-            max-width: 1400px;
-        }
-
+        /* --- Footer --- */
         footer {
-            background: #1f2937;
-            color: #d1d5db;
+            background-color: #111827;
+            color: #9ca3af;
             padding: 3rem 0;
-            margin-top: 3rem;
+            margin-top: auto;
         }
-
-            footer h5 {
-                color: white;
-                font-weight: 700;
-                margin-bottom: 1rem;
-            }
 
             footer a {
                 color: #d1d5db;
                 text-decoration: none;
-                transition: color 0.2s;
             }
 
                 footer a:hover {
-                    color: var(--primary);
+                    color: white;
                 }
 
-        .social-links a {
-            font-size: 1.5rem;
-            margin: 0 0.5rem;
-        }
-
-        .sub-footer {
-            background: #111827;
-            padding: 1rem 0;
-            text-align: center;
-        }
-
-            .sub-footer .btn {
-                margin: 0 0.5rem;
-            }
-
-        #cskh-chat-icon, #chatbot-chat-icon {
+        /* --- Chatbox --- */
+        .chat-icon-fixed {
             position: fixed;
-            right: 32px;
+            right: 30px;
             z-index: 1050;
         }
 
         #cskh-chat-icon {
-            bottom: 110px;
+            bottom: 100px;
         }
 
         #chatbot-chat-icon {
-            bottom: 40px;
+            bottom: 30px;
         }
-
-            #cskh-chat-icon .btn, #chatbot-chat-icon .btn {
-                width: 60px;
-                height: 60px;
-                font-size: 2rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
 
         .chatbox {
-            position: absolute;
-            right: 70px;
-            bottom: 0;
-            width: 320px;
-            background: #fff;
+            position: fixed;
+            right: 90px;
+            bottom: 30px;
+            width: 350px;
+            background: white;
             border-radius: 12px;
             overflow: hidden;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-            animation: fadeInUp .2s;
+            display: none;
+            z-index: 1060;
+            animation: slideIn 0.3s ease;
         }
 
-        @@keyframes fadeInUp {
+        @@keyframes slideIn {
             from
 
         {
@@ -216,107 +321,212 @@
 
         }
 
-        @@media (max-width: 576px) {
-            .chatbox
+        @@keyframes fadeInUp {
+            from
 
         {
-            right: 0;
-            bottom: 0;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        /* --- Voice Alert --- */
+        #voice-alert {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1100;
+            min-width: 250px;
+            display: none;
+        }
+
+        .voice-search-status {
+            color: #dc2626 !important;
+            border-color: #dc2626 !important;
+        }
+
+            .voice-search-status i {
+                animation: pulse 1s infinite;
+            }
+
+        @@keyframes pulse {
+            0%
+
+        {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.2);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+
+        }
+
+        .chatbot-suggestion {
+            display: block;
             width: 100%;
-            border-radius: 0;
+            text-align: left;
+            margin: 4px 0;
+            padding: 6px 10px;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            color: #0369a1;
+            border-radius: 6px;
+            font-size: 0.9em;
+            transition: all 0.2s;
         }
 
-        #cskh-chat-icon, #chatbot-chat-icon {
-            right: 1rem;
-        }
+            .chatbot-suggestion:hover {
+                background: #e0f2fe;
+                border-color: #7dd3fc;
+            }
 
-        .sub-footer .btn {
-            margin: 0.5rem;
-        }
-
-        }
-
-        @@media (min-width: 768px) {
-            html
+        /* --- Mobile Responsive --- */
+        @@media (max-width: 991px) {
+            .navbar-nav .nav-item.dropdown > .nav-link
 
         {
-            font-size: 16px;
+            max-width: 100%;
         }
 
+        .navbar-nav .dropdown-menu {
+            width: 100%;
+            max-width: 100%;
         }
 
-        .form-control:focus, .btn:focus {
-            box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.25);
         }
     </style>
 </head>
 <body>
+
+    <div id="voice-alert" class="alert shadow-sm" role="alert">
+        <span id="voice-alert-content"></span>
+    </div>
+
     <header>
         <nav class="navbar navbar-expand-lg fixed-top">
-            <div class="container-fluid px-4">
+            <div class="container">
                 <a class="navbar-brand" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-hospital-alt me-2"></i>Four Rock Hospital
+                    <i class="fas fa-hospital-alt me-2"></i>Four Rock
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto align-items-center gap-2">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">
-                                <i class="fas fa-home me-1"></i>Trang chủ
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="HospitalBlog">
-                                <i class="fas fa-blog me-1"></i>Blog
-                            </a>
-                        </li>
+
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav ms-auto align-items-center" style="gap: 0.3rem;">
+                        <li class="nav-item"><a class="nav-link @IsActive("Home", "Index")" asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                        <li class="nav-item"><a class="nav-link @IsActive("Home", "HospitalBlog")" asp-controller="Home" asp-action="HospitalBlog">Blog</a></li>
+
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="serviceDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-stethoscope me-1"></i>Dịch vụ
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="serviceDropdown">
-                                <li><a class="dropdown-item" asp-controller="Home" asp-action="GeneralCheckup"><i class="fas fa-user-md me-2"></i>Khám tổng quát</a></li>
-                                <li><a class="dropdown-item" asp-controller="Home" asp-action="Cardiology"><i class="fas fa-heartbeat me-2"></i>Tim mạch</a></li>
-                                <li><a class="dropdown-item" asp-controller="Home" asp-action="Testing"><i class="fas fa-vial me-2"></i>Xét nghiệm</a></li>
+                            <a class="nav-link dropdown-toggle @IsActive("Home", "GeneralCheckup")" href="#" data-bs-toggle="dropdown">Dịch vụ</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Home" asp-action="GeneralCheckup">Khám tổng quát</a></li>
+                                <li><a class="dropdown-item" asp-controller="Home" asp-action="Cardiology">Tim mạch</a></li>
+                                <li><a class="dropdown-item" asp-controller="Home" asp-action="Testing">Xét nghiệm</a></li>
                             </ul>
                         </li>
+
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="aboutDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-info-circle me-1"></i>Giới thiệu
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="aboutDropdown">
-                                <li><a class="dropdown-item" asp-controller="Home" asp-action="HospitalAbout"><i class="fas fa-building me-2"></i>Bệnh viện</a></li>
-                                <li><a class="dropdown-item" asp-controller="Home" asp-action="Doctors"><i class="fas fa-users me-2"></i>Bác sĩ</a></li>
+                            <a class="nav-link dropdown-toggle @IsActive("Home", "HospitalAbout")" href="#" data-bs-toggle="dropdown">Giới thiệu</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Home" asp-action="HospitalAbout">Bệnh viện</a></li>
+                                <li><a class="dropdown-item" asp-controller="Home" asp-action="Doctors">Đội ngũ Bác sĩ</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="QA">
-                                <i class="fas fa-question-circle me-1"></i>Hỏi đáp
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Contact">
-                                <i class="fas fa-phone me-1"></i>Liên hệ
-                            </a>
-                        </li>
+
+                        <li class="nav-item"><a class="nav-link @IsActive("Home", "QA")" asp-controller="Home" asp-action="QA">Hỏi đáp</a></li>
+                        <li class="nav-item"><a class="nav-link @IsActive("Home", "Contact")" asp-controller="Home" asp-action="Contact">Liên hệ</a></li>
+
+                        @if (!string.IsNullOrEmpty(userRole) && userRole == "Bệnh nhân")
+                        {
+                            <li class="nav-item dropdown" style="margin-left: 0.3rem;">
+                                <a class="nav-link position-relative" href="#" id="notifDropdown" data-bs-toggle="dropdown" style="padding: 0.4rem 0.6rem !important;">
+                                    <i class="fas fa-bell"></i>
+                                    <span id="notif-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display:none; font-size: 0.55rem;">0</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end p-0" style="width: 300px;">
+                                    <li class="p-2 border-bottom fw-bold bg-light">Thông báo mới</li>
+                                    <li id="notif-items-container" style="max-height: 300px; overflow-y: auto;">
+                                        <div class="text-center py-3 text-muted small">Đang tải...</div>
+                                    </li>
+                                    <li class="p-2 border-top text-center">
+                                        <a asp-controller="User" asp-action="Notifications" class="text-decoration-none small fw-bold">Xem tất cả</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+
+                        @if (string.IsNullOrEmpty(userRole) || userRole == "Bệnh nhân")
+                        {
+                            <li class="nav-item" style="margin-left: 0.3rem;">
+                                <form id="search-form-header" asp-controller="Search" asp-action="Index" method="get" class="d-flex">
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" id="search-input" name="q" class="form-control" placeholder="Tìm kiếm..." required style="width: 140px;">
+                                        <button type="button" id="voice-search-btn" class="btn btn-outline-secondary bg-white" title="Tìm bằng giọng nói">
+                                            <i class="fas fa-microphone"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </li>
+                        }
+
                         @if (!string.IsNullOrEmpty(patientName) && userRole == "Bệnh nhân")
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-user me-1"></i>@patientName
+                            <li class="nav-item dropdown" style="margin-left: 0.3rem;">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center @IsActive("User", "")"
+                                   href="#"
+                                   id="userDropdown"
+                                   role="button"
+                                   data-bs-toggle="dropdown"
+                                   aria-expanded="false">
+
+                                    <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-1" style="width: 28px; height: 28px;">
+                                        <i class="fas fa-user" style="font-size: 0.75rem;"></i>
+                                    </div>
+                                    <span class="d-none d-lg-block fw-semibold text-truncate" style="font-size: 0.9rem;">@patientName</span>
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" asp-controller="User" asp-action="ChangePassword">Đổi mật khẩu</a></li>
-                                    <li><a class="dropdown-item" asp-controller="User" asp-action="UpdateProfile">Hồ sơ cá nhân</a></li>
-                                    <li><a class="dropdown-item" asp-controller="User" asp-action="Appointments">Lịch hẹn</a></li>
-                                    <li><hr class="dropdown-divider" /></li>
+
+                                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2" aria-labelledby="userDropdown">
                                     <li>
-                                        <form asp-controller="User" asp-action="Logout" method="post" class="dropdown-item p-0">
+                                        <h6 class="dropdown-header text-primary fw-bold">
+                                            <i class="fas fa-user-md me-2"></i> Tài khoản
+                                        </h6>
+                                    </li>
+
+                                    <li class="px-3 py-2">
+                                        <div class="p-2 bg-light rounded text-center border">
+                                            <small class="text-muted d-block mb-1">Số dư khả dụng</small>
+                                            <div class="fs-5 fw-bold text-success mb-2">@currentBalance.ToString("N0") đ</div>
+                                            <a asp-controller="Payment" asp-action="Index" class="btn btn-sm btn-success w-100 shadow-sm">
+                                                <i class="fas fa-plus-circle me-1"></i> Nạp tiền ngay
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+
+                                    <li><a class="dropdown-item @IsActive("Payment", "History")" asp-controller="Payment" asp-action="History"><i class="fas fa-receipt me-2 text-muted"></i>Lịch sử giao dịch</a></li>
+                                    <li><a class="dropdown-item @IsActive("User", "Appointments")" asp-controller="User" asp-action="Appointments"><i class="fas fa-calendar-check me-2 text-muted"></i>Lịch hẹn</a></li>
+                                    <li><a class="dropdown-item @IsActive("User", "UpdateProfile")" asp-controller="User" asp-action="UpdateProfile"><i class="fas fa-id-card me-2 text-muted"></i>Hồ sơ</a></li>
+                                    <li><a class="dropdown-item @IsActive("User", "ChangePassword")" asp-controller="User" asp-action="ChangePassword"><i class="fas fa-lock me-2 text-muted"></i>Đổi mật khẩu</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+
+                                    <li>
+                                        <form asp-controller="User" asp-action="Logout" method="post" class="px-0">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-link p-0 w-100 text-start">Đăng xuất</button>
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                            </button>
                                         </form>
                                     </li>
                                 </ul>
@@ -324,17 +534,17 @@
                         }
                         else if (!string.IsNullOrEmpty(cskhName) && userRole == "CSKH")
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="cskhDropdown" role="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-headset me-1"></i>@cskhName
+                            <li class="nav-item dropdown" style="margin-left: 0.3rem;">
+                                <a class="nav-link dropdown-toggle fw-bold text-primary @IsActive("CSKH", "Dashboard")" href="#" data-bs-toggle="dropdown" style="font-size: 0.9rem;">
+                                    <i class="fas fa-headset me-1"></i> @cskhName
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" asp-controller="CSKH" asp-action="Dashboard">Dashboard CSKH</a></li>
-                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item" asp-controller="CSKH" asp-action="Dashboard">Dashboard</a></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <form asp-controller="CSKH" asp-action="Logout" method="post" class="dropdown-item p-0">
+                                        <form asp-controller="CSKH" asp-action="Logout" method="post">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-link p-0 w-100 text-start">Đăng xuất</button>
+                                            <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
                                         </form>
                                     </li>
                                 </ul>
@@ -342,232 +552,324 @@
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="btn btn-primary ms-2" asp-controller="User" asp-action="Register">Đăng ký</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="btn btn-outline-primary ms-2" asp-controller="User" asp-action="Login">Đăng nhập</a>
-                            </li>
+                            <li class="nav-item" style="margin-left: 0.3rem;"><a class="btn btn-sm btn-outline-primary" asp-controller="User" asp-action="Login">Đăng nhập</a></li>
+                            <li class="nav-item" style="margin-left: 0.2rem;"><a class="btn btn-sm btn-primary" asp-controller="User" asp-action="Register">Đăng ký</a></li>
                         }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-5">
-            @RenderBody()
-        </main>
+
+    <div class="container container-main">
+        @RenderBody()
     </div>
+
+    @if (!string.IsNullOrEmpty(patientName) && userRole == "Bệnh nhân")
+    {
+        <div id="cskh-chat-icon" class="chat-icon-fixed">
+            <button class="btn btn-primary rounded-circle shadow p-3" onclick="toggleCSKHChatBox(event)" title="Chat với Nhân viên">
+                <i class="fas fa-comments fa-lg"></i>
+            </button>
+        </div>
+        <div id="cskhChatBox" class="chatbox shadow-lg">
+            <div class="bg-primary text-white p-2 d-flex justify-content-between align-items-center">
+                <span class="fw-bold"><i class="fas fa-headset me-2"></i>Hỗ trợ CSKH</span>
+                <button type="button" class="btn-close btn-close-white" onclick="closeCSKHChatBox()"></button>
+            </div>
+            <div id="cskhChatMessages" class="p-3 bg-light" style="height: 300px; overflow-y: auto;">
+                <div class="text-center text-muted small mt-5">Đang tải lịch sử chat...</div>
+            </div>
+            <div class="p-2 border-top bg-white">
+                <form id="cskhChatForm" onsubmit="return sendCSKHMessage();" class="d-flex gap-2">
+                    @Html.AntiForgeryToken()
+                    <input type="text" id="cskhChatInput" class="form-control form-control-sm" placeholder="Nhập tin nhắn..." required autocomplete="off">
+                    <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+
+        <div id="chatbot-chat-icon" class="chat-icon-fixed">
+            <button class="btn btn-success rounded-circle shadow p-3" onclick="toggleChatbotChatBox(event)" title="Hỏi Chatbot AI">
+                <i class="fas fa-robot fa-lg"></i>
+            </button>
+        </div>
+        <div id="chatbotChatBox" class="chatbox shadow-lg">
+            <div class="bg-success text-white p-2 d-flex justify-content-between align-items-center">
+                <span class="fw-bold"><i class="fas fa-robot me-2"></i>Trợ lý AI</span>
+                <button type="button" class="btn-close btn-close-white" onclick="closeChatbotChatBox()"></button>
+            </div>
+            <div id="chatbotChatMessages" class="p-3 bg-light" style="height: 300px; overflow-y: auto;">
+            </div>
+            <div class="p-2 border-top bg-white">
+                <form id="chatbotChatForm" onsubmit="return sendChatbotMessage();" class="d-flex gap-2">
+                    @Html.AntiForgeryToken()
+                    <input type="text" id="chatbotChatInput" class="form-control form-control-sm" placeholder="Hỏi gì đó..." required autocomplete="off">
+                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+    }
+
     <footer>
         <div class="container">
             <div class="row">
-                <div class="col-md-4 mb-4">
-                    <h5><i class="fas fa-hospital-alt me-2"></i>Four Rock Hospital</h5>
-                    <p>Chăm sóc sức khỏe hàng đầu với công nghệ hiện đại và đội ngũ y bác sĩ chuyên nghiệp.</p>
+                <div class="col-md-4">
+                    <h5 class="text-white mb-3">Four Rock Hospital</h5>
+                    <p class="small">Hệ thống đặt lịch khám bệnh trực tuyến hiện đại, nhanh chóng và tiện lợi.</p>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <h5>Liên kết nhanh</h5>
-                    <ul class="list-unstyled">
-                        <li><a asp-controller="Home" asp-action="GeneralCheckup">Khám tổng quát</a></li>
-                        <li><a asp-controller="Home" asp-action="Testing">Xét nghiệm</a></li>
-                        <li><a asp-controller="Home" asp-action="Cardiology">Tim mạch</a></li>
-                        <li><a asp-controller="Home" asp-action="HospitalAbout">Giới thiệu</a></li>
-                        <li><a asp-controller="Home" asp-action="HospitalBlog">Blog</a></li>
+                <div class="col-md-4">
+                    <h5 class="text-white mb-3">Liên kết</h5>
+                    <ul class="list-unstyled small">
+                        <li><a asp-controller="Home" asp-action="GeneralCheckup">Dịch vụ khám</a></li>
+                        <li><a asp-controller="Home" asp-action="Doctors">Đội ngũ bác sĩ</a></li>
                         <li><a asp-controller="Home" asp-action="Contact">Liên hệ</a></li>
                     </ul>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <h5>Theo dõi chúng tôi</h5>
-                    <div class="social-links">
-                        <a href="#" class="me-3"><i class="fab fa-facebook fa-lg"></i></a>
-                        <a href="#" class="me-3"><i class="fab fa-youtube fa-lg"></i></a>
-                        <a href="#" class="me-3"><i class="fab fa-instagram fa-lg"></i></a>
-                        <a href="#"><i class="fab fa-twitter fa-lg"></i></a>
+                <div class="col-md-4">
+                    <h5 class="text-white mb-3">Kết nối</h5>
+                    <div class="d-flex gap-3">
+                        <a href="#"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#"><i class="fab fa-youtube fa-lg"></i></a>
                     </div>
                 </div>
             </div>
-            <hr class="bg-secondary" />
-            <p class="mb-0 text-center">© 2025 Four Rock Hospital. All Rights Reserved. | Thiết kế bởi Four Rock Team</p>
+            <hr class="border-secondary my-4">
+            <div class="text-center small">
+                &copy; 2025 Four Rock Hospital. Designed by Four Rock Team.
+            </div>
         </div>
     </footer>
-    @if (!isLoggedIn)
-    {
-        <div class="sub-footer">
-            <a class="btn btn-success" asp-controller="CSKH" asp-action="Login"><i class="fas fa-headset me-1"></i>CSKH</a>
-            <a class="btn btn-info" asp-controller="Doctor" asp-action="Login">Bác sĩ</a>
-            <a class="btn btn-dark" asp-controller="Admin" asp-action="Login">Admin</a>
-        </div>
-    }
+
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    @if (!string.IsNullOrEmpty(patientName) && userRole == "Bệnh nhân")
-    {
-        <!-- CSKH Chat Icon & Box -->
-        <div id="cskh-chat-icon">
-            <button type="button"
-                    class="btn btn-primary rounded-circle shadow"
-                    title="Chat với CSKH"
-                    onclick="toggleCSKHChatBox(event)">
-                <i class="fas fa-comments"></i>
-            </button>
-            <div id="cskhChatBox" class="chatbox shadow" style="display:none;">
-                <div class="chatbox-header bg-primary text-white py-2 px-3 d-flex justify-content-between align-items-center">
-                    <span><i class="fas fa-headset"></i> CSKH Four Rock</span>
-                    <button type="button" class="btn-close btn-close-white btn-sm" onclick="closeCSKHChatBox()"></button>
-                </div>
-                <div class="chatbox-body p-2" style="height:260px;overflow-y:auto;" id="cskhChatMessages">
-                    <div class="text-center text-muted my-2" id="cskhChatLoading">Đang tải hội thoại...</div>
-                </div>
-                <div class="chatbox-footer p-2">
-                    <form id="cskhChatForm" class="w-100 d-flex gap-2" autocomplete="off" onsubmit="return sendCSKHMessage();">
-                        <input type="text" id="cskhChatInput" class="form-control" placeholder="Nhập tin nhắn..." maxlength="500" autocomplete="off" required />
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- Chatbot Chat Icon & Box -->
-        <div id="chatbot-chat-icon">
-            <button type="button"
-                    class="btn btn-success rounded-circle shadow"
-                    title="Chatbot hỗ trợ"
-                    onclick="toggleChatbotChatBox(event)">
-                <i class="fas fa-robot"></i>
-            </button>
-            <div id="chatbotChatBox" class="chatbox shadow" style="display:none;">
-                <div class="chatbox-header bg-success text-white py-2 px-3 d-flex justify-content-between align-items-center">
-                    <span><i class="fas fa-robot"></i> Chatbot Four Rock</span>
-                    <button type="button" class="btn-close btn-close-white btn-sm" onclick="closeChatbotChatBox()"></button>
-                </div>
-                <div class="chatbox-body p-2" style="height:260px;overflow-y:auto;" id="chatbotChatMessages">
-                    <div class="text-center text-muted my-2" id="chatbotChatLoading">Đang tải hội thoại...</div>
-                </div>
-                <div class="chatbox-footer p-2">
-                    <form id="chatbotChatForm" class="w-100 d-flex gap-2" autocomplete="off" onsubmit="return sendChatbotMessage();">
-                        <input type="text" id="chatbotChatInput" class="form-control" placeholder="Nhập câu hỏi cho chatbot..." maxlength="500" autocomplete="off" required />
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <script>
-            // Only one chatbox open at a time
-            function toggleCSKHChatBox(e) {
-                e.stopPropagation();
-                closeChatbotChatBox();
-                let box = document.getElementById('cskhChatBox');
-                if (box.style.display === 'none' || box.style.display === '') {
-                    box.style.display = 'block';
-                    loadCSKHMessages();
-                    setTimeout(() => document.getElementById('cskhChatInput').focus(), 200);
-                } else {
-                    box.style.display = 'none';
-                }
-            }
-            function closeCSKHChatBox() {
-                document.getElementById('cskhChatBox').style.display = 'none';
-            }
-            function toggleChatbotChatBox(e) {
-                e.stopPropagation();
-                closeCSKHChatBox();
-                let box = document.getElementById('chatbotChatBox');
-                if (box.style.display === 'none' || box.style.display === '') {
-                    box.style.display = 'block';
-                    loadChatbotMessages();
-                    setTimeout(() => document.getElementById('chatbotChatInput').focus(), 200);
-                } else {
-                    box.style.display = 'none';
-                }
-            }
-            function closeChatbotChatBox() {
-                document.getElementById('chatbotChatBox').style.display = 'none';
-            }
-            // CSKH Chat logic
-            function loadCSKHMessages() {
-                $("#cskhChatLoading").show();
-                $("#cskhChatMessages").empty().append('<div class="text-center text-muted my-2" id="cskhChatLoading">Đang tải hội thoại...</div>');
-                $.post('/api/patient/getMessages', { user1: '@userId', user2: 1 }, function (res) {
-                    $("#cskhChatMessages").empty();
-                    if (res.success && res.messages.length > 0) {
-                        res.messages.forEach(function (msg) {
-                            var align = msg.senderId == @userId ? "text-end" : "text-start";
-                            var bg = msg.senderId == @userId ? "bg-primary text-white" : "bg-light";
-                            $("#cskhChatMessages").append(
-                                `<div class="mb-2 ${align}">
-                                    <span class="d-inline-block px-3 py-2 rounded ${bg}" style="max-width:80%;word-break:break-word;">${msg.message}</span>
-                                </div>`
-                            );
-                        });
-                    } else {
-                        $("#cskhChatMessages").append('<div class="text-center text-muted my-2">Chưa có tin nhắn nào.</div>');
-                    }
-                    $("#cskhChatMessages").scrollTop($("#cskhChatMessages")[0].scrollHeight);
-                });
-            }
-            function sendCSKHMessage() {
-                var msg = $("#cskhChatInput").val().trim();
-                if (!msg) return false;
-                $("#cskhChatInput").prop("disabled", true);
-                $.post('/api/patient/sendMessage', {
-                    receiver_id: 1,
-                    message: msg
-                }, function (res) {
-                    if (res.success) {
-                        $("#cskhChatInput").val('');
-                        loadCSKHMessages();
-                    } else {
-                        alert(res.message || "Gửi tin nhắn thất bại!");
-                    }
-                }).always(function () {
-                    $("#cskhChatInput").prop("disabled", false);
-                });
-                return false;
-            }
-            // Chatbot Chat logic
-            function loadChatbotMessages() {
-                $("#chatbotChatLoading").show();
-                $("#chatbotChatMessages").empty().append('<div class="text-center text-muted my-2" id="chatbotChatLoading">Đang tải hội thoại...</div>');
-                // Lưu lịch sử hội thoại phía client nếu muốn, ở đây chỉ clear box
-                $("#chatbotChatMessages").empty();
-            }
-            function sendChatbotMessage() {
-                var msg = $("#chatbotChatInput").val().trim();
-                if (!msg) return false;
-                $("#chatbotChatInput").prop("disabled", true);
-                // Hiển thị tin nhắn người dùng
-                $("#chatbotChatMessages").append(
-                    `<div class="mb-2 text-end">
-                        <span class="d-inline-block px-3 py-2 rounded bg-success text-white" style="max-width:80%;word-break:break-word;">${msg}</span>
-                    </div>`
-                );
-                $("#chatbotChatInput").val('');
-                $("#chatbotChatMessages").scrollTop($("#chatbotChatMessages")[0].scrollHeight);
-                // Gửi tới API
-                $.post('/api/chatbot', { message: msg }, function (res) {
-                    $("#chatbotChatMessages").append(
-                        `<div class="mb-2 text-start">
-                            <span class="d-inline-block px-3 py-2 rounded bg-light" style="max-width:80%;word-break:break-word;">${res.reply}</span>
-                        </div>`
-                    );
-                    $("#chatbotChatMessages").scrollTop($("#chatbotChatMessages")[0].scrollHeight);
-                }).always(function () {
-                    $("#chatbotChatInput").prop("disabled", false);
-                });
-                return false;
-            }
-            // Đóng chatbox khi click ra ngoài
-            document.addEventListener('click', function (e) {
-                if (!document.getElementById('cskh-chat-icon').contains(e.target)) closeCSKHChatBox();
-                if (!document.getElementById('chatbot-chat-icon').contains(e.target)) closeChatbotChatBox();
-            });
-        </script>
-    }
-    @await RenderSectionAsync("Scripts", required: false)
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+    <script>
+        // --- 1. NOTIFICATIONS LOGIC ---
+        (function () {
+            const badgeEl = document.getElementById('notif-badge');
+            const container = document.getElementById('notif-items-container');
+
+            if (badgeEl && container) {
+                async function loadNotifs() {
+                    try {
+                        let res = await fetch('/User/Notifications/Count');
+                        let json = await res.json();
+                        if (json.success && json.unread > 0) {
+                            badgeEl.textContent = json.unread;
+                            badgeEl.style.display = 'inline-block';
+                        } else {
+                            badgeEl.style.display = 'none';
+                        }
+
+                        res = await fetch('/User/Notifications/List?take=5');
+                        json = await res.json();
+                        if (json.success && json.data.length > 0) {
+                            container.innerHTML = '';
+                            json.data.forEach(it => {
+                                const date = new Date(it.createdAt).toLocaleDateString('vi-VN');
+                                const html = `
+                                    <a href="#" class="dropdown-item py-2 border-bottom" onclick="markRead(${it.id}, '${it.relatedAppointmentId || ''}')">
+                                        <div class="d-flex justify-content-between">
+                                            <strong class="small text-truncate" style="max-width: 180px;">${it.title}</strong>
+                                            <span class="text-muted" style="font-size: 0.7rem;">${date}</span>
+                                        </div>
+                                        <div class="small text-muted text-truncate" style="max-width: 220px;">${it.content}</div>
+                                    </a>`;
+                                container.insertAdjacentHTML('beforeend', html);
+                            });
+                        } else {
+                            container.innerHTML = '<div class="text-center py-3 text-muted small">Không có thông báo mới.</div>';
+                        }
+                    } catch (e) { console.error("Notif error", e); }
+                }
+
+                loadNotifs();
+                setInterval(loadNotifs, 30000);
+
+                window.markRead = async (id, linkId) => {
+                    await fetch('/User/Notifications/MarkRead', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: id })
+                    });
+                    if (linkId) window.location.href = '/User/Appointments';
+                    else loadNotifs();
+                };
+            }
+        })();
+
+        // --- 2. VOICE SEARCH LOGIC ---
+        document.addEventListener('DOMContentLoaded', function () {
+            const voiceBtn = document.getElementById('voice-search-btn');
+            const searchInput = document.getElementById('search-input');
+            const searchForm = document.getElementById('search-form-header');
+            const voiceAlert = document.getElementById('voice-alert');
+            const voiceAlertContent = document.getElementById('voice-alert-content');
+
+            if (!voiceBtn || !searchInput) return;
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                voiceBtn.style.display = 'none';
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'vi-VN';
+            recognition.interimResults = false;
+
+            function showAlert(msg, type = 'info') {
+                voiceAlertContent.innerHTML = msg;
+                voiceAlert.className = `alert shadow-sm alert-${type}`;
+                $(voiceAlert).fadeIn().delay(3000).fadeOut();
+            }
+
+            voiceBtn.addEventListener('click', () => {
+                if (voiceBtn.classList.contains('voice-search-status')) {
+                    recognition.stop();
+                } else {
+                    recognition.start();
+                }
+            });
+
+            recognition.onstart = () => {
+                voiceBtn.classList.add('voice-search-status');
+                showAlert('<i class="fas fa-microphone me-2"></i>Đang lắng nghe...', 'warning');
+            };
+
+            recognition.onend = () => {
+                voiceBtn.classList.remove('voice-search-status');
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                searchInput.value = transcript;
+                showAlert(`<i class="fas fa-check me-2"></i>Đã nhận: "${transcript}"`, 'success');
+                setTimeout(() => searchForm.submit(), 1000);
+            };
+
+            recognition.onerror = (event) => {
+                showAlert('Không nghe rõ, vui lòng thử lại.', 'danger');
+            };
+        });
+
+        // --- 3. CHAT LOGIC ---
+        const currentUserId = '@userId';
+
+        function toggleCSKHChatBox(e) {
+            e.stopPropagation();
+            $('#chatbotChatBox').hide();
+            const box = $('#cskhChatBox');
+            box.toggle();
+            if (box.is(':visible')) {
+                loadCSKHMessages();
+                setTimeout(() => $('#cskhChatInput').focus(), 300);
+            }
+        }
+
+        function closeCSKHChatBox() { $('#cskhChatBox').hide(); }
+
+        function loadCSKHMessages() {
+            if(!currentUserId) return;
+            $('#cskhChatMessages').html('<div class="text-center small text-muted mt-5">Đang tải...</div>');
+
+            $.post('/api/patient/getMessages', { user1: currentUserId, user2: 1 }, function (res) {
+                const container = $('#cskhChatMessages');
+                container.empty();
+                if (res.success && res.messages.length > 0) {
+                    res.messages.forEach(msg => {
+                        const isMe = msg.senderId == currentUserId;
+                        const cls = isMe ? 'bg-primary text-white ms-auto' : 'bg-white text-dark me-auto border';
+                        container.append(`<div class="d-flex mb-2"><div class="p-2 rounded ${cls}" style="max-width: 80%;">${msg.message}</div></div>`);
+                    });
+                } else {
+                    container.html('<div class="text-center small text-muted mt-5">Chưa có tin nhắn nào.</div>');
+                }
+                container.scrollTop(container[0].scrollHeight);
+            });
+        }
+
+        function sendCSKHMessage() {
+            const input = $('#cskhChatInput');
+            const msg = input.val().trim();
+            if (!msg) return false;
+
+            const token = $('#cskhChatForm input[name="__RequestVerificationToken"]').val();
+            $.post('/api/patient/sendMessage', { receiver_id: 1, message: msg, __RequestVerificationToken: token }, function (res) {
+                if (res.success) {
+                    input.val('');
+                    loadCSKHMessages();
+                } else {
+                    alert('Gửi lỗi!');
+                }
+            });
+            return false;
+        }
+
+        function toggleChatbotChatBox(e) {
+            e.stopPropagation();
+            $('#cskhChatBox').hide();
+            const box = $('#chatbotChatBox');
+            box.toggle();
+            if (box.is(':visible') && $('#chatbotChatMessages').children().length === 0) {
+                appendBotMsg("Xin chào! Tôi là trợ lý ảo AI. Bạn cần giúp gì không?<br>[button:Đặt lịch khám|đặt lịch] [button:Giá dịch vụ|giá dịch vụ]");
+            }
+        }
+        function closeChatbotChatBox() { $('#chatbotChatBox').hide(); }
+
+        function appendUserMsg(txt) {
+            $('#chatbotChatMessages').append(`<div class="d-flex mb-2 justify-content-end"><div class="bg-success text-white p-2 rounded" style="max-width:80%">${txt}</div></div>`);
+            scrollBot();
+        }
+        function appendBotMsg(txt) {
+            let html = marked.parse(txt);
+            html = html.replace(/\[button:(.+?)\|(.+?)\]/g, '<button class="chatbot-suggestion" onclick="sendChatbotSuggestion(\'$2\')">$1</button>');
+            $('#chatbotChatMessages').append(`<div class="d-flex mb-2 justify-content-start"><div class="bg-white border p-2 rounded" style="max-width:85%">${html}</div></div>`);
+            scrollBot();
+        }
+        function scrollBot() {
+            const d = $('#chatbotChatMessages');
+            d.scrollTop(d[0].scrollHeight);
+        }
+        function sendChatbotSuggestion(txt) {
+            $('#chatbotChatInput').val(txt);
+            sendChatbotMessage();
+        }
+
+        function sendChatbotMessage() {
+            const input = $('#chatbotChatInput');
+            const msg = input.val().trim();
+            if (!msg) return false;
+
+            appendUserMsg(msg);
+            input.val('');
+
+            const typingId = 'typing-' + Date.now();
+            $('#chatbotChatMessages').append(`<div id="${typingId}" class="text-muted small ms-2 mb-2">Đang trả lời...</div>`);
+            scrollBot();
+
+            const token = $('#chatbotChatForm input[name="__RequestVerificationToken"]').val();
+
+            $.post('/api/chatbot', { message: msg, __RequestVerificationToken: token }, function(res) {
+                $(`#${typingId}`).remove();
+                appendBotMsg(res.reply);
+            }).fail(function() {
+                $(`#${typingId}`).remove();
+                appendBotMsg("Xin lỗi, hệ thống đang bận.");
+            });
+
+            return false;
+        }
+
+        $(document).click(function(e) {
+            if (!$(e.target).closest('.chatbox, .chat-icon-fixed').length) {
+                $('.chatbox').hide();
+            }
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

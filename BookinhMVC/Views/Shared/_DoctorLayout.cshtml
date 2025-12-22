@@ -1,146 +1,485 @@
 @using Microsoft.AspNetCore.Http
 @using BookinhMVC.Models
 @{
-    var doctorName = Context.Session.GetString("DoctorName");
+    Layout = null;
+    var doctorName = Context.Session.GetString("DoctorName") ?? "Bác sĩ";
 }
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewBag.Title - Dashboard Bác sĩ</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <title>@ViewBag.Title | Dashboard Bác sĩ</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/a2e0e9f6f1.js" crossorigin="anonymous"></script>
+
     <style>
-        body {
-            background: #f4f8fb;
+        :root {
+            --sidebar-width: 280px;
+            --sidebar-bg: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
+            --sidebar-hover: rgba(255, 255, 255, 0.1);
+            --primary-blue: #0ea5e9;
+            --primary-blue-dark: #0284c7;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-light: #e2e8f0;
+            --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* === SIDEBAR === */
         .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
             position: fixed;
             top: 0;
             left: 0;
-            bottom: 0;
-            width: 230px;
-            background: #2980b9;
+            background: var(--sidebar-bg);
             color: #fff;
-            padding: 0;
-            z-index: 1000;
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+            z-index: 1040;
+            overflow-y: auto;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-            .sidebar .sidebar-header {
-                padding: 30px 20px 10px 20px;
-                font-size: 1.2rem;
-                font-weight: bold;
-                border-bottom: 1px solid #ffffff22;
+            .sidebar::-webkit-scrollbar {
+                width: 6px;
             }
 
-            .sidebar .doctor-name {
-                font-size: 1.1rem;
-                margin: 10px 0 20px 0;
-                font-weight: 500;
+            .sidebar::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.3);
+                border-radius: 3px;
+            }
+
+        .sidebar-header {
+            padding: 28px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+            .sidebar-header h4 {
+                font-weight: 700;
                 color: #fff;
+                font-size: 1.35rem;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin: 0;
             }
 
-            .sidebar ul {
+                .sidebar-header h4 i {
+                    background: rgba(255, 255, 255, 0.2);
+                    padding: 10px;
+                    border-radius: 12px;
+                    font-size: 1.3rem;
+                }
+
+        .doctor-info {
+            padding: 20px 24px;
+            background: rgba(255, 255, 255, 0.08);
+            margin: 16px 12px;
+            border-radius: 12px;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .doctor-info-inner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .doctor-avatar {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        }
+
+        .doctor-details h6 {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .doctor-details p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .sidebar-nav {
+            padding: 16px 12px 100px;
+        }
+
+            .sidebar-nav ul {
                 list-style: none;
                 padding: 0;
                 margin: 0;
             }
 
-                .sidebar ul li {
-                    margin: 0;
-                }
+        .sidebar a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            margin: 4px 0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+            position: relative;
+        }
 
-                    .sidebar ul li a {
-                        display: block;
-                        color: #fff;
-                        padding: 15px 25px;
-                        text-decoration: none;
-                        font-size: 1rem;
-                        border-left: 4px solid transparent;
-                        transition: background 0.2s, border-color 0.2s;
-                    }
-
-                        .sidebar ul li a.active, .sidebar ul li a:hover {
-                            background: #1565a0;
-                            border-left: 4px solid #fff;
-                            color: #fff;
-                        }
-
-            .sidebar .logout {
-                position: absolute;
-                bottom: 30px;
-                width: 100%;
+            .sidebar a i {
+                margin-right: 16px;
+                font-size: 1.2rem;
+                width: 24px;
+                text-align: center;
+                opacity: 0.9;
             }
 
-                .sidebar .logout a {
-                    color: #fff;
-                    padding: 15px 25px;
-                    display: block;
-                    text-align: left;
-                    font-weight: bold;
-                    border-left: 4px solid transparent;
+            .sidebar a:hover {
+                color: #fff;
+                background: var(--sidebar-hover);
+                transform: translateX(5px);
+            }
+
+            .sidebar a.active {
+                color: #fff;
+                background: rgba(255, 255, 255, 0.2);
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+                font-weight: 600;
+            }
+
+                .sidebar a.active::before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    width: 4px;
+                    height: 70%;
+                    background: #0ea5e9;
+                    border-radius: 0 4px 4px 0;
                 }
 
-                    .sidebar .logout a:hover {
-                        background: #c0392b;
-                        border-left: 4px solid #fff;
-                    }
+        /* === LOGOUT SECTION === */
+        .logout-section {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 16px 12px;
+            background: rgba(0, 0, 0, 0.1);
+        }
 
+            .logout-section a {
+                color: rgba(255, 255, 255, 0.85);
+                padding: 14px 20px;
+                border-radius: 12px;
+                margin: 0;
+            }
+
+                .logout-section a:hover {
+                    background: linear-gradient(135deg, #ef4444, #dc2626);
+                    color: white;
+                    transform: translateX(5px);
+                }
+
+        /* === MAIN CONTENT === */
         .main-content {
-            margin-left: 230px;
-            padding: 40px 30px 30px 30px;
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             min-height: 100vh;
         }
 
-        @@media (max-width: 900px) {
-            .sidebar {
-                width: 100px;
-            }
-
-            .main-content {
-                margin-left: 100px;
-            }
-
-            .sidebar .sidebar-header, .sidebar .doctor-name, .sidebar ul li a span {
-                display: none;
-            }
-
-            .sidebar ul li a {
-                padding: 15px 10px;
-                text-align: center;
-            }
+        .top-navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-light);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            padding: 20px 32px;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+
+        .navbar-title h5 {
+            margin: 0;
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+            .navbar-title h5::before {
+                content: '';
+                width: 4px;
+                height: 28px;
+                background: linear-gradient(180deg, var(--primary-blue), var(--primary-blue-dark));
+                border-radius: 2px;
+            }
+
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+            .menu-toggle:hover {
+                background: rgba(14, 165, 233, 0.1);
+                color: var(--primary-blue);
+            }
+
+        main {
+            padding: 28px 32px;
+        }
+
+        /* === OVERLAY === */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1035;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(2px);
+        }
+
+        /* === RESPONSIVE === */
+        @@media (max-width: 768px) {
+            .sidebar
+
+        {
+            transform: translateX(-100%);
+            width: 280px;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .main-content {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: block !important;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .top-navbar {
+            padding: 16px 20px;
+        }
+
+        .navbar-title h5 {
+            font-size: 1.15rem;
+        }
+
+        main {
+            padding: 20px 16px;
+        }
+
+        .sidebar-header {
+            padding: 20px 16px;
+        }
+
+        .doctor-info {
+            margin: 12px 8px;
+            padding: 16px;
+        }
+
+        .sidebar-nav {
+            padding: 12px 8px 100px;
+        }
+
+        }
+
+        /* === ANIMATIONS === */
+        @@keyframes slideIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .sidebar-nav li {
+            animation: slideIn 0.3s ease backwards;
+        }
+
+            .sidebar-nav li:nth-child(1) {
+                animation-delay: 0.05s;
+            }
+
+            .sidebar-nav li:nth-child(2) {
+                animation-delay: 0.1s;
+            }
+
+            .sidebar-nav li:nth-child(3) {
+                animation-delay: 0.15s;
+            }
+
+            .sidebar-nav li:nth-child(4) {
+                animation-delay: 0.2s;
+            }
+
+            .sidebar-nav li:nth-child(5) {
+                animation-delay: 0.25s;
+            }
+
+            .sidebar-nav li:nth-child(6) {
+                animation-delay: 0.3s;
+            }
     </style>
 </head>
 <body>
-    <div class="sidebar">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <i class="fa fa-user-md"></i> Bác sĩ
+            <h4>
+                <i class="fa fa-user-md"></i>
+                <span>Bác sĩ Panel</span>
+            </h4>
         </div>
-        <div class="doctor-name">
-            <i class="fa fa-user"></i> @doctorName
+
+        <div class="doctor-info">
+            <div class="doctor-info-inner">
+                <div class="doctor-avatar">
+                    <i class="fa fa-user-md"></i>
+                </div>
+                <div class="doctor-details">
+                    <h6>@doctorName</h6>
+                    <p><i class="fa fa-circle" style="font-size: 0.5rem; color: #10b981;"></i> Đang hoạt động</p>
+                </div>
+            </div>
         </div>
-        <ul>
-            <li><a href="/Doctor/Appointments" class="@(Context.Request.Path.Value.Contains("Appointments") ? "active" : "")"><i class="fa fa-calendar-check"></i> <span>Lịch hẹn</span></a></li>
-            <li><a href="/Doctor/MedicalRecords" class="@(Context.Request.Path.Value.Contains("MedicalRecords") ? "active" : "")"><i class="fa fa-notes-medical"></i> <span>Hồ sơ bệnh án</span></a></li>
-            <li><a href="/Doctor/WorkSchedule" class="@(Context.Request.Path.Value.Contains("WorkSchedule") ? "active" : "")"><i class="fa fa-calendar-alt"></i> <span>Lịch làm việc</span></a></li>
-            <li><a href="/Doctor/Question" class="@(Context.Request.Path.Value.Contains("Question") ? "active" : "")"><i class="fa fa-question-circle"></i> <span>Câu hỏi</span></a></li>
-            <li><a href="/Doctor/Profile" class="@(Context.Request.Path.Value.Contains("Profile") ? "active" : "")"><i class="fa fa-user-cog"></i> <span>Thông tin cá nhân</span></a></li>
-            <li>
-                <a href="/Doctor/ChangePassword" class="@(Context.Request.Path.Value.Contains("ChangePassword") ? "active" : "")">
-                    <i class="fa fa-key"></i> <span>Đổi mật khẩu</span>
-                </a>
-            </li>
-        </ul>
-        <div class="logout">
-            <a href="/Doctor/Logout"><i class="fa fa-sign-out-alt"></i> <span>Đăng xuất</span></a>
+
+        <div class="sidebar-nav">
+            <ul>
+                @{
+                    string currentPath = Context.Request.Path.Value;
+                }
+                <li><a href="/Doctor/Appointments" class="@(currentPath.Contains("Appointments") ? "active" : "")"><i class="fa fa-calendar-check"></i> <span>Lịch hẹn</span></a></li>
+                <li><a href="/Doctor/MedicalRecords" class="@(currentPath.Contains("MedicalRecords") ? "active" : "")"><i class="fa fa-notes-medical"></i> <span>Hồ sơ bệnh án</span></a></li>
+                <li><a href="/Doctor/WorkSchedule" class="@(currentPath.Contains("WorkSchedule") ? "active" : "")"><i class="fa fa-calendar-alt"></i> <span>Lịch làm việc</span></a></li>
+                <li><a href="/Doctor/Question" class="@(currentPath.Contains("Question") ? "active" : "")"><i class="fa fa-question-circle"></i> <span>Câu hỏi</span></a></li>
+                <li><a href="/Doctor/Profile" class="@(currentPath.Contains("Profile") && !currentPath.Contains("ChangePassword") ? "active" : "")"><i class="fa fa-user-cog"></i> <span>Thông tin cá nhân</span></a></li>
+                <li><a href="/Doctor/ChangePassword" class="@(currentPath.Contains("ChangePassword") ? "active" : "")"><i class="fa fa-key"></i> <span>Đổi mật khẩu</span></a></li>
+            </ul>
+        </div>
+
+        <div class="logout-section">
+            <a href="/Doctor/Logout">
+                <i class="fa fa-sign-out-alt"></i>
+                <span>Đăng xuất</span>
+            </a>
         </div>
     </div>
+
     <div class="main-content">
-        @RenderBody()
+        <nav class="top-navbar">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="navbar-title">
+                <h5>@ViewBag.Title</h5>
+            </div>
+        </nav>
+
+        <main>
+            @RenderBody()
+        </main>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
     @RenderSection("Scripts", required: false)
+
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+        }
+
+        if (menuToggle && sidebarOverlay) {
+            menuToggle.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+        }
+
+        // Tự động đóng sidebar khi click link trên mobile
+        if (window.innerWidth <= 768) {
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (sidebar.classList.contains('active')) {
+                        toggleSidebar();
+                    }
+                });
+            });
+        }
+
+        // Đóng sidebar khi resize về desktop
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768 && sidebar.classList.contains('active')) {
+                toggleSidebar();
+            }
+        });
+    </script>
 </body>
-</html> 
+</html>

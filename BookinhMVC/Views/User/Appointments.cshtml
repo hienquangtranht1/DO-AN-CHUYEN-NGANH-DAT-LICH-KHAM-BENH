@@ -5,35 +5,81 @@
 }
 
 <div class="container py-5">
-    <h2 class="mb-4 text-center">Lịch hẹn của tôi với bác sĩ</h2>
+    <h2 class="mb-4 text-center fw-bold text-primary">
+        <i class="bi bi-calendar-heart me-2"></i> Lịch hẹn của tôi với bác sĩ
+    </h2>
+
     @if (lichHens != null && lichHens.Count > 0)
     {
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>Ngày giờ</th>
-                        <th>Bác sĩ</th>
-                        <th>Triệu chứng</th>
-                        <th>Trạng thái</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @foreach (var lh in lichHens)
-                {
-                    <tr>
-                        <td>@lh.NgayGio.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>@lh.BacSi?.HoTen</td>
-                        <td>@lh.TrieuChung</td>
-                        <td>@lh.TrangThai</td>
-                    </tr>
-                }
-                </tbody>
-            </table>
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-primary text-white">
+                            <tr>
+                                <th class="text-center">Ngày giờ</th>
+                                <th>Bác sĩ</th>
+                                <th>Triệu chứng</th>
+                                <th class="text-center">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var lh in lichHens)
+                            {
+                                var statusClass = lh.TrangThai switch
+                                {
+                                    "Đang chờ" => "badge bg-warning text-dark",
+                                    "Đã xác nhận" => "badge bg-success",
+                                    "Đã hủy" => "badge bg-danger",
+                                    _ => "badge bg-secondary"
+                                };
+
+                                <tr class="table-row-hover">
+                                    <td class="text-center fw-semibold">@lh.NgayGio.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>@lh.BacSi?.HoTen</td>
+                                    <td>@lh.TrieuChung</td>
+                                    <td class="text-center">
+                                        <span class="@statusClass">@lh.TrangThai</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     }
     else
     {
-        <div class="alert alert-info text-center">Bạn chưa có lịch hẹn nào.</div>
+        <div class="alert alert-info text-center mt-4 rounded-4 shadow-sm p-4">
+            <i class="bi bi-info-circle-fill me-2"></i> Bạn chưa có lịch hẹn nào.
+        </div>
     }
-</div> 
+</div>
+
+<style>
+    /* Hiệu ứng hover cho bảng */
+    .table-row-hover:hover {
+        background-color: #f0f8ff !important;
+        transition: background-color 0.3s ease;
+    }
+
+    /* Làm mềm bảng và thẻ card */
+    .card {
+        border-radius: 16px;
+    }
+
+    th, td {
+        padding: 1rem !important;
+    }
+
+    /* Màu nền tổng thể dịu nhẹ */
+    body {
+        background-color: #f9fcff;
+    }
+
+    /* Tiêu đề */
+    h2 {
+        font-family: 'Segoe UI', sans-serif;
+    }
+</style>

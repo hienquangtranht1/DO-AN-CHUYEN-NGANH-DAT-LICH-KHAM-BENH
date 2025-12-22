@@ -2,26 +2,168 @@
 @{
     Layout = "_AdminLayout";
     ViewBag.Active = "Patients";
-    ViewBag.Title = "Thêm Bệnh nhân";
+    ViewBag.Title = "Thêm Bệnh nhân mới";
 }
-<h2>Thêm Bệnh nhân</h2>
-<form asp-action="CreatePatient" method="post">
-    <div class="mb-2">
-        <label>Họ tên</label>
-        <input asp-for="HoTen" class="form-control" />
+
+@section Styles {
+    <style>
+        /* Định nghĩa màu và biến */
+        :root {
+            --primary-main: #667eea;
+            --success-btn: #198754;
+        }
+
+        /* Nút tùy chỉnh */
+        .btn-submit-styled {
+            background-color: var(--success-btn);
+            border-color: var(--success-btn);
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+            .btn-submit-styled:hover {
+                background-color: #157347;
+                border-color: #157347;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 10px rgba(25, 135, 84, 0.4);
+            }
+
+        /* Tiêu đề phần (Heading) */
+        .section-heading {
+            color: var(--primary-main);
+            border-bottom: 2px solid var(--primary-main);
+            padding-bottom: 8px;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        /* Form Controls */
+        .form-control, .form-select {
+            border-radius: 8px; /* Bo tròn vừa phải */
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+            border: 1px solid #ced4da;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--primary-main);
+                box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            }
+
+        /* Form Group label */
+        .form-label {
+            font-size: 14px;
+            color: #343a40;
+        }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+}
+
+<div class="row">
+    <div class="col-lg-10 offset-lg-1">
+        @* Mở rộng card ra giữa *@
+
+        <div class="d-flex justify-content-start align-items-center mb-4">
+            <h2 class="mb-0 text-dark"><i class="fas fa-user-plus me-3" style="color: var(--primary-main);"></i>Thêm Bệnh nhân mới</h2>
+        </div>
+
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-5">
+                @* Tăng padding *@
+
+                <form asp-action="CreatePatient" method="post" enctype="multipart/form-data">
+
+                    @* VALIDATION SUMMARY *@
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    @* Giả định maNguoiDung được tạo tự động hoặc gán giá trị sau *@
+                    <input type="hidden" name="maNguoiDung" value="0" /> @* Giá trị tạm thời/mặc định *@
+
+                    <h4 class="section-heading"><i class="fas fa-id-card me-2"></i> Thông tin cá nhân</h4>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label for="hoTen" class="form-label fw-bold">Họ tên (<span class="text-danger">*</span>)</label>
+                                <input type="text" id="hoTen" name="hoTen" class="form-control" required placeholder="Nhập họ tên đầy đủ" />
+                                <span asp-validation-for="HoTen" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="ngaySinh" class="form-label fw-bold">Ngày sinh</label>
+                                <input type="date" id="ngaySinh" name="ngaySinh" class="form-control" />
+                                <span asp-validation-for="NgaySinh" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label for="gioiTinh" class="form-label fw-bold">Giới tính (<span class="text-danger">*</span>)</label>
+                                <select id="gioiTinh" name="gioiTinh" class="form-select" required>
+                                    <option value="">-- Chọn giới tính --</option>
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                                <span asp-validation-for="GioiTinh" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="soDienThoai" class="form-label fw-bold">Số điện thoại</label>
+                                <input type="tel" id="soDienThoai" name="soDienThoai" class="form-control" placeholder="Ví dụ: 090xxxxxxx" />
+                                <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="email" class="form-label fw-bold">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Ví dụ: patient@example.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <h4 class="mt-4 section-heading"><i class="fas fa-shield-alt me-2"></i> Thông tin BHYT & Địa chỉ</h4>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label for="soBaoHiem" class="form-label fw-bold">Số bảo hiểm y tế</label>
+                                <input type="text" id="soBaoHiem" name="soBaoHiem" class="form-control" placeholder="Nhập số thẻ BHYT" />
+                                <span asp-validation-for="SoBaoHiem" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label for="hinhAnhBenhNhan" class="form-label fw-bold">Ảnh hồ sơ (Nếu có)</label>
+                                <input type="file" id="hinhAnhBenhNhan" name="hinhAnhBenhNhan" class="form-control" accept="image/*" />
+                                @* Giả định hinhAnhBenhNhan là IFormFile trong Controller action *@
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        @* Tăng khoảng cách dưới cùng *@
+                        <label for="diaChi" class="form-label fw-bold">Địa chỉ</label>
+                        <textarea id="diaChi" name="diaChi" class="form-control" rows="3" placeholder="Nhập địa chỉ đầy đủ"></textarea>
+                        <span asp-validation-for="DiaChi" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-end pt-4 border-top">
+                        <a href="/Admin/Patients" class="btn btn-secondary me-3" style="font-weight: 600;">
+                            <i class="fas fa-arrow-left me-1"></i> Quay lại
+                        </a>
+                        <button type="submit" class="btn btn-submit-styled">
+                            <i class="fas fa-save me-1"></i> Lưu thông tin Bệnh nhân
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
     </div>
-    <div class="mb-2">
-        <label>Giới tính</label>
-        <input asp-for="GioiTinh" class="form-control" />
-    </div>
-    <div class="mb-2">
-        <label>Số điện thoại</label>
-        <input asp-for="SoDienThoai" class="form-control" />
-    </div>
-    <div class="mb-2">
-        <label>Email</label>
-        <input asp-for="Email" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary">Lưu</button>
-    <a href="/Admin/Patients" class="btn btn-secondary">Quay lại</a>
-</form> 
+</div>

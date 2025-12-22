@@ -1,0 +1,90 @@
+﻿@model List<BookinhMVC.Models.ThongBao>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Thông báo của tôi";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Thông báo</h2>
+        <div>
+            <button id="markAllReadBtn" class="btn btn-sm btn-outline-primary">Đánh dấu đã đọc tất cả</button>
+        </div>
+    </div>
+
+    <div id="notificationsList">
+        @if (Model != null && Model.Any())
+        {
+            <div class="list-group">
+                @foreach (var t in Model)
+                {
+                    <a href="javascript:void(0)" class="list-group-item list-group-item-action notification-item @(t.DaXem ? "" : "bg-light fw-bold")" data-id="@t.MaThongBao" data-appointment="@t.MaLichHen">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">@t.TieuDe</h6>
+                            <small class="text-muted">@t.NgayTao.ToString("dd/MM/yyyy HH:mm")</small>
+                        </div>
+                        <p class="mb-1">@t.NoiDung</p>
+                        @if (t.MaLichHen != null)
+                        {
+                            <small class="text-muted">Liên quan đến lịch: @t.MaLichHen</small>
+                        }
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-secondary">Bạn chưa có thông báo nào.</div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            async function markRead(id, navigateAppointmentId) {
+                try {
+                    await fetch('/User/Notifications/MarkRead', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: id })
+                    });
+                    // update UI
+                    const el = document.querySelector('.notification-item[data-id="' + id + '"]');
+                    if (el) el.classList.remove('fw-bold', 'bg-light');
+                    if (navigateAppointmentId) {
+                        // example: navigate to appointment detail page
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+
+            async function markAllRead() {
+                try {
+                    await fetch('/User/Notifications/MarkAllRead', { method: 'POST' });
+                    document.querySelectorAll('.notification-item').forEach(e => e.classList.remove('fw-bold','bg-light'));
+                    // update top bar badge if present
+                    const badge = document.querySelector('#notif-badge');
+                    if (badge) badge.textContent = '0';
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('markAllReadBtn')?.addEventListener('click', function () {
+                    markAllRead();
+                });
+
+                document.querySelectorAll('.notification-item').forEach(item => {
+                    item.addEventListener('click', function () {
+                        const id = this.getAttribute('data-id');
+                        const appt = this.getAttribute('data-appointment');
+                        markRead(id, appt);
+                    });
+                });
+            });
+        })();
+    </script>
+}

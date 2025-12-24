@@ -1,0 +1,520 @@
+﻿@model IEnumerable<BookinhMVC.Models.LichLamViec>
+@{
+    Layout = "_AdminLayout";
+    ViewBag.Active = "WorkSchedules";
+    ViewBag.Title = "Lịch làm việc bác sĩ";
+
+    var doctors = ViewBag.Doctors as List<BookinhMVC.Models.BacSi>;
+    int? selectedDoctor = ViewBag.SelectedDoctor as int?;
+
+    // Xử lý tuần hiện tại
+    DateTime weekStart;
+    if (ViewBag.WeekStart != null)
+    {
+        weekStart = (DateTime)ViewBag.WeekStart;
+    }
+    else
+    {
+        var today = DateTime.Today;
+        int daysFromMonday = ((int)today.DayOfWeek + 6) % 7;
+        weekStart = today.AddDays(-daysFromMonday);
+    }
+
+    var weekEnd = weekStart.AddDays(6);
+    var daysOfWeek = new[] { "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật" };
+}
+
+@section Styles {
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #0dcaf0;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+        }
+
+        /* === HEADER STYLES (Đồng bộ) === */
+        .management-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #6366f1 100%);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .title-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .icon-wrapper {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.75rem;
+            border-radius: 50%;
+            backdrop-filter: blur(5px);
+        }
+
+            .icon-wrapper i {
+                font-size: 1.75rem;
+                color: white;
+            }
+
+        .main-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .subtitle {
+            margin-top: 0.25rem;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .btn-add-schedule {
+            background: var(--success-color);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            border: none;
+        }
+
+            .btn-add-schedule:hover {
+                background: #059669;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+                color: white;
+            }
+
+        /* === FILTER/NAVIGATION STYLES === */
+        .filter-card {
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-select, .form-control {
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+        }
+
+        .week-nav-btn {
+            background-color: var(--primary-color) !important;
+            color: white !important;
+            border: none !important;
+            transition: all 0.2s;
+            padding: 0.6rem 1rem;
+        }
+
+            .week-nav-btn:hover {
+                background-color: #4338ca !important;
+            }
+
+        .btn-filter {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            transition: all 0.2s;
+        }
+
+            .btn-filter:hover {
+                background-color: #4338ca;
+            }
+
+        /* === TABLE STYLES (Lịch biểu) === */
+        .schedule-table-card {
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .table-responsive {
+            border-radius: 12px;
+        }
+
+        .table-bordered {
+            border-color: #e5e7eb;
+            min-width: 900px; /* Đảm bảo bảng có chiều rộng tối thiểu để cuộn */
+        }
+
+        .table-dark th {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .table-bordered th.bg-warning {
+            background-color: var(--warning-color) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .table-bordered td {
+            vertical-align: top;
+            padding: 8px; /* Giảm padding */
+        }
+
+        .schedule-slot {
+            border-radius: 6px !important; /* Giảm bo góc */
+            margin-bottom: 4px; /* Giảm margin */
+            padding: 6px; /* Giảm padding */
+        }
+
+        .bg-success.bg-opacity-10 {
+            background-color: rgba(16, 185, 129, 0.1) !important;
+            border-color: rgba(16, 185, 129, 0.5) !important;
+        }
+
+        .bg-warning.bg-opacity-10 {
+            background-color: rgba(245, 158, 11, 0.1) !important;
+            border-color: rgba(245, 158, 11, 0.5) !important;
+        }
+
+        .schedule-slot .badge {
+            font-size: 0.65em; /* Giảm cỡ chữ badge */
+        }
+
+        .schedule-slot .fw-bold {
+            font-size: 0.9em;
+        }
+
+        /* Nút hành động nhỏ trong Slot */
+        .btn-group-sm .btn {
+            padding: 0.2rem 0.4rem; /* Giảm kích thước nút */
+            font-size: 0.65rem;
+        }
+
+        .add-slot-link {
+            font-size: 0.75rem; /* Giảm cỡ chữ */
+        }
+
+        /* === STATS CARD === */
+        .stat-card-work {
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: none;
+            transition: transform 0.3s ease;
+        }
+
+            .stat-card-work:hover {
+                transform: translateY(-3px);
+            }
+
+            .stat-card-work i {
+                font-size: 1.5rem; /* Giảm cỡ icon */
+            }
+
+            .stat-card-work h5 {
+                font-weight: 700;
+            }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .management-header {
+                padding: 1rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .title-section {
+                flex-direction: column;
+            }
+
+            .subtitle {
+                display: none; /* Ẩn mô tả header trên mobile */
+            }
+            /* Cải tiến Input Group */
+            .filter-card .card-body {
+                padding: 1rem;
+            }
+
+            .g-3 > .col-md-4, .g-3 > .col-md-6, .g-3 > .col-md-2 {
+                width: 100%; /* Xếp form theo cột dọc */
+                margin-top: 0.5rem !important;
+            }
+
+            .input-group {
+                flex-wrap: nowrap; /* Giữ 3 nút/input ngang hàng */
+            }
+
+                .input-group > * {
+                    flex: 1 1 auto; /* Chia đều không gian */
+                }
+
+                .input-group .week-nav-btn {
+                    padding: 0.6rem 0.5rem; /* Giảm padding nút nav */
+                }
+            /* Điều chỉnh hiển thị bảng cho mobile */
+            .table-responsive {
+                overflow-x: scroll; /* Bắt buộc cuộn ngang */
+            }
+            /* Bảng thống kê xếp dọc */
+            .stat-card-work {
+                margin-bottom: 1rem;
+            }
+            /* Giảm cỡ chữ trong ô lịch biểu trên mobile */
+            .schedule-slot .fw-bold {
+                font-size: 0.8em;
+            }
+
+            .schedule-slot .badge {
+                font-size: 0.6em;
+            }
+
+            .add-slot-link {
+                font-size: 0.7rem;
+            }
+        }
+
+    </style>
+}
+
+<div class="container-fluid">
+
+    <div class="management-header">
+        <div class="header-content">
+            <div class="title-section">
+                <div class="icon-wrapper">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div>
+                    <h2 class="main-title">@ViewBag.Title</h2>
+                    <p class="subtitle">Xem và quản lý lịch làm việc hàng tuần của bác sĩ</p>
+                </div>
+            </div>
+            <a href="@Url.Action("CreateWorkSchedule", new { doctorId = selectedDoctor, date = weekStart.ToString("yyyy-MM-dd") })" class="btn btn-add-schedule">
+                <i class="fas fa-plus me-2"></i>Thêm lịch làm việc
+            </a>
+        </div>
+    </div>
+
+    <div class="card filter-card mb-4">
+        <div class="card-body">
+            <form id="scheduleFilterForm" method="get" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="doctorId" class="form-label fw-bold text-primary">Chọn bác sĩ:</label>
+                    <select name="doctorId" id="doctorId" class="form-select">
+                        <option value="">-- Tất cả bác sĩ --</option>
+                        @foreach (var bs in doctors)
+                        {
+                            <option value="@bs.MaBacSi" selected="@(selectedDoctor == bs.MaBacSi ? "selected" : null)">
+                                @bs.HoTen (@bs.NguoiDung?.TenDangNhap)
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-primary">Tuần: (@weekStart.ToString("dd/MM") - @weekEnd.ToString("dd/MM"))</label>
+                    <div class="input-group">
+                        <button type="button" class="btn btn-primary week-nav-btn rounded-start-pill" onclick="changeWeek(-7)">
+                            <i class="fas fa-chevron-left"></i> Tuần trước
+                        </button>
+                        <input type="date" id="weekStartInput" name="weekStart" value="@weekStart.ToString("yyyy-MM-dd")" class="form-control text-center border-primary">
+                        <button type="button" class="btn btn-primary week-nav-btn rounded-end-pill" onclick="changeWeek(7)">
+                            Tuần sau <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-filter w-100">
+                        <i class="fas fa-filter me-1"></i>Lọc lịch
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card schedule-table-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th style="width: 150px;" class="text-center">Bác sĩ</th>
+                            @for (int i = 0; i < 7; i++)
+                            {
+                                var currentDay = weekStart.AddDays(i);
+                                var isToday = currentDay.Date == DateTime.Today;
+                                <th class="text-center @(isToday ? "bg-warning text-dark" : "")">
+                                    <div class="fw-bold">@daysOfWeek[i]</div>
+                                    <small>@currentDay.ToString("dd/MM")</small>
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var displayDoctors = selectedDoctor.HasValue
+                            ? doctors.Where(d => d.MaBacSi == selectedDoctor)
+                            : doctors;
+                        }
+
+                        @foreach (var doctor in displayDoctors)
+                        {
+                            <tr>
+                                <td class="align-middle bg-light">
+                                    <div class="text-center">
+                                        <strong class="text-primary">@doctor.HoTen</strong><br />
+                                        <small class="text-muted">@doctor.Khoa?.TenKhoa</small><br />
+                                        <small class="text-secondary">(@doctor.NguoiDung?.TenDangNhap)</small>
+                                    </div>
+                                </td>
+                                @for (int i = 0; i < 7; i++)
+                                {
+                                    var day = weekStart.AddDays(i);
+                                    var schedules = Model.Where(x => x.MaBacSi == doctor.MaBacSi && x.NgayLamViec.Date == day.Date).ToList();
+                                    var isToday = day.Date == DateTime.Today;
+
+                                    <td class="text-center p-2 @(isToday ? "bg-light-subtle" : "")" style="min-width: 140px;">
+                                        @if (schedules.Any())
+                                        {
+                                            @foreach (var schedule in schedules)
+                                            {
+                                                <div class="schedule-slot mb-2 p-2 border rounded @(schedule.TrangThai == "Đã xác nhận" ? "bg-success bg-opacity-10 border-success" : "bg-warning bg-opacity-10 border-warning")">
+                                                    <div class="fw-bold text-dark">
+                                                        @schedule.GioBatDau.ToString(@"hh\:mm") - @schedule.GioKetThuc.ToString(@"hh\:mm")
+                                                    </div>
+                                                    <div class="mb-2">
+                                                        <span class="badge @(schedule.TrangThai == "Đã xác nhận" ? "bg-success" : "bg-warning text-dark")">
+                                                            @schedule.TrangThai
+                                                        </span>
+                                                    </div>
+                                                    <div class="btn-group btn-group-sm" role="group">
+                                                        <a href="@Url.Action("EditWorkSchedule", new { id = schedule.MaLich })"
+                                                           class="btn btn-outline-primary" title="Sửa">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        @if (schedule.TrangThai != "Đã xác nhận")
+                                                        {
+                                                            <form method="post" asp-action="ConfirmWorkSchedule" class="d-inline">
+                                                                <input type="hidden" name="id" value="@schedule.MaLich" />
+                                                                <button type="submit" class="btn btn-outline-success" title="Xác nhận">
+                                                                    <i class="fas fa-check"></i>
+                                                                </button>
+                                                            </form>
+                                                        }
+                                                        <a href="@Url.Action("DeleteWorkSchedule", new { id = schedule.MaLich })"
+                                                           class="btn btn-outline-danger delete-confirm" title="Xóa">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <div class="text-muted">
+                                                <i class="far fa-calendar-times"></i><br />
+                                                <small>Chưa có lịch</small><br />
+                                                <a href="@Url.Action("CreateWorkSchedule", new { doctorId = doctor.MaBacSi, date = day.ToString("yyyy-MM-dd") })"
+                                                   class="btn btn-outline-success btn-sm mt-1 add-slot-link">
+                                                    Thêm ca
+                                                </a>
+                                            </div>
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                        }
+
+                        @if (!displayDoctors.Any())
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center py-4">
+                                    <i class="fas fa-user-md fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">Không có bác sĩ nào được hiển thị</h5>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-center stat-card-work">
+                <div class="card-body">
+                    <i class="fas fa-user-md fa-2x text-primary mb-2"></i>
+                    <h5 class="fw-bold">@doctors.Count()</h5>
+                    <small class="text-muted">Tổng số bác sĩ</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center stat-card-work">
+                <div class="card-body">
+                    <i class="fas fa-calendar-check fa-2x text-success mb-2"></i>
+                    <h5 class="fw-bold">@Model.Count(s => s.TrangThai == "Đã xác nhận")</h5>
+                    <small class="text-muted">Ca đã xác nhận</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center stat-card-work">
+                <div class="card-body">
+                    <i class="fas fa-calendar-times fa-2x text-warning mb-2"></i>
+                    <h5 class="fw-bold">@Model.Count(s => s.TrangThai == "Chưa xác nhận")</h5>
+                    <small class="text-muted">Ca chờ xác nhận</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center stat-card-work">
+                <div class="card-body">
+                    <i class="fas fa-calendar fa-2x text-info mb-2"></i>
+                    <h5 class="fw-bold">@Model.Count()</h5>
+                    <small class="text-muted">Tổng ca trong tuần</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Hàm xử lý chuyển tuần (Giữ nguyên)
+    function changeWeek(offset) {
+        var form = document.getElementById('scheduleFilterForm');
+        var input = document.getElementById('weekStartInput');
+        var date = new Date(input.value);
+
+        // Thêm offset ngày (âm hoặc dương)
+        date.setDate(date.getDate() + offset);
+
+        // Cập nhật giá trị input
+        input.value = date.toISOString().slice(0,10);
+
+        // Submit form để tải lại lịch theo tuần mới
+        form.submit();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Xử lý xác nhận xóa (chưa có modal, dùng confirm tạm)
+        document.querySelectorAll('.delete-confirm').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (!confirm("Bạn có chắc chắn muốn xóa lịch làm việc này không?")) {
+                    e.preventDefault();
+                }
+            });
+        });
+    });
+</script>

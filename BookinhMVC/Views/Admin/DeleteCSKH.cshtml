@@ -1,0 +1,32 @@
+﻿@model BookinhMVC.Models.CsKh
+@{
+    ViewBag.Title = "Xóa CSKH";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h4>Xác nhận xóa CSKH</h4>
+
+<div class="card p-3 mb-3">
+    <dl class="row mb-0">
+        <dt class="col-sm-4">Tên đăng nhập</dt>
+        <dd class="col-sm-8">@Model.Username</dd>
+
+        <dt class="col-sm-4">Họ và tên</dt>
+        <dd class="col-sm-8">@Model.FullName</dd>
+
+        <dt class="col-sm-4">Email</dt>
+        <dd class="col-sm-8">@Model.Email</dd>
+
+        <dt class="col-sm-4">Điện thoại</dt>
+        <dd class="col-sm-8">@Model.Phone</dd>
+    </dl>
+</div>
+
+<form asp-action="DeleteCSKH" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@Model.Id" />
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-danger"><i class="fas fa-trash me-1"></i> Xóa vĩnh viễn</button>
+        <a asp-action="CSKHs" class="btn btn-outline-secondary">Hủy</a>
+    </div>
+</form>

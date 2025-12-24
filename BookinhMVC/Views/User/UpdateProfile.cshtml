@@ -1,0 +1,192 @@
+﻿@using BookinhMVC.Models
+@model BenhNhan
+@{
+    ViewData["Title"] = "Cập nhật thông tin cá nhân - Four Rock";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var notification = TempData["notification"] as string;
+    // Model is BenhNhan (patient) with user info, passed from controller
+    var patient = Model as BenhNhan;
+}
+
+<div class="container my-5 pt-5">
+    <div class="profile-container mx-auto col-lg-8 col-md-10 p-4 p-md-5 rounded-4 shadow-lg bg-white" data-aos="fade-up">
+
+        <h2 class="text-center fw-bold text-primary display-6 mb-4">
+            <i class="fas fa-user-edit me-2"></i> Cập nhật Hồ sơ cá nhân
+        </h2>
+        <p class="text-center text-secondary mb-4">Quản lý thông tin cá nhân, liên hệ và bảo hiểm của bạn.</p>
+
+        @* Hiển thị thông báo (nếu có) *@
+        @if (!string.IsNullOrEmpty(notification))
+        {
+            <div class="alert @(notification.Contains("thành công") ? "alert-success" : "alert-info") rounded-3">
+                <i class="fas fa-check-circle me-2"></i>@notification
+            </div>
+        }
+        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
+        {
+            <div class="alert alert-danger rounded-3">
+                <i class="fas fa-times-circle me-2"></i>
+                Vui lòng sửa lỗi sau:
+                @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <div class="ms-3">- @modelError.ErrorMessage</div>
+                }
+            </div>
+        }
+
+        <form asp-controller="User" asp-action="UpdateProfile" method="post" enctype="multipart/form-data" autocomplete="off" class="row g-4">
+
+            @* Phần Avatar và Username *@
+            <div class="col-12 d-flex flex-column flex-md-row align-items-center mb-4 border-bottom pb-4">
+                <div class="me-md-4 mb-3 mb-md-0 position-relative">
+                    @* Ảnh đại diện hiện tại *@
+                    <img src="@(string.IsNullOrEmpty(patient?.HinhAnhBenhNhan) ? Url.Content("~/images/benhnhan/default.jpg") : Url.Content("~/uploads/" + patient.HinhAnhBenhNhan))"
+                         alt="Hình ảnh cá nhân" class="profile-image rounded-circle border border-5 border-light shadow-sm" style="width: 120px; height: 120px; object-fit: cover;" />
+
+                    @* Input file ẩn *@
+                    <input type="file" name="HinhAnhBenhNhanFile" id="HinhAnhBenhNhanFile" class="form-control-file d-none" accept="image/*" />
+                    <label for="HinhAnhBenhNhanFile" class="btn btn-sm btn-primary rounded-circle change-image-btn" title="Đổi ảnh đại diện">
+                        <i class="fas fa-camera"></i>
+                    </label>
+                </div>
+
+                <div class="text-center text-md-start">
+                    <h5 class="fw-bold mb-1">@patient?.HoTen</h5>
+                    <p class="text-muted mb-0 small">Tên đăng nhập: @patient?.NguoiDung?.TenDangNhap</p>
+                    <p class="text-muted mb-0 small">Email: @patient?.Email</p>
+                    <input type="hidden" name="email" value="@patient?.Email" />
+                    @* Lưu tên file cũ để xử lý logic update/delete ở controller *@
+                    <input type="hidden" name="HinhAnhBenhNhan" value="@patient?.HinhAnhBenhNhan" />
+                </div>
+            </div>
+
+            @* === THÔNG TIN CÁ NHÂN === *@
+            <div class="col-md-6">
+                <label for="fullname" class="form-label fw-medium">Họ và tên</label>
+                <input type="text" name="fullname" id="fullname" class="form-control rounded-3 py-2" required value="@patient?.HoTen" />
+            </div>
+
+            <div class="col-md-6">
+                <label for="dob" class="form-label fw-medium">Ngày sinh</label>
+                <input type="date" name="dob" id="dob" class="form-control rounded-3 py-2" required value="@(patient?.NgaySinh is DateTime d ? d.ToString("yyyy-MM-dd") : "")" />
+            </div>
+
+            <div class="col-md-6">
+                <label for="gender" class="form-label fw-medium">Giới tính</label>
+                <select name="gender" id="gender" class="form-control rounded-3 py-2" required>
+                    <option value="Nam" selected="@(patient?.GioiTinh == "Nam" ? "selected" : null)">Nam</option>
+                    <option value="Nữ" selected="@(patient?.GioiTinh == "Nữ" ? "selected" : null)">Nữ</option>
+                    <option value="Khác" selected="@(patient?.GioiTinh == "Khác" ? "selected" : null)">Khác</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label for="soBaoHiem" class="form-label fw-medium">Số bảo hiểm Y tế</label>
+                <input type="text" name="soBaoHiem" id="soBaoHiem" class="form-control rounded-3 py-2" value="@patient?.SoBaoHiem" placeholder="Số BHYT" />
+            </div>
+
+            @* === THÔNG TIN LIÊN HỆ === *@
+            <div class="col-md-6">
+                <label for="phone" class="form-label fw-medium">Số điện thoại</label>
+                <input type="text" name="phone" id="phone" class="form-control rounded-3 py-2" required value="@patient?.SoDienThoai" />
+            </div>
+
+            <div class="col-md-6">
+                <label for="address" class="form-label fw-medium">Địa chỉ</label>
+                <input type="text" name="address" id="address" class="form-control rounded-3 py-2" value="@patient?.DiaChi" placeholder="Địa chỉ hiện tại" />
+            </div>
+
+            @* Nút submit *@
+            <div class="col-12 text-center mt-5">
+                <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold me-3">
+                    <i class="fas fa-sync-alt me-2"></i> Cập nhật thông tin
+                </button>
+                <a href="@Url.Action("ChangePassword", "User")" class="btn btn-outline-secondary btn-lg rounded-pill px-5 fw-bold">
+                    <i class="fas fa-lock me-2"></i> Đổi mật khẩu
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Khởi tạo AOS
+        if (typeof AOS !== 'undefined') {
+            AOS.init({ duration: 800, once: true, offset: 50 });
+        }
+
+        // JavaScript xử lý xem trước ảnh và click đổi ảnh
+        document.getElementById('HinhAnhBenhNhanFile').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const imageElement = document.querySelector('.profile-image');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imageElement.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.querySelector('.change-image-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('HinhAnhBenhNhanFile').click();
+        });
+    </script>
+}
+
+<style>
+    .profile-container {
+        background-color: #fff;
+        border: 1px solid #e9ecef;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-image {
+        transition: all 0.3s ease;
+    }
+
+    .change-image-btn {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        transform: translate(25%, 25%);
+        font-size: 1rem;
+        width: 35px;
+        height: 35px;
+        line-height: 1.5;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .change-image-btn i {
+            margin: 0;
+        }
+
+    .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+        }
+
+    .btn-outline-secondary {
+        border-color: #6c757d;
+        color: #6c757d;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: white;
+        }
+</style>

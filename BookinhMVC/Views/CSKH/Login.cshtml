@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Đăng nhập hệ thống";
+    Layout = "~/Views/Shared/_LayoutCSKH.cshtml";
+    var error = ViewData["Error"] as string;
+}
+
+<div class="d-flex justify-content-center align-items-center vh-100 bg-white">
+    <div class="card shadow-lg p-5 border-0 rounded-4" style="width: 400px;">
+        <div class="text-center mb-4">
+            <div class="bg-primary text-white rounded-circle d-inline-flex justify-content-center align-items-center mb-3" style="width: 60px; height: 60px;">
+                <i class="fas fa-headset fa-2x"></i>
+            </div>
+            <h4 class="fw-bold text-dark">CSKH Portal</h4>
+            <p class="text-muted small">Đăng nhập để hỗ trợ khách hàng</p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(error))
+        {
+            <div class="alert alert-danger text-center small py-2">@error</div>
+        }
+
+        <form asp-controller="CSKH" asp-action="Login" method="post">
+            @Html.AntiForgeryToken()
+            <div class="mb-3">
+                <input type="text" name="username" class="form-control form-control-lg bg-light fs-6" placeholder="Tên đăng nhập" required autofocus />
+            </div>
+            <div class="mb-4">
+                <input type="password" name="password" class="form-control form-control-lg bg-light fs-6" placeholder="Mật khẩu" required />
+            </div>
+            <button type="submit" class="btn btn-primary w-100 btn-lg fs-6 fw-bold">Đăng nhập</button>
+        </form>
+    </div>
+</div>

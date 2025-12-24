@@ -1,0 +1,1156 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\admin\\articles.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\admin\\articles.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\admin\\appointmentdetails.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\admin\\appointmentdetails.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\controllers\\paymentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\controllers\\paymentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\controllers\\notificationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\controllers\\notificationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\controllers\\notificationscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\controllers\\notificationscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\controllers\\appointmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\controllers\\appointmentcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\helpers\\vnpaylibrary.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\helpers\\vnpaylibrary.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\models\\bookingcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\models\\bookingcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\controllers\\doctorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\controllers\\doctorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\services\\appointmentreminderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\services\\appointmentreminderservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\services\\imomoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\services\\imomoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\user\\appointments.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\user\\appointments.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\hubs\\bookinghub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\hubs\\bookinghub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\hienq\\Documents\\Zalo Received Files\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\AppointmentController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\doctor\\appointments.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\doctor\\appointments.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\hubs\\chathub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\hubs\\chathub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\helpers\\sessionuseridprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\helpers\\sessionuseridprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\properties\\servicedependencies.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\properties\\servicedependencies.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\diseases.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\diseases.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\migrations\\20251218124136_themlaisql.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\migrations\\20251218124136_themlaisql.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\models\\thongbao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\models\\thongbao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\helpers\\onlineusermap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\helpers\\onlineusermap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\shared\\_layoutcskh.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\shared\\_layoutcskh.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\cskh\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\cskh\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\controllers\\cskhcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\controllers\\cskhcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\cskh\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\cskh\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\admin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\admin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\admin\\profile.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\admin\\profile.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\admin\\reviews.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\admin\\reviews.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\admin\\settings.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\admin\\settings.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\admin\\updateprofile.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\admin\\updateprofile.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\admin\\users.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\admin\\users.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\admin\\userdetails.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\admin\\userdetails.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\admin\\workschedules.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\admin\\workschedules.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\admin\\articledetails.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\admin\\articledetails.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\admin\\deletecskh.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\admin\\deletecskh.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\admin\\editcskh.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\admin\\editcskh.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\admin\\cskhs.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\admin\\cskhs.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\models\\cskh.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\models\\cskh.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\helpers\\transactionhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\helpers\\transactionhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\chat\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\chat\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\controllers\\chatbotcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\controllers\\chatbotcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\models\\chatmessage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\models\\chatmessage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\models\\giaodichthanhtoan.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\models\\giaodichthanhtoan.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\user\\verifyotp.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\user\\verifyotp.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\models\\danhgia.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\models\\danhgia.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\models\\benhnhan.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\models\\benhnhan.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\appointment\\book.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\appointment\\book.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\home\\testing.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\home\\testing.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\home\\reviews.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\home\\reviews.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\home\\qa.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\home\\qa.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\home\\hospitalblog.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\home\\hospitalblog.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\home\\hospitalabout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\home\\hospitalabout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\home\\generalcheckup.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\home\\generalcheckup.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\home\\doctors.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\home\\doctors.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\home\\contact.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\home\\contact.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\home\\cardiology.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\home\\cardiology.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\views\\home\\articledetail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\views\\home\\articledetail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|c:\\xampp\\htdocs\\ltw_do_an_booking\\bookinhmvc\\migrations\\20251215012747_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6C42879C-B0E5-4652-8F1D-E6C1DBB6CA30}|BookinhMVC\\BookinhMVC.csproj|solutionrelative:bookinhmvc\\migrations\\20251215012747_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAsDAAAAAAAAAADwvx4DAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-14T14:34:40.514Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Articles.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\Articles.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Admin\\Articles.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\Articles.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Admin\\Articles.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:25:12.583Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "BookinhMVC\\appsettings.Development.json",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\appsettings.Development.json",
+              "RelativeToolTip": "BookinhMVC\\appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-12-15T01:26:09.818Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAGMCAAAAAAAAAAAmwHECAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-14T14:36:49.01Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Controllers\\UserController.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\UserController.cs",
+              "RelativeToolTip": "BookinhMVC\\Controllers\\UserController.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAAAAwBYAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-15T01:42:54.413Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AppointmentDetails.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\AppointmentDetails.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Admin\\AppointmentDetails.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\AppointmentDetails.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Admin\\AppointmentDetails.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:25:09.435Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\appsettings.json",
+              "RelativeDocumentMoniker": "BookinhMVC\\appsettings.json",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\appsettings.json",
+              "RelativeToolTip": "BookinhMVC\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAB3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-12-15T01:26:01.896Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "PaymentController.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\PaymentController.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Controllers\\PaymentController.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\PaymentController.cs",
+              "RelativeToolTip": "BookinhMVC\\Controllers\\PaymentController.cs",
+              "ViewState": "AgIAAM0AAAAAAAAAAAAIwPIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-19T14:22:37.746Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "AppointmentController.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\AppointmentController.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Controllers\\AppointmentController.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\AppointmentController.cs",
+              "RelativeToolTip": "BookinhMVC\\Controllers\\AppointmentController.cs",
+              "ViewState": "AgIAAHAAAAAAAAAAAAAIwFUAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-15T00:59:06.883Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "NotificationsController.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\NotificationsController.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Controllers\\NotificationsController.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\NotificationsController.cs",
+              "RelativeToolTip": "BookinhMVC\\Controllers\\NotificationsController.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T12:47:55.929Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Controllers\\AdminController.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "BookinhMVC\\Controllers\\AdminController.cs",
+              "ViewState": "AgIAAKwEAAAAAAAAAAAAALIEAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T09:17:26.852Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "NotificationController.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\NotificationController.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Controllers\\NotificationController.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\NotificationController.cs",
+              "RelativeToolTip": "BookinhMVC\\Controllers\\NotificationController.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAQwB0AAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-19T14:50:58.223Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "VnPayLibrary.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Helpers\\VnPayLibrary.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Helpers\\VnPayLibrary.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Helpers\\VnPayLibrary.cs",
+              "RelativeToolTip": "BookinhMVC\\Helpers\\VnPayLibrary.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T09:08:53.231Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "DoctorController.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\DoctorController.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Controllers\\DoctorController.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\DoctorController.cs",
+              "RelativeToolTip": "BookinhMVC\\Controllers\\DoctorController.cs",
+              "ViewState": "AgIAABUBAAAAAAAAAAAnwHIBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T12:48:12.91Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Program.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Program.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Program.cs",
+              "RelativeToolTip": "BookinhMVC\\Program.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAD4vyMAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-15T01:36:11.96Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "BookingContext.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Models\\BookingContext.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Models\\BookingContext.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Models\\BookingContext.cs",
+              "RelativeToolTip": "BookinhMVC\\Models\\BookingContext.cs",
+              "ViewState": "AgIAAF8AAAAAAAAAAAAkwG0AAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-19T14:03:14.835Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "AppointmentReminderService.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Services\\AppointmentReminderService.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Services\\AppointmentReminderService.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Services\\AppointmentReminderService.cs",
+              "RelativeToolTip": "BookinhMVC\\Services\\AppointmentReminderService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-19T09:24:04.182Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "IMomoService.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Services\\IMomoService.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Services\\IMomoService.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Services\\IMomoService.cs",
+              "RelativeToolTip": "BookinhMVC\\Services\\IMomoService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-19T09:25:42.237Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "BookingHub.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Hubs\\BookingHub.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Hubs\\BookingHub.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Hubs\\BookingHub.cs",
+              "RelativeToolTip": "BookinhMVC\\Hubs\\BookingHub.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAUwDYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T08:25:28.189Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "Appointments.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\User\\Appointments.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\User\\Appointments.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\User\\Appointments.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\User\\Appointments.cshtml",
+              "ViewState": "AgIAAI4AAAAAAAAAAAAIwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-19T08:11:19.72Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "ChatController.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\ChatController.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Controllers\\ChatController.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\ChatController.cs",
+              "RelativeToolTip": "BookinhMVC\\Controllers\\ChatController.cs",
+              "ViewState": "AgIAAJsAAAAAAAAAAAAIwKkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T08:39:59.445Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Appointments.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\doctor\\Appointments.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\doctor\\Appointments.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\doctor\\Appointments.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\doctor\\Appointments.cshtml",
+              "ViewState": "AgIAADcBAAAAAAAAAAAowEsBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T16:59:17.094Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "AppointmentController.cs",
+              "DocumentMoniker": "C:\\Users\\hienq\\Documents\\Zalo Received Files\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\AppointmentController.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\Users\\hienq\\Documents\\Zalo Received Files\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\AppointmentController.cs",
+              "ToolTip": "C:\\Users\\hienq\\Documents\\Zalo Received Files\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\AppointmentController.cs",
+              "RelativeToolTip": "..\\..\\..\\Users\\hienq\\Documents\\Zalo Received Files\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\AppointmentController.cs",
+              "ViewState": "AgIAAOYAAAAAAAAAAAAIwPcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T17:05:03.597Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "ChatHub.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Hubs\\ChatHub.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Hubs\\ChatHub.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Hubs\\ChatHub.cs",
+              "RelativeToolTip": "BookinhMVC\\Hubs\\ChatHub.cs",
+              "ViewState": "AgIAAKIAAAAAAAAAAAAkwLUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T08:25:57.375Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "serviceDependencies.json",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Properties\\serviceDependencies.json",
+              "RelativeDocumentMoniker": "BookinhMVC\\Properties\\serviceDependencies.json",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Properties\\serviceDependencies.json",
+              "RelativeToolTip": "BookinhMVC\\Properties\\serviceDependencies.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-12-18T16:27:34Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "SessionUserIdProvider.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Helpers\\SessionUserIdProvider.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Helpers\\SessionUserIdProvider.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Helpers\\SessionUserIdProvider.cs",
+              "RelativeToolTip": "BookinhMVC\\Helpers\\SessionUserIdProvider.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAIwCgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T08:36:07.973Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "diseases.json",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\diseases.json",
+              "RelativeDocumentMoniker": "BookinhMVC\\diseases.json",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\diseases.json",
+              "RelativeToolTip": "BookinhMVC\\diseases.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-12-15T01:26:07.435Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "20251218124136_themlaisql.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Migrations\\20251218124136_themlaisql.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Migrations\\20251218124136_themlaisql.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Migrations\\20251218124136_themlaisql.cs",
+              "RelativeToolTip": "BookinhMVC\\Migrations\\20251218124136_themlaisql.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAuwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T12:41:36.641Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "ThongBao.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Models\\ThongBao.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Models\\ThongBao.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Models\\ThongBao.cs",
+              "RelativeToolTip": "BookinhMVC\\Models\\ThongBao.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T12:42:08.042Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "OnlineUserMap.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Helpers\\OnlineUserMap.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Helpers\\OnlineUserMap.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Helpers\\OnlineUserMap.cs",
+              "RelativeToolTip": "BookinhMVC\\Helpers\\OnlineUserMap.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAWwBEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T11:51:02.675Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "CSKHController.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\CSKHController.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Controllers\\CSKHController.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\CSKHController.cs",
+              "RelativeToolTip": "BookinhMVC\\Controllers\\CSKHController.cs",
+              "ViewState": "AgIAAFQAAAAAAAAAAAAgwF8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T08:45:47.899Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "_LayoutCSKH.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Shared\\_LayoutCSKH.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Shared\\_LayoutCSKH.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Shared\\_LayoutCSKH.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Shared\\_LayoutCSKH.cshtml",
+              "ViewState": "AgIAAIQAAAAAAAAAAAAowIoAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:56:42.19Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "Dashboard.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\CSKH\\Dashboard.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\CSKH\\Dashboard.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\CSKH\\Dashboard.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\CSKH\\Dashboard.cshtml",
+              "ViewState": "AgIAAI8BAAAAAAAAAAAIwKABAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T08:41:54.734Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\CSKH\\Login.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\CSKH\\Login.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\CSKH\\Login.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\CSKH\\Login.cshtml",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAcwCAAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:40:17.821Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "Profile.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\Profile.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Admin\\Profile.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\Profile.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Admin\\Profile.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:25:27.381Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\Index.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Admin\\Index.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\Index.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Admin\\Index.cshtml",
+              "ViewState": "AgIAAL8BAAAAAAAAAIBJwIUAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:25:28.632Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "_AdminLayout.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Shared\\_AdminLayout.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Shared\\_AdminLayout.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Shared\\_AdminLayout.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Shared\\_AdminLayout.cshtml",
+              "ViewState": "AgIAAPEBAAAAAAAAAAAowBIAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:26:36.795Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "Reviews.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\Reviews.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Admin\\Reviews.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\Reviews.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Admin\\Reviews.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:25:25.596Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "UpdateProfile.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\UpdateProfile.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Admin\\UpdateProfile.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\UpdateProfile.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Admin\\UpdateProfile.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:25:23.944Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "Users.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\Users.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Admin\\Users.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\Users.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Admin\\Users.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:25:18.991Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "UserDetails.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\UserDetails.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Admin\\UserDetails.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\UserDetails.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Admin\\UserDetails.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:25:21.43Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "WorkSchedules.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\WorkSchedules.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Admin\\WorkSchedules.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\WorkSchedules.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Admin\\WorkSchedules.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:25:16.686Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "ArticleDetails.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\ArticleDetails.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Admin\\ArticleDetails.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\ArticleDetails.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Admin\\ArticleDetails.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:25:10.696Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "Settings.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\Settings.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Admin\\Settings.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\Settings.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Admin\\Settings.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:24:15.244Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 44,
+              "Title": "DeleteCSKH.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\DeleteCSKH.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Admin\\DeleteCSKH.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\DeleteCSKH.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Admin\\DeleteCSKH.cshtml",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAcwB8AAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:22:02.523Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 45,
+              "Title": "EditCSKH.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\EditCSKH.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Admin\\EditCSKH.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\EditCSKH.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Admin\\EditCSKH.cshtml",
+              "ViewState": "AgIAABkAAAAAAAAAAAAcwDAAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:21:36.302Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 46,
+              "Title": "CSKHs.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\CSKHs.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Admin\\CSKHs.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Admin\\CSKHs.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Admin\\CSKHs.cshtml",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAUwDgAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T09:18:36.036Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 47,
+              "Title": "CsKh.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Models\\CsKh.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Models\\CsKh.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Models\\CsKh.cs",
+              "RelativeToolTip": "BookinhMVC\\Models\\CsKh.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T09:17:00.701Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 48,
+              "Title": "TransactionHelper.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Helpers\\TransactionHelper.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Helpers\\TransactionHelper.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Helpers\\TransactionHelper.cs",
+              "RelativeToolTip": "BookinhMVC\\Helpers\\TransactionHelper.cs",
+              "ViewState": "AgIAADsAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T09:08:54.284Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 49,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Chat\\Index.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Chat\\Index.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Chat\\Index.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Chat\\Index.cshtml",
+              "ViewState": "AgIAAHgAAAAAAAAAAAAcwIYAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-18T08:40:29.002Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 51,
+              "Title": "ChatMessage.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Models\\ChatMessage.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Models\\ChatMessage.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Models\\ChatMessage.cs",
+              "RelativeToolTip": "BookinhMVC\\Models\\ChatMessage.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAcwBcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T08:31:19.355Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 50,
+              "Title": "ChatbotController.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\ChatbotController.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Controllers\\ChatbotController.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\ChatbotController.cs",
+              "RelativeToolTip": "BookinhMVC\\Controllers\\ChatbotController.cs",
+              "ViewState": "AgIAAE4CAAAAAAAAAAA/wF0CAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-15T01:01:42.027Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 52,
+              "Title": "GiaoDichThanhToan.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Models\\GiaoDichThanhToan.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Models\\GiaoDichThanhToan.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Models\\GiaoDichThanhToan.cs",
+              "RelativeToolTip": "BookinhMVC\\Models\\GiaoDichThanhToan.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAAswAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-17T12:10:02.975Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 69,
+              "Title": "20251215012747_InitialCreate.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Migrations\\20251215012747_InitialCreate.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Migrations\\20251215012747_InitialCreate.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Migrations\\20251215012747_InitialCreate.cs",
+              "RelativeToolTip": "BookinhMVC\\Migrations\\20251215012747_InitialCreate.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-15T01:27:47.696Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 53,
+              "Title": "VerifyOtp.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\User\\VerifyOtp.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\User\\VerifyOtp.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\User\\VerifyOtp.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\User\\VerifyOtp.cshtml",
+              "ViewState": "AgIAAD8AAAAAAAAAAAArwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-15T01:56:10.749Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 54,
+              "Title": "DanhGia.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Models\\DanhGia.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Models\\DanhGia.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Models\\DanhGia.cs",
+              "RelativeToolTip": "BookinhMVC\\Models\\DanhGia.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-15T01:05:40.995Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 55,
+              "Title": "BenhNhan.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Models\\BenhNhan.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Models\\BenhNhan.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Models\\BenhNhan.cs",
+              "RelativeToolTip": "BookinhMVC\\Models\\BenhNhan.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAA/wBgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-15T01:01:48.419Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 57,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "BookinhMVC\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "BookinhMVC\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-15T00:59:02.478Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 56,
+              "Title": "Book.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Appointment\\Book.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Appointment\\Book.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Appointment\\Book.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Appointment\\Book.cshtml",
+              "ViewState": "AgIAAKoBAAAAAAAAAAAYwMMBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-15T00:54:50.659Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 58,
+              "Title": "site.css",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\wwwroot\\css\\site.css",
+              "RelativeDocumentMoniker": "BookinhMVC\\wwwroot\\css\\site.css",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\wwwroot\\css\\site.css",
+              "RelativeToolTip": "BookinhMVC\\wwwroot\\css\\site.css",
+              "ViewState": "AgIAAJwAAAAAAAAAAADwv7YAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-12-14T14:40:23.076Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 59,
+              "Title": "Testing.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\Testing.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Home\\Testing.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\Testing.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Home\\Testing.cshtml",
+              "ViewState": "AgIAANMAAAAAAAAAAAAYwOwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-14T14:37:47.817Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 60,
+              "Title": "Reviews.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\Reviews.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Home\\Reviews.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\Reviews.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Home\\Reviews.cshtml",
+              "ViewState": "AgIAACkAAAAAAAAAAAAYwEIAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-14T14:37:43.418Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 63,
+              "Title": "HospitalAbout.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\HospitalAbout.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Home\\HospitalAbout.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\HospitalAbout.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Home\\HospitalAbout.cshtml",
+              "ViewState": "AgIAAOgAAAAAAAAAAAAYwAEBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-14T14:37:27.378Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 66,
+              "Title": "Contact.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\Contact.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Home\\Contact.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\Contact.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Home\\Contact.cshtml",
+              "ViewState": "AgIAAMMAAAAAAAAAAAAYwNwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-14T14:34:36.116Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 67,
+              "Title": "Cardiology.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\Cardiology.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Home\\Cardiology.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\Cardiology.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Home\\Cardiology.cshtml",
+              "ViewState": "AgIAADIBAAAAAAAAAAAYwEsBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-14T14:34:59.631Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 65,
+              "Title": "Doctors.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\Doctors.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Home\\Doctors.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\Doctors.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Home\\Doctors.cshtml",
+              "ViewState": "AgIAAKYAAAAAAAAAAAAYwL8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-14T14:34:49.581Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 62,
+              "Title": "HospitalBlog.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\HospitalBlog.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Home\\HospitalBlog.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\HospitalBlog.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Home\\HospitalBlog.cshtml",
+              "ViewState": "AgIAADcAAAAAAAAAAAAYwFAAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-14T14:35:06.05Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 61,
+              "Title": "QA.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\QA.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Home\\QA.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\QA.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Home\\QA.cshtml",
+              "ViewState": "AgIAAOgAAAAAAAAAAAAYwAEBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-14T14:35:11.556Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 68,
+              "Title": "ArticleDetail.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\ArticleDetail.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Home\\ArticleDetail.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\ArticleDetail.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Home\\ArticleDetail.cshtml",
+              "ViewState": "AgIAAKEAAAAAAAAAAAAYwLoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-14T14:34:25.796Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 64,
+              "Title": "GeneralCheckup.cshtml",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\GeneralCheckup.cshtml",
+              "RelativeDocumentMoniker": "BookinhMVC\\Views\\Home\\GeneralCheckup.cshtml",
+              "ToolTip": "C:\\xampp\\htdocs\\LTW_Do_An_Booking\\BookinhMVC\\Views\\Home\\GeneralCheckup.cshtml",
+              "RelativeToolTip": "BookinhMVC\\Views\\Home\\GeneralCheckup.cshtml",
+              "ViewState": "AgIAAM0AAAAAAAAAAAAYwOYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-14T14:35:02.662Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

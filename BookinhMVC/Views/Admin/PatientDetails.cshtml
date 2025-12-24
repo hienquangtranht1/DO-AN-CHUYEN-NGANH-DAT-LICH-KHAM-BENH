@@ -1,0 +1,109 @@
+@model BookinhMVC.Models.BenhNhan
+@{
+    Layout = "_AdminLayout";
+    ViewBag.Active = "Patients";
+    ViewBag.Title = "Chi tiết Bệnh nhân";
+
+    var currentImgSrc = !string.IsNullOrEmpty(Model.HinhAnhBenhNhan)
+        ? (Model.HinhAnhBenhNhan.StartsWith("/uploads") ? Model.HinhAnhBenhNhan : "/uploads/" + Model.HinhAnhBenhNhan)
+        : "/images/default-patient.png"; // Giả định có ảnh mặc định cho bệnh nhân
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0"><i class="fas fa-hospital-user me-2 text-primary"></i>Hồ sơ Bệnh nhân</h2>
+</div>
+
+<div class="card shadow-lg">
+    <div class="card-header bg-primary text-white d-flex align-items-center">
+        <i class="fas fa-user-injured me-2 fs-5"></i>
+        <h4 class="mb-0">Thông tin chi tiết: @Model.HoTen</h4>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+
+            @* Cột 1: Ảnh đại diện & Tên *@
+            <div class="col-md-4 text-center border-end">
+                <div class="mb-3">
+                    <img src="@currentImgSrc"
+                         alt="@Model.HoTen"
+                         class="img-fluid rounded-circle shadow-sm"
+                         style="width: 150px; height: 150px; object-fit: cover;"
+                         onerror="this.onerror=null; this.src='/images/default-patient.png';" />
+                </div>
+                <h5 class="fw-bold text-primary">@Model.HoTen</h5>
+                <p class="text-muted mb-1">
+                    <i class="fas fa-id-card-alt me-1"></i> Mã BN: **@Model.MaBenhNhan**
+                </p>
+                @if (!string.IsNullOrEmpty(Model.SoBaoHiem))
+                {
+                    <p class="text-secondary small">
+                        <i class="fas fa-shield-alt me-1"></i> Số BHYT: **@Model.SoBaoHiem**
+                    </p>
+                }
+            </div>
+
+            @* Cột 2: Chi tiết thông tin *@
+            <div class="col-md-8">
+                <h5 class="border-bottom pb-2 mb-3 text-secondary"><i class="fas fa-clipboard-list me-1"></i> Thông tin Cá nhân</h5>
+                <dl class="row mb-4">
+
+                    <dt class="col-sm-4">Ngày sinh:</dt>
+                    <dd class="col-sm-8">
+                        <i class="far fa-calendar-alt me-1"></i>
+                        @(
+                            Model.NgaySinh.HasValue
+                                ? Model.NgaySinh.Value.ToString("dd/MM/yyyy")
+                                : "Chưa có"
+                        )
+                    </dd>
+
+                    <dt class="col-sm-4">Giới tính:</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.GioiTinh == "Nam")
+                        {
+                            <span class="badge bg-info"><i class="fas fa-mars"></i> Nam</span>
+                        }
+                        else if (Model.GioiTinh == "Nữ")
+                        {
+                            <span class="badge bg-danger"><i class="fas fa-venus"></i> Nữ</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Khác</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4">Số điện thoại:</dt>
+                    <dd class="col-sm-8">
+                        <i class="fas fa-phone me-1"></i> @(Model.SoDienThoai ?? "Chưa có")
+                    </dd>
+
+                    <dt class="col-sm-4">Email:</dt>
+                    <dd class="col-sm-8">
+                        <i class="fas fa-envelope me-1"></i> @(Model.Email ?? "Chưa có")
+                    </dd>
+
+                    <dt class="col-sm-4">Địa chỉ:</dt>
+                    <dd class="col-sm-8">
+                        <i class="fas fa-map-marker-alt me-1"></i> @(Model.DiaChi ?? "Chưa có")
+                    </dd>
+
+                    <dt class="col-sm-4">Ngày tạo hồ sơ:</dt>
+                    <dd class="col-sm-8">
+                        <i class="far fa-calendar-alt me-1"></i> @Model.NgayTao.ToString("dd/MM/yyyy HH:mm")
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer text-end">
+        <a href="/Admin/EditPatient/@Model.MaBenhNhan" class="btn btn-warning me-2">
+            <i class="fas fa-edit me-1"></i> Sửa hồ sơ
+        </a>
+        <a href="/Admin/Patients" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
+        </a>
+    </div>
+</div>

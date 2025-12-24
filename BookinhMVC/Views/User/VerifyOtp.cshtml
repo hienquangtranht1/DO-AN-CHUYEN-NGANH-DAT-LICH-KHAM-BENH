@@ -1,0 +1,91 @@
+﻿@* File: Views/User/VerifyOtp.cshtml *@
+@{
+    ViewData["Title"] = "Xác nhận OTP";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container my-5 pt-5">
+    <div class="mx-auto col-lg-6 col-md-8 col-sm-10 p-4 rounded-4 shadow bg-white">
+        <h3 class="text-center text-primary mb-3">Xác nhận OTP đăng ký</h3>
+
+        @if (TempData["reg_error"] != null)
+        {
+            <div class="alert alert-warning">@TempData["reg_error"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
+        {
+            <div class="alert alert-danger">
+                @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <div>- @err.ErrorMessage</div>
+                }
+            </div>
+        }
+
+        <form asp-controller="User" asp-action="VerifyOtp" method="post" class="text-center">
+            @Html.AntiForgeryToken()
+
+            <p class="text-muted">Nhập mã OTP 6 chữ số đã gửi vào email của bạn.</p>
+
+            <div class="d-flex justify-content-center gap-2 mb-3">
+                <input name="otp1" maxlength="1" inputmode="numeric" pattern="\d" class="form-control text-center" style="width:48px;" />
+                <input name="otp2" maxlength="1" inputmode="numeric" pattern="\d" class="form-control text-center" style="width:48px;" />
+                <input name="otp3" maxlength="1" inputmode="numeric" pattern="\d" class="form-control text-center" style="width:48px;" />
+                <input name="otp4" maxlength="1" inputmode="numeric" pattern="\d" class="form-control text-center" style="width:48px;" />
+                <input name="otp5" maxlength="1" inputmode="numeric" pattern="\d" class="form-control text-center" style="width:48px;" />
+                <input name="otp6" maxlength="1" inputmode="numeric" pattern="\d" class="form-control text-center" style="width:48px;" />
+            </div>
+
+            <button type="submit" class="btn btn-primary px-5">Xác nhận</button>
+            <a asp-controller="User" asp-action="Register" class="btn btn-link">Quay lại</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    (function(){
+        const inputs = Array.from(document.querySelectorAll('input[name^="otp"]'));
+        if (!inputs.length) return;
+        inputs[0].focus();
+
+        inputs.forEach((input, idx) => {
+            input.addEventListener('input', (e) => {
+                const v = input.value;
+                if (v.length > 1) {
+                    // Paste handling: if user pastes full OTP into first field
+                    const digits = v.replace(/\D/g,'').slice(0,6);
+                    if (digits.length === 6) {
+                        digits.split('').forEach((d,i) => { if (inputs[i]) inputs[i].value = d; });
+                    } else {
+                        input.value = v.slice(0,1);
+                    }
+                }
+                if (input.value && inputs[idx+1]) inputs[idx+1].focus();
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !input.value && inputs[idx-1]) {
+                    inputs[idx-1].focus();
+                }
+            });
+
+            // Allow paste of full OTP
+            if (idx === 0) {
+                input.addEventListener('paste', (e) => {
+                    const text = (e.clipboardData || window.clipboardData).getData('text');
+                    const digits = text.replace(/\D/g,'').slice(0,6);
+                    if (digits.length) {
+                        e.preventDefault();
+                        digits.split('').forEach((d,i) => { if (inputs[i]) inputs[i].value = d; });
+                    }
+                });
+            }
+        });
+    })();
+</script>
+}

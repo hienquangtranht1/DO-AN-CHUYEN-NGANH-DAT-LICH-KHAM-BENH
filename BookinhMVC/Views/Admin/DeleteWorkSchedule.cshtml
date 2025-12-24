@@ -1,0 +1,20 @@
+@model BookinhMVC.Models.LichLamViec
+@{
+    Layout = "_AdminLayout";
+    ViewBag.Title = "Xóa lịch làm việc";
+}
+<h2>Xóa lịch làm việc</h2>
+<div class="alert alert-danger">
+    <strong>Bạn có chắc chắn muốn xóa ca làm việc này?</strong>
+</div>
+<table class="table table-bordered">
+    <tr><th>Bác sĩ</th><td>@Model.BacSi?.HoTen (@Model.BacSi?.Khoa?.TenKhoa)</td></tr>
+    <tr><th>Ngày</th><td>@Model.NgayLamViec.ToString("dd/MM/yyyy")</td></tr>
+    <tr><th>Giờ</th><td>@Model.GioBatDau.ToString(@"hh\:mm") - @Model.GioKetThuc.ToString(@"hh\:mm")</td></tr>
+    <tr><th>Trạng thái</th><td>@Model.TrangThai</td></tr>
+</table>
+<form asp-action="DeleteWorkSchedule" method="post">
+    <input type="hidden" name="MaLich" value="@Model.MaLich" />
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a href="@Url.Action("WorkSchedules")" class="btn btn-secondary">Hủy</a>
+</form> 

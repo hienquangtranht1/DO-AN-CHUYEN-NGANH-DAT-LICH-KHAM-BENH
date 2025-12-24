@@ -1,0 +1,15 @@
+@model BookinhMVC.Models.LichHen
+@{
+    Layout = "_AdminLayout";
+    ViewBag.Active = "Appointments";
+    ViewBag.Title = "Chi tiết Lịch hẹn";
+}
+<h2>Chi tiết Lịch hẹn</h2>
+<ul>
+    <li>ID: @Model.MaLich</li>
+    <li>Bệnh nhân: @Model.BenhNhan?.HoTen</li>
+    <li>Bác sĩ: @Model.BacSi?.HoTen</li>
+    <li>Ngày giờ: @Model.NgayGio.ToString("dd/MM/yyyy HH:mm")</li>
+    <li>Trạng thái: @Model.TrangThai</li>
+</ul>
+<a href="/Admin/Appointments" class="btn btn-secondary">Quay lại</a> 

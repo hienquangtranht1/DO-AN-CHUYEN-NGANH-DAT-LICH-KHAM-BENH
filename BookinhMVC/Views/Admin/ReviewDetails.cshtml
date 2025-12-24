@@ -1,0 +1,171 @@
+@model BookinhMVC.Models.DanhGia
+@{
+    Layout = "_AdminLayout";
+    ViewBag.Active = "Reviews";
+    ViewBag.Title = "Chi tiết Đánh giá";
+}
+
+@section Styles {
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+        }
+
+        /* === CARD HEADER & BASE STYLES === */
+        .card-header-gradient {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #6366f1 100%) !important;
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 15px 15px 0 0;
+            font-weight: 700;
+        }
+
+        .info-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* === DETAIL LIST STYLES === */
+        .detail-list dt {
+            font-weight: 600;
+            color: var(--text-primary);
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+
+        .detail-list dd {
+            color: var(--text-secondary);
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+
+        .border-top {
+            border-top: 1px solid #e5e7eb !important;
+        }
+
+        /* === RATING STYLES === */
+        .rating-display {
+            color: var(--warning-color);
+            font-size: 1.5rem;
+        }
+
+        /* === NHẬN XÉT (HTML Content) === */
+        .review-content-box {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            color: var(--text-primary);
+        }
+
+            /* Đảm bảo nội dung HTML từ TinyMCE được hiển thị đúng */
+            .review-content-box p, .review-content-box ul, .review-content-box ol {
+                margin-bottom: 0.5rem;
+                font-size: 1rem;
+                line-height: 1.6;
+            }
+
+        /* === BUTTONS === */
+        .btn-action {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            border-color: var(--warning-color);
+            color: var(--text-primary);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+            color: white;
+        }
+
+    </style>
+}
+
+<div class="container-fluid py-4">
+
+    <h2 class="fw-bolder text-primary mb-5">
+        <i class="fas fa-star-half-alt me-2"></i> @ViewBag.Title
+    </h2>
+
+    <div class="card info-card">
+        <div class="card-header card-header-gradient">
+            <h5 class="mb-0">
+                <i class="fas fa-comments me-2"></i> Đánh giá #@Model.MaDanhGia
+            </h5>
+        </div>
+
+        <div class="card-body p-5">
+            <dl class="row detail-list">
+
+                <dt class="col-sm-3 detail-label">Bác sĩ:</dt>
+                <dd class="col-sm-9 detail-value">
+                    <strong class="text-primary">@Model.BacSi?.HoTen</strong> (@Model.BacSi?.Khoa?.TenKhoa)
+                </dd>
+
+                <dt class="col-sm-3 detail-label border-top">Bệnh nhân:</dt>
+                <dd class="col-sm-9 detail-value border-top">
+                    @Model.BenhNhan?.HoTen (Mã: #@Model.MaBenhNhan)
+                </dd>
+
+                <dt class="col-sm-3 detail-label border-top">Điểm đánh giá:</dt>
+                <dd class="col-sm-9 detail-value border-top">
+                    <span class="rating-display">
+                        @for (int i = 0; i < Model.DiemDanhGia; i++)
+                        {
+                            <i class="fas fa-star"></i>
+                        }
+                        @if (Model.DiemDanhGia < 5)
+                        {
+                            for (int i = Model.DiemDanhGia; i < 5; i++)
+                            {
+                                <i class="far fa-star text-muted"></i>
+                            }
+                        }
+                    </span>
+                    <span class="text-secondary ms-2">(@Model.DiemDanhGia/5)</span>
+                </dd>
+
+                <dt class="col-sm-3 detail-label border-top">Ngày đánh giá:</dt>
+                <dd class="col-sm-9 detail-value border-top">
+                    <i class="far fa-calendar-alt me-1"></i> @Model.NgayDanhGia.ToString("dd/MM/yyyy HH:mm")
+                </dd>
+
+                <dt class="col-sm-12 detail-label border-top pt-4">Nội dung nhận xét:</dt>
+                <dd class="col-sm-12 detail-value">
+                    <div class="review-content-box">
+                        @Html.Raw(Model.NhanXet)
+                    </div>
+                </dd>
+
+            </dl>
+        </div>
+
+        <div class="card-footer bg-light border-top py-4 d-flex justify-content-end">
+
+            <a href="/Admin/EditReview/@Model.MaDanhGia" class="btn btn-warning btn-action me-3">
+                <i class="fas fa-edit me-2"></i> Chỉnh sửa
+            </a>
+
+            <a href="/Admin/DeleteReview/@Model.MaDanhGia" class="btn btn-danger btn-action me-3"
+               onclick="return confirm('Bạn có chắc chắn muốn xóa đánh giá này không?')">
+                <i class="fas fa-trash-alt me-2"></i> Xóa
+            </a>
+
+            <a href="/Admin/Reviews" class="btn btn-secondary btn-action">
+                <i class="fas fa-arrow-left me-2"></i> Quay lại danh sách
+            </a>
+        </div>
+    </div>
+</div>

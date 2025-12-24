@@ -1,0 +1,117 @@
+﻿@{
+    ViewData["Title"] = "Nạp tiền vào ví";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    decimal currentBalance = ViewBag.CurrentBalance ?? 0;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success shadow-sm mb-4 border-0">
+                    <i class="fas fa-check-circle me-2"></i> @TempData["Success"]
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger shadow-sm mb-4 border-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i> @TempData["Error"]
+                </div>
+            }
+
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-header bg-primary text-white p-4 text-center">
+                    <h4 class="mb-0 fw-bold"><i class="fas fa-wallet me-2"></i>Nạp Tiền Vào Ví</h4>
+                    <p class="mb-0 opacity-75 small">An toàn - Nhanh chóng - Tiện lợi</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5 bg-white">
+
+                    <div class="text-center mb-4">
+                        <small class="text-muted text-uppercase fw-bold ls-1">Số dư hiện tại</small>
+                        <h2 class="display-4 fw-bold text-success mb-0">@currentBalance.ToString("N0") <span class="fs-4 text-muted">đ</span></h2>
+                    </div>
+
+                    <hr class="my-4 opacity-10">
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary">Nhập số tiền muốn nạp</label>
+                        <div class="input-group input-group-lg border rounded-3 overflow-hidden shadow-sm">
+                            <input type="number" id="txtAmount" class="form-control border-0 fw-bold fs-4 text-primary" placeholder="0" min="10000" step="10000" value="50000">
+                            <span class="input-group-text border-0 bg-light fw-bold text-muted">VNĐ</span>
+                        </div>
+                        <div class="d-flex justify-content-between mt-2">
+                            <small class="text-muted fst-italic">* Tối thiểu 10.000đ</small>
+                            <div>
+                                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill me-1" onclick="setAmount(50000)">50k</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill me-1" onclick="setAmount(100000)">100k</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" onclick="setAmount(500000)">500k</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-3">
+                        <form asp-controller="Payment" asp-action="CreatePaymentVnpay" method="post" id="formVnpay">
+                            <input type="hidden" name="amount" id="amountVnpay" />
+                            <button type="button" onclick="submitVnpay()" class="btn btn-primary btn-lg w-100 py-3 rounded-3 fw-bold shadow-sm position-relative overflow-hidden group-hover">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <span class="me-2"><i class="fas fa-credit-card"></i></span>
+                                    <span>Thanh toán qua VNPAY</span>
+                                </div>
+                                <small class="d-block fw-normal opacity-75" style="font-size: 0.75rem;">(Thẻ ATM, Visa, MasterCard, QR VNPAY)</small>
+                            </button>
+                        </form>
+
+                        <button type="button" onclick="submitQr()" class="btn btn-outline-primary btn-lg w-100 py-3 rounded-3 fw-bold shadow-sm">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <span class="me-2"><i class="fas fa-qrcode"></i></span>
+                                <span>Chuyển khoản nhanh (VietQR)</span>
+                            </div>
+                            <small class="d-block fw-normal text-muted" style="font-size: 0.75rem;">(Techcombank - Tự động xác nhận)</small>
+                        </button>
+                    </div>
+
+                    <div class="mt-4 text-center">
+                        <a asp-action="History" class="text-decoration-none text-muted small hover-link">
+                            <i class="fas fa-history me-1"></i> Xem lịch sử giao dịch
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Hàm set tiền nhanh
+        function setAmount(val) {
+            document.getElementById('txtAmount').value = val;
+        }
+
+        // Xử lý gửi VNPAY (POST)
+        function submitVnpay() {
+            var amt = document.getElementById('txtAmount').value;
+            if (!amt || amt < 10000) {
+                alert('Vui lòng nhập số tiền tối thiểu 10,000đ');
+                return;
+            }
+            document.getElementById('amountVnpay').value = amt;
+            document.getElementById('formVnpay').submit();
+        }
+
+        // Xử lý gửi QR (GET)
+        function submitQr() {
+            var amt = document.getElementById('txtAmount').value;
+            if (!amt || amt < 1000) { // QR cho phép nhỏ hơn, ví dụ 1000đ
+                alert('Vui lòng nhập số tiền hợp lệ');
+                return;
+            }
+            // Chuyển hướng sang trang PayWithQr với tham số amount
+            window.location.href = '/Payment/PayWithQr?amount=' + amt;
+        }
+    </script>
+}

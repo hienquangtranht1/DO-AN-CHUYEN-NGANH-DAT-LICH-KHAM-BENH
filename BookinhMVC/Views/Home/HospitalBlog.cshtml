@@ -1,0 +1,81 @@
+﻿@model List<BookinhMVC.Models.Article>
+@{
+    ViewData["Title"] = "Tất Cả Bài Viết Y Tế";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    .blog-header {
+        background-image: url('/images/background.png');
+        color: black;
+        padding: 80px 0;
+        margin-bottom: 50px;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .blog-card {
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
+    }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+    .blog-card-img {
+        height: 220px;
+        object-fit: cover;
+        width: 100%;
+    }
+</style>
+
+<div class="blog-header">
+    <div class="container text-center">
+        <h1>Blog Y Tế Chuyên Sâu</h1>
+        <p>Kho kiến thức và thông tin sức khỏe cập nhật nhất từ các chuyên gia</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row g-4" id="blogContainer">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var article in Model)
+            {
+                <div class="col-md-4 col-lg-3">
+                    <div class="blog-card">
+                        <img src="@(string.IsNullOrEmpty(article.FeatureImageUrl) ? Url.Content("~/images/default-blog.png") : Url.Content(article.FeatureImageUrl))"
+                             class="blog-card-img" alt="@article.Title">
+                        <div class="p-3 p-md-4">
+                            <span class="badge bg-primary mb-2">@article.Category?.CategoryName</span>
+                            <h5 class="fw-bold mb-3" style="line-height: 1.4;">
+                                <a asp-action="ArticleDetail" asp-route-slug="@article.Slug" class="text-dark text-decoration-none">
+                                    @article.Title
+                                </a>
+                            </h5>
+                            <div class="d-flex justify-content-between small text-muted pt-2 border-top">
+                                <span><i class="fas fa-user-md me-1"></i> @article.Author?.TenDangNhap</span>
+                                <span><i class="far fa-calendar-alt me-1"></i> @article.PublishDate.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                <p class="lead">Hiện tại chưa có bài viết nào được xuất bản.</p>
+            </div>
+        }
+    </div>
+
+    @* <button id="loadMoreBtn" class="btn btn-outline-primary mt-5 mx-auto d-block">Tải Thêm</button> *@
+</div>

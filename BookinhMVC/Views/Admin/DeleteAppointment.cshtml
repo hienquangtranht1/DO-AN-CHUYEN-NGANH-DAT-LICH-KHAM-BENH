@@ -1,0 +1,13 @@
+@model BookinhMVC.Models.LichHen
+@{
+    Layout = "_AdminLayout";
+    ViewBag.Active = "Appointments";
+    ViewBag.Title = "Xóa Lịch hẹn";
+}
+<h2>Xóa Lịch hẹn</h2>
+<p>Bạn có chắc chắn muốn xóa lịch hẹn mã <b>@Model.MaLich</b>?</p>
+<form asp-action="DeleteAppointment" method="post">
+    <input type="hidden" asp-for="MaLich" />
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a href="/Admin/Appointments" class="btn btn-secondary">Hủy</a>
+</form> 

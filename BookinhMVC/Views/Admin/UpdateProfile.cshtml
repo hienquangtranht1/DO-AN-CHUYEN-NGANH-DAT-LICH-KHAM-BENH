@@ -1,0 +1,41 @@
+﻿@model BookinhMVC.Models.NguoiDung
+
+@{
+    ViewBag.Title = "Cập nhật hồ sơ";
+    ViewBag.Active = "Profile";
+    Layout = "_AdminLayout";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2><i class="fas fa-user-edit me-2"></i>Cập nhật hồ sơ</h2>
+        <hr />
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">@ViewBag.Error</div>
+        }
+
+        <form asp-action="UpdateProfile" method="post">
+            <input type="hidden" name="maNguoiDung" value="@Model.MaNguoiDung" />
+
+            <div class="mb-3">
+                <label for="tenDangNhap" class="form-label">Tên đăng nhập</label>
+                <input type="text" class="form-control" id="tenDangNhap" name="tenDangNhap" value="@Model.TenDangNhap" required>
+            </div>
+
+            @* <div class="mb-3"> *@
+            @*     <label for="email" class="form-label">Email (Cần thêm trường Email vào Model NguoiDung)</label> *@
+            @*     <input type="email" class="form-control" id="email" name="email" value="@(Model.Email ?? "")"> *@
+            @* </div> *@
+
+            <div class="mb-3">
+                <label class="form-label">Vai trò</label>
+                <input type="text" class="form-control" value="@Model.VaiTro" disabled>
+            </div>
+
+            <a asp-action="Profile" class="btn btn-secondary">Hủy</a>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Lưu thay đổi</button>
+        </form>
+    </div>
+</div>

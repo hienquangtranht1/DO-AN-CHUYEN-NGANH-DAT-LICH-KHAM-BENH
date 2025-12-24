@@ -1,0 +1,62 @@
+@model BookinhMVC.Models.Khoa
+
+@{
+    Layout = "_AdminLayout";
+    ViewBag.Active = "Departments";
+    ViewBag.Title = "Xác nhận Xóa Khoa";
+}
+
+<div class="container-fluid py-4">
+
+    <h2 class="fw-bolder text-danger mb-5">
+        <i class="fas fa-trash-alt me-2"></i> @ViewBag.Title
+    </h2>
+
+    <div class="card shadow-lg rounded-4 border-danger border-start border-5 mx-auto" style="max-width: 650px;">
+
+        <div class="card-header bg-danger text-white py-3 rounded-top-4">
+            <h5 class="mb-0 fw-bold">
+                <i class="fas fa-exclamation-triangle me-2"></i> CẢNH BÁO: Xóa dữ liệu
+            </h5>
+        </div>
+
+        <div class="card-body p-4">
+            <p class="lead text-dark">
+                Bạn có **chắc chắn** muốn xóa Khoa này không?
+            </p>
+
+            <p class="text-danger fw-bold fs-5">
+                Hành động này sẽ xóa vĩnh viễn Khoa **"@Model.TenKhoa"** và có thể ảnh hưởng đến các dữ liệu liên quan (như Lịch hẹn, Bác sĩ liên kết, v.v.).
+            </p>
+
+            <hr class="my-4" />
+
+            <h6 class="fw-bold mb-3 text-secondary">Thông tin chi tiết khoa sẽ bị xóa:</h6>
+            <dl class="row bg-light p-3 rounded">
+                <dt class="col-sm-4">Mã Khoa:</dt>
+                <dd class="col-sm-8"><span class="badge bg-danger fs-6">@Model.MaKhoa</span></dd>
+
+                <dt class="col-sm-4">Tên Khoa:</dt>
+                <dd class="col-sm-8 fw-bold">@Model.TenKhoa</dd>
+
+                <dt class="col-sm-4">Mô tả (tóm tắt):</dt>
+                <dd class="col-sm-8 text-muted">@(Model.MoTa.Length > 80 ? Model.MoTa.Substring(0, 80) + "..." : Model.MoTa)</dd>
+            </dl>
+
+            <form asp-action="DeleteDepartment" method="post" class="mt-4">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="MaKhoa" />
+
+                <div class="d-flex justify-content-end gap-3">
+                    <a href="/Admin/Departments" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-times me-2"></i> Hủy
+                    </a>
+
+                    <button type="submit" class="btn btn-danger btn-lg fw-bold">
+                        <i class="fas fa-check me-2"></i> XÓA VĨNH VIỄN
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

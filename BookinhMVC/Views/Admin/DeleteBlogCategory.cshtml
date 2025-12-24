@@ -1,0 +1,68 @@
+﻿@model BookinhMVC.Models.Category
+@{
+    ViewData["Title"] = "Xác Nhận Xóa Danh Mục: " + Model.CategoryName;
+    Layout = "~/Views/Shared/_AdminLayout.cshtml"; // Sử dụng layout Admin
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 bg-danger text-white">
+        <h5 class="m-0 font-weight-bold">
+            <i class="fas fa-exclamation-triangle"></i> Xác Nhận Xóa Danh Mục Blog
+        </h5>
+    </div>
+    <div class="card-body">
+
+        @* Hiển thị thông báo cảnh báo dựa trên TempData từ Controller *@
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-circle"></i> **CẢNH BÁO:** @TempData["ErrorMessage"]
+                <br />
+                Vui lòng chuyển các bài viết liên quan sang danh mục khác trước khi xóa.
+            </div>
+
+            <dl class="row mb-4 p-3 bg-light rounded shadow-sm">
+                <dt class="col-sm-3">Tên Danh mục:</dt>
+                <dd class="col-sm-9 fw-bold text-danger">@Model.CategoryName</dd>
+
+                <dt class="col-sm-3">ID:</dt>
+                <dd class="col-sm-9">@Model.CategoryId</dd>
+
+                <dt class="col-sm-3">Ngày tạo:</dt>
+                <dd class="col-sm-9">@Model.NgayTao.ToString("dd/MM/yyyy")</dd>
+            </dl>
+
+            <a asp-action="BlogCategories" class="btn btn-secondary btn-lg">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+        }
+        else
+        {
+            <div class="alert alert-warning" role="alert">
+                Bạn có chắc chắn muốn **XÓA** vĩnh viễn danh mục **"@Model.CategoryName"** không? Hành động này không thể hoàn tác.
+            </div>
+
+            <dl class="row mb-4 p-3 bg-light rounded shadow-sm">
+                <dt class="col-sm-3">Tên Danh mục:</dt>
+                <dd class="col-sm-9 fw-bold text-primary">@Model.CategoryName</dd>
+
+                <dt class="col-sm-3">ID:</dt>
+                <dd class="col-sm-9">@Model.CategoryId</dd>
+
+                <dt class="col-sm-3">Ngày tạo:</dt>
+                <dd class="col-sm-9">@Model.NgayTao.ToString("dd/MM/yyyy")</dd>
+            </dl>
+
+            <form asp-action="DeleteBlogCategory" method="post" asp-route-id="@Model.CategoryId">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="CategoryId" />
+                <button type="submit" class="btn btn-danger btn-lg">
+                    <i class="fas fa-trash-alt"></i> Xóa Vĩnh Viễn
+                </button>
+                <a asp-action="BlogCategories" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-times-circle"></i> Hủy
+                </a>
+            </form>
+        }
+    </div>
+</div>

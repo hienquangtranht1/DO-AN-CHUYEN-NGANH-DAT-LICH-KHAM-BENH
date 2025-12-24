@@ -1,0 +1,58 @@
+@model BookinhMVC.Models.NguoiDung
+@{
+    Layout = "_AdminLayout";
+    ViewBag.Active = "Users";
+    ViewBag.Title = "Thêm Người dùng mới";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0"><i class="fas fa-user-plus me-2 text-success"></i>Thêm Người dùng mới</h2>
+        </div>
+
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-4">
+
+                <form asp-action="CreateUser" method="post">
+
+                    @* Tên Đăng nhập *@
+                    <div class="mb-3">
+                        <label for="tenDangNhap" class="form-label fw-bold">Tên đăng nhập (<span class="text-danger">*</span>)</label>
+                        <input type="text" id="tenDangNhap" name="tenDangNhap" class="form-control" required placeholder="Nhập tên đăng nhập" />
+                        @* Thêm Validation Message nếu cần: <span asp-validation-for="TenDangNhap" class="text-danger"></span> *@
+                    </div>
+
+                    @* Mật khẩu *@
+                    <div class="mb-3">
+                        <label for="matKhau" class="form-label fw-bold">Mật khẩu (<span class="text-danger">*</span>)</label>
+                        <input type="password" id="matKhau" name="matKhau" class="form-control" required placeholder="Nhập mật khẩu" />
+                        @* Trong Controller, bạn nên tự động hash mật khẩu này. *@
+                    </div>
+
+                    @* Vai trò (Sử dụng Select cho dễ chọn và tránh lỗi nhập liệu) *@
+                    <div class="mb-4">
+                        <label for="vaiTro" class="form-label fw-bold">Vai trò (<span class="text-danger">*</span>)</label>
+                        <select id="vaiTro" name="vaiTro" class="form-select" required>
+                            <option value="">-- Chọn vai trò --</option>
+                            <option value="Admin">Admin</option>
+                            <option value="BacSi">Bác sĩ</option>
+                            <option value="BenhNhan">Bệnh nhân</option>
+                        </select>
+                        @* Thêm Validation Message nếu cần: <span asp-validation-for="VaiTro" class="text-danger"></span> *@
+                    </div>
+
+                    <div class="d-flex justify-content-end pt-2">
+                        <a href="/Admin/Users" class="btn btn-secondary me-2">
+                            <i class="fas fa-arrow-left me-1"></i> Quay lại
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Tạo người dùng
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,132 @@
+﻿@* File: Views/User/Login.cshtml *@
+@{
+    ViewData["Title"] = "Đăng nhập - Four Rock";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var error = ViewData["Error"] as string;
+}
+
+<div class="container my-5 pt-5">
+    <div class="login-container mx-auto col-lg-5 col-md-7 col-sm-10 p-4 p-md-5 rounded-4 shadow-lg bg-white" data-aos="fade-up">
+        
+        <h2 class="text-center mb-4 fw-bold text-primary">
+            <i class="fas fa-sign-in-alt me-2"></i> Đăng nhập Tài khoản
+        </h2>
+        <p class="text-center text-secondary mb-4">Chào mừng trở lại. Vui lòng nhập thông tin của bạn.</p>
+
+        @* Hiển thị lỗi (nếu có) *@
+        @if (!string.IsNullOrEmpty(error))
+        {
+            <div class="alert alert-danger rounded-3"><i class="fas fa-exclamation-triangle me-2"></i>@error</div>
+        }
+        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
+        {
+            <div class="alert alert-danger rounded-3">
+                <i class="fas fa-times-circle me-2"></i>
+                Có lỗi xảy ra. Vui lòng thử lại.
+            </div>
+        }
+
+        @* FORM ĐĂNG NHẬP *@
+        <form asp-controller="User" asp-action="Login" method="post" class="row g-4">
+            <div class="col-12">
+                <label for="username" class="form-label fw-medium">Tên đăng nhập:</label>
+                <input type="text" id="username" name="username" class="form-control rounded-3 py-2" required placeholder="Tên đăng nhập hoặc Email"/>
+            </div>
+            <div class="col-12">
+                <label for="password" class="form-label fw-medium">Mật khẩu:</label>
+                <input type="password" id="password" name="password" class="form-control rounded-3 py-2" required placeholder="Mật khẩu"/>
+            </div>
+            
+            <div class="col-12 mt-4">
+                <button type="submit" class="btn btn-primary w-100 btn-lg rounded-pill fw-bold">
+                    <i class="fas fa-sign-in-alt me-2"></i> Đăng nhập
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center mt-4 d-flex justify-content-between align-items-center flex-wrap">
+            <a class="btn btn-link text-secondary" href="@Url.Action("ForgotPassword", "User")" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+                Quên mật khẩu?
+            </a>
+            <span class="text-muted">
+                Chưa có tài khoản? 
+                <a class="btn btn-link text-primary fw-bold" asp-action="Register" asp-controller="User">
+                    Đăng ký ngay
+                </a>
+            </span>
+        </div>
+    </div>
+</div>
+
+@* Modal Quên mật khẩu (Sử dụng Bootstrap 5 syntax) *@
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg">
+            <div class="modal-header bg-primary text-white rounded-top-4">
+                <h5 class="modal-title fw-bold" id="forgotPasswordModalLabel"><i class="fas fa-lock me-2"></i> Quên mật khẩu</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-secondary">Vui lòng nhập email đã đăng ký để nhận mã xác nhận và đặt lại mật khẩu.</p>
+                <form asp-controller="User" asp-action="ForgotPassword" method="post">
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-medium">Email đã đăng ký:</label>
+                        <input type="email" id="email" name="email" class="form-control rounded-3 py-2" required placeholder="example@hospital.com" />
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block w-100 rounded-pill fw-bold">Tiếp theo</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Khởi tạo AOS nếu nó chưa được khởi tạo trong _Layout
+        if (typeof AOS !== 'undefined') {
+            AOS.init({
+                duration: 800,
+                once: true,
+                offset: 50
+            });
+        }
+    </script>
+}
+
+<style>
+    /* Custom styles for consistency */
+    .login-container {
+        /* Bỏ margin-top cũ, dùng Bootstrap classes */
+        background-color: #fff;
+        border: 1px solid #e9ecef;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-control, .form-select {
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    
+    .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+    }
+    
+    /* Responsive adjustment for small screens */
+    @@media (max-width: 768px) {
+        .login-container {
+            padding: 1.5rem !important;
+        }
+    }
+</style>

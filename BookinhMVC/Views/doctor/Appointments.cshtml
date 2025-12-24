@@ -1,0 +1,332 @@
+@model List<BookinhMVC.Models.AppointmentViewModel>
+@{
+    Layout = "~/Views/Shared/_DoctorLayout.cshtml";
+    ViewBag.Title = "Quản lý lịch hẹn";
+    var request = Context.Request;
+
+    string defaultDate = request.Query["date"];
+    if (string.IsNullOrEmpty(defaultDate)) { defaultDate = DateTime.Today.ToString("yyyy-MM-dd"); }
+
+    DateTime selectedDate;
+    if (!DateTime.TryParse(defaultDate, out selectedDate)) { selectedDate = DateTime.Today; }
+
+    var actualStartTime = (TimeSpan)(ViewData["ActualStartTime"] ?? new TimeSpan(7, 0, 0));
+    var actualEndTime = (TimeSpan)(ViewData["ActualEndTime"] ?? new TimeSpan(18, 0, 0));
+    var hasSchedule = (bool)(ViewData["HasSchedule"] ?? false);
+
+    if (!hasSchedule && Model.Count == 0)
+    {
+        actualStartTime = new TimeSpan(7, 0, 0);
+        actualEndTime = new TimeSpan(7, 30, 0);
+    }
+
+    var interval = TimeSpan.FromMinutes(30);
+    var timeSlots = new List<TimeSpan>();
+    for (var time = actualStartTime; time < actualEndTime; time = time.Add(interval))
+    {
+        timeSlots.Add(time);
+    }
+
+    // JavaScript-friendly values
+    var startMinutes = (int)actualStartTime.TotalMinutes;
+    var intervalMinutes = (int)interval.TotalMinutes;
+    var slotHeightPx = 60; // css uses 60px per 30 minutes
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+<style>
+    .appointments-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        background: white;
+        padding: 24px;
+        border-radius: 16px;
+        margin-bottom: 24px;
+        border-left: 5px solid #0ea5e9;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .appointment-card {
+        position: absolute;
+        width: calc(100% - 20px);
+        border-radius: 8px;
+        padding: 5px 8px;
+        z-index: 10;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: transform .2s ease, opacity .2s ease;
+    }
+
+    .status-confirmed-card {
+        background-color: #dbeafe;
+        border-left: 4px solid #0ea5e9;
+    }
+
+    .status-pending-card {
+        background-color: #fef3c7;
+        border-left: 4px solid #f59e0b;
+    }
+
+    .status-cancelled-card {
+        background-color: #f1f5f9;
+        border-left: 4px solid #94a3b8;
+    }
+
+    .time-grid-container {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .time-label-slot, .appointment-slot {
+        height: 60px;
+        border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .appointment-area {
+        position: relative;
+        padding: 0 10px;
+    }
+
+    .appointment-wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 10px;
+        min-height: calc( @(timeSlots.Count) * 60px);
+    }
+</style>
+
+<div class="appointments-container">
+    <div class="page-header">
+        <h2><i class="fas fa-calendar-alt"></i> Lịch hẹn ngày @selectedDate.ToString("dd/MM/yyyy")</h2>
+    </div>
+
+    <div class="filter-card" style="background:white; padding:20px; border-radius:16px; margin-bottom:20px;">
+        <form method="get" class="filter-form" style="display:flex; gap:10px; align-items:end;">
+            <div>
+                <label>Chọn ngày</label>
+                <input type="date" name="date" class="form-control" value="@selectedDate.ToString("yyyy-MM-dd")" />
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Xem lịch</button>
+            <a href="/Doctor/Appointments" class="btn btn-secondary"><i class="fas fa-redo"></i> Hôm nay</a>
+        </form>
+    </div>
+
+    <div class="time-grid-container">
+        <div class="time-labels">
+            @foreach (var time in timeSlots)
+            {
+                <div class="time-label-slot" style="text-align:right; padding-right:10px; line-height:60px;">@time.ToString(@"hh\:mm")</div>
+            }
+        </div>
+
+        <div class="appointment-area">
+            @foreach (var time in timeSlots)
+            {
+                <div class="appointment-slot"></div>
+            }
+
+            <div id="appointmentWrapper" class="appointment-wrapper">
+                @foreach (var item in Model)
+                {
+                    if (item.NgayGio.TimeOfDay >= actualStartTime && item.NgayGio.TimeOfDay < actualEndTime)
+                    {
+                        var statusClass = item.TrangThai switch { "Đã xác nhận" => "status-confirmed-card", "Đã hủy" => "status-cancelled-card", _ => "status-pending-card" };
+                        double top = (item.NgayGio.TimeOfDay - actualStartTime).TotalMinutes / interval.TotalMinutes * slotHeightPx;
+
+                        <div class="appointment-card @statusClass" data-appointment-id="@item.MaLich" style="top: @(top)px; height: 60px;">
+                            <div style="display:flex; justify-content:space-between;">
+                                <strong class="appointment-time">@item.NgayGio.ToString("HH:mm") | <span class="patient-name">@item.HoTenBenhNhan</span></strong>
+                                <span class="badge bg-secondary appointment-status">@item.TrangThai</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; margin-top:5px;">
+                                <small class="appointment-note">@item.TrieuChung</small>
+                                <form method="post" asp-action="UpdateAppointment" asp-controller="Doctor" style="display:inline;">
+                                    <input type="hidden" name="id" value="@item.MaLich" />
+                                    <button type="submit" name="status" value="Đã xác nhận" class="btn btn-sm btn-success py-0">✔</button>
+                                    <button type="submit" name="status" value="Đã hủy" class="btn btn-sm btn-danger py-0">✕</button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var doctorId = '@(Context.Session.GetInt32("DoctorId")?.ToString() ?? "")';
+            var viewingDate = '@selectedDate.ToString("yyyy-MM-dd")';
+            var startMinutes = @startMinutes; // minutes from midnight
+            var intervalMinutes = @intervalMinutes;
+            var slotHeight = @slotHeightPx;
+
+            if (!doctorId) {
+                console.error("❌ ERROR: DoctorId is missing.");
+                return;
+            }
+
+            function timeToTopPx(isoDatetime) {
+                // isoDatetime expected like "2025-12-18T14:30:00" or server may send with timezone
+                var d = new Date(isoDatetime);
+                if (isNaN(d.getTime())) return 0;
+                var minutes = d.getHours() * 60 + d.getMinutes();
+                var diff = minutes - startMinutes;
+                var top = (diff / intervalMinutes) * slotHeight;
+                return Math.max(0, top);
+            }
+
+            function mapStatusClass(status) {
+                if (!status) return "status-pending-card";
+                if (status === "Đã xác nhận") return "status-confirmed-card";
+                if (status === "Đã hủy") return "status-cancelled-card";
+                return "status-pending-card";
+            }
+
+            function renderAppointmentElement(data) {
+                // data: { maLich, ngayGio, hoTenBenhNhan, trieuChung, trangThai }
+                var id = data.maLich || data.MaLich || data.id;
+                var ngay = data.ngayGio || data.NgayGio || data.ngaygio;
+                var name = data.hoTenBenhNhan || data.HoTenBenhNhan || data.hoTen || data.patientName || "";
+                var note = data.trieuChung || data.TrieuChung || data.note || "";
+                var status = data.trangThai || data.TrangThai || "Chờ xác nhận";
+
+                // avoid duplicate
+                var existing = $('#appointmentWrapper').find('[data-appointment-id="' + id + '"]');
+                if (existing.length) {
+                    // update existing
+                    existing.css('top', timeToTopPx(ngay) + 'px');
+                    existing.find('.appointment-time').text(new Date(ngay).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}) + ' | ' + name);
+                    existing.find('.patient-name').text(name);
+                    existing.find('.appointment-note').text(note);
+                    existing.find('.appointment-status').text(status);
+                    existing.removeClass('status-confirmed-card status-pending-card status-cancelled-card').addClass(mapStatusClass(status));
+                    return existing;
+                }
+
+                var top = timeToTopPx(ngay);
+                var $card = $('<div/>', {
+                    'class': 'appointment-card ' + mapStatusClass(status),
+                    'data-appointment-id': id,
+                    'css': { top: top + 'px', height: slotHeight + 'px', opacity: 0, transform: 'translateY(-6px)' }
+                });
+
+                var $header = $('<div/>', { style: 'display:flex; justify-content:space-between;' })
+                    .append($('<strong/>', { 'class': 'appointment-time', text: new Date(ngay).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}) + ' | ' + name }))
+                    .append($('<span/>', { 'class': 'badge bg-secondary appointment-status', text: status }));
+
+                var $body = $('<div/>', { style: 'display:flex; justify-content:space-between; margin-top:5px;' })
+                    .append($('<small/>', { 'class': 'appointment-note', text: note }))
+                    .append($('<div/>').append(
+                        $('<form/>', { method: 'post', action: '/Doctor/UpdateAppointment', style: 'display:inline;' })
+                            .append($('<input/>', { type: 'hidden', name: 'id', value: id }))
+                            .append($('<button/>', { type: 'submit', name: 'status', value: 'Đã xác nhận', 'class': 'btn btn-sm btn-success py-0', text: '✔' }))
+                            .append(' ')
+                            .append($('<button/>', { type: 'submit', name: 'status', value: 'Đã hủy', 'class': 'btn btn-sm btn-danger py-0', text: '✕' }))
+                    ));
+
+                $card.append($header).append($body);
+
+                $('#appointmentWrapper').append($card);
+
+                // animate in
+                setTimeout(function () {
+                    $card.css({ opacity: 1, transform: 'translateY(0)' });
+                }, 50);
+
+                return $card;
+            }
+
+            function removeAppointmentElement(id) {
+                var el = $('#appointmentWrapper').find('[data-appointment-id="' + id + '"]');
+                if (el.length) {
+                    el.css({ opacity: 0, transform: 'translateY(-6px)' });
+                    setTimeout(function () { el.remove(); }, 250);
+                }
+            }
+
+            // Build SignalR connection
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl("/bookingHub?userId=" + doctorId + "&role=BacSi")
+                .withAutomaticReconnect()
+                .build();
+
+            // New booking arrived
+            connection.on("ReceiveNewBooking", function (data) {
+                try {
+                    // data expected to include ngayGio (ISO string) and maLich and patient name/trieuChung
+                    toastr.success(data.noiDung || data.TieuDe || "Bạn có lịch mới", "📅 Lịch hẹn mới!");
+                    var bookingDate = (data.ngayGio || data.NgayGio || '').substring(0, 10);
+                    if (bookingDate === viewingDate) {
+                        renderAppointmentElement({
+                            maLich: data.maLich || data.MaLich || data.id,
+                            ngayGio: data.ngayGio || data.NgayGio,
+                            hoTenBenhNhan: data.hoTenBenhNhan || data.HoTenBenhNhan || data.patientName,
+                            trieuChung: data.trieuChung || data.TrieuChung || '',
+                            trangThai: data.trangThai || data.TrangThai || "Chờ xác nhận"
+                        });
+                    }
+                } catch (e) {
+                    console.error("ReceiveNewBooking handling error", e);
+                    // fallback: reload if data shape unexpected
+                    // location.reload();
+                }
+            });
+
+            // Status change (update or cancelled)
+            connection.on("ReceiveStatusChange", function (payload) {
+                try {
+                    // payload example: { maLich, trangThaiMoi, tieuDe, noiDung }
+                    var id = payload.maLich || payload.MaLich || payload.id;
+                    var newStatus = payload.trangThaiMoi || payload.TrangThaiMoi || payload.trangThai || payload.TrangThai;
+                    if (!id) return;
+
+                    var el = $('#appointmentWrapper').find('[data-appointment-id="' + id + '"]');
+                    if (el.length) {
+                        // update status text and class
+                        el.find('.appointment-status').text(newStatus);
+                        el.removeClass('status-confirmed-card status-pending-card status-cancelled-card')
+                          .addClass(mapStatusClass(newStatus));
+
+                        if (newStatus === "Đã hủy") {
+                            toastr.error(payload.noiDung || ("Lịch #" + id + " đã bị hủy"), "Đã hủy");
+                            // remove card after short delay
+                            setTimeout(function () { removeAppointmentElement(id); }, 1200);
+                        } else {
+                            toastr.info(payload.noiDung || ("Lịch #" + id + " đã cập nhật"), "Cập nhật");
+                        }
+                    } else {
+                        // if appointment not on calendar (maybe different date) ignore or reload
+                        // Optionally fetch new data or reload
+                        // location.reload();
+                    }
+                } catch (e) {
+                    console.error("ReceiveStatusChange handling error", e);
+                }
+            });
+
+            connection.start()
+                .then(function () {
+                    console.log("✅ KẾT NỐI SIGNALR THÀNH CÔNG!");
+                })
+                .catch(function (err) {
+                    console.error("❌ LỖI KẾT NỐI: " + err.toString());
+                });
+        });
+    </script>
+}

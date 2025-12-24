@@ -1,0 +1,67 @@
+﻿@model List<BookinhMVC.Models.DanhGia>
+@using BookinhMVC.Models
+@using Microsoft.AspNetCore.Html
+
+@{
+    ViewData["Title"] = "Đánh giá Khách hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Hoặc Layout bạn đang dùng
+}
+
+<section id="reviews-page" class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h1 class="display-4 fw-bold mb-3"><i class="fas fa-star-half-alt text-primary me-2"></i>Tất cả Đánh giá Khách hàng</h1>
+            <p class="lead text-muted">Tổng hợp phản hồi chi tiết từ những bệnh nhân đã trải nghiệm dịch vụ.</p>
+        </div>
+
+        @if (Model != null && Model.Count > 0)
+        {
+            <div class="row g-4">
+                @foreach (var review in Model)
+                {
+                    <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                        <div class="card h-100 border-0 shadow-lg p-4 rounded-4 transition-all" style="border-left: 5px solid var(--primary-color) !important;">
+                            <div class="card-body d-flex flex-column">
+                                <div class="text-warning mb-2 fs-5">
+                                    @for (int j = 0; j < review.DiemDanhGia; j++)
+                                    {
+                                        <i class="fas fa-star"></i>
+                                    }
+                                    @for (int j = 0; j < 5 - review.DiemDanhGia; j++)
+                                    {
+                                        <i class="far fa-star text-muted"></i>
+                                    }
+                                <span class="text-dark small ms-2 fw-bold">(@review.DiemDanhGia/5)</span>
+                            </div>
+
+                            <p class="card-text mb-3 flex-grow-1 fst-italic">
+                                @* SỬ DỤNG @Html.Raw() để hiển thị nội dung HTML do TinyMCE tạo ra *@
+                                @(string.IsNullOrEmpty(review.NhanXet)
+                                                            ? "Không có nhận xét."
+                                                            : Html.Raw(review.NhanXet)
+                                                            )
+                            </p>
+
+                                <div class="d-flex align-items-center border-top pt-3 mt-auto">
+                                    <i class="fas fa-user-circle fa-2x text-secondary me-3"></i>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">@review.BenhNhan?.HoTen</h6>
+                                        <p class="text-muted small mb-0">Đánh giá cho Bác sĩ: **@review.BacSi?.HoTen**</p>
+                                    </div>
+                                </div>
+                                <small class="text-end text-muted mt-2" style="font-size: 0.8rem;">Ngày đánh giá: @review.NgayDanhGia.ToString("dd/MM/yyyy")</small>
+                            </div>
+                        </div>
+                    </div>
+                        }
+            </div>
+        }
+        else
+        {
+            <div class="text-center text-muted p-5">
+                <i class="fas fa-comment-dots fa-4x mb-3"></i>
+                <p class="lead">Hiện tại chưa có đánh giá nào được ghi nhận.</p>
+            </div>
+        }
+    </div>
+</section>

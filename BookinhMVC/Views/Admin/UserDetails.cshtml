@@ -1,0 +1,184 @@
+@model BookinhMVC.Models.NguoiDung
+@{
+    Layout = "_AdminLayout";
+    ViewBag.Active = "Users";
+    ViewBag.Title = "Chi tiết Người dùng";
+}
+
+<style>
+    /* Định nghĩa lại màu sắc và kiểu dáng cho trang Chi tiết */
+    .detail-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #6366f1 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 20px 20px 0 0;
+        margin-bottom: -1rem; /* Kéo lên trên card body */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .detail-icon-wrapper {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.75rem;
+        border-radius: 50%;
+        backdrop-filter: blur(5px);
+    }
+
+        .detail-icon-wrapper i {
+            font-size: 1.75rem;
+        }
+
+    .info-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-top: 2rem;
+    }
+
+        .info-card .card-header {
+            background: var(--sidebar-bg); /* Màu tối từ Sidebar */
+            color: #fff;
+            font-weight: 600;
+            border-radius: 20px 20px 0 0 !important;
+            padding: 0.75rem 1.5rem;
+        }
+
+        .info-card .card-body {
+            padding: 2rem;
+        }
+
+    .detail-row dt {
+        font-weight: 600;
+        color: var(--text-primary);
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .detail-row dd {
+        color: var(--text-secondary);
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    /* Avatar nổi bật */
+    .user-avatar-lg {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), #6366f1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-right: 2rem;
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+        flex-shrink: 0;
+    }
+
+    /* Nút */
+    .btn-action {
+        padding: 0.6rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-warning {
+        background: var(--warning-color);
+        border-color: var(--warning-color);
+    }
+
+        .btn-warning:hover {
+            background: #e69100;
+            border-color: #e69100;
+        }
+
+</style>
+
+<div class="d-flex flex-column mb-4">
+    <div class="detail-header">
+        <div class="detail-icon-wrapper">
+            <i class="fas fa-info-circle"></i>
+        </div>
+        <div>
+            <h2 class="text-white mb-0 fw-bold">Chi tiết Người dùng</h2>
+            <p class="mb-0 text-white-50">Xem thông tin tài khoản: @Model.TenDangNhap</p>
+        </div>
+    </div>
+</div>
+
+<div class="card info-card">
+    <div class="card-header">
+        <i class="fas fa-user-circle me-1"></i> Thông tin tài khoản
+    </div>
+    <div class="card-body">
+        <div class="d-flex align-items-center mb-4 pb-4 border-bottom">
+            <div class="user-avatar-lg">
+                @{
+                    // Lấy chữ cái đầu tiên của tên đăng nhập
+                    string initial = string.IsNullOrEmpty(Model.TenDangNhap) ? "?" : Model.TenDangNhap.Substring(0, 1).ToUpper();
+                }
+                @initial
+            </div>
+            <div>
+                <h4 class="mb-0 text-primary fw-bolder">@Model.TenDangNhap</h4>
+                <p class="text-secondary mb-0">Tài khoản được tạo vào @Model.NgayTao.ToString("dd/MM/yyyy")</p>
+            </div>
+        </div>
+
+        <dl class="row detail-row">
+            <dt class="col-sm-3">Mã Người dùng (ID):</dt>
+            <dd class="col-sm-9">
+                <span class="badge bg-dark">#@Model.MaNguoiDung</span>
+            </dd>
+
+            <dt class="col-sm-3">Vai trò:</dt>
+            <dd class="col-sm-9">
+                @{
+                    string roleBgClass = Model.VaiTro switch
+                    {
+                        "Admin" => "bg-danger",
+                        "BacSi" => "bg-info text-dark",
+                        _ => "bg-secondary",
+                    };
+                    string roleIcon = Model.VaiTro switch
+                    {
+                        "Admin" => "fas fa-crown",
+                        "BacSi" => "fas fa-user-md",
+                        _ => "fas fa-user",
+                    };
+                }
+                <span class="badge @roleBgClass p-2 rounded-pill shadow-sm" style="font-size: 0.9rem;">
+                    <i class="@roleIcon me-1"></i> @Model.VaiTro
+                </span>
+            </dd>
+
+            <dt class="col-sm-3">Trạng thái:</dt>
+            <dd class="col-sm-9">
+                <span class="badge bg-success p-2 rounded-pill">Hoạt động</span>
+            </dd>
+
+            <dt class="col-sm-3">Ngày tạo tài khoản:</dt>
+            <dd class="col-sm-9">
+                <i class="far fa-calendar-alt me-1 text-secondary"></i> @Model.NgayTao.ToString("dd/MM/yyyy") lúc @Model.NgayTao.ToString("HH:mm")
+            </dd>
+
+            @* Bạn có thể thêm các trường bổ sung như Email, Số điện thoại nếu có *@
+            @* <dt class="col-sm-3">Email:</dt> *@
+            @* <dd class="col-sm-9"><i class="fas fa-envelope me-1"></i> @Model.Email</dd> *@
+
+        </dl>
+    </div>
+    <div class="card-footer bg-light border-0 text-end py-3 rounded-bottom-4">
+        <a href="/Admin/EditUser/@Model.MaNguoiDung" class="btn btn-warning btn-action me-2">
+            <i class="fas fa-edit me-1"></i> Chỉnh sửa tài khoản
+        </a>
+        <a href="/Admin/Users" class="btn btn-secondary btn-action">
+            <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
+        </a>
+    </div>
+</div>

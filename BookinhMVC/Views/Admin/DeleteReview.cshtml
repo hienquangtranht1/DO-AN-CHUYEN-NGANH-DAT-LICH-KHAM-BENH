@@ -1,0 +1,13 @@
+@model BookinhMVC.Models.DanhGia
+@{
+    Layout = "_AdminLayout";
+    ViewBag.Active = "Reviews";
+    ViewBag.Title = "Xóa Đánh giá";
+}
+<h2>Xóa Đánh giá</h2>
+<p>Bạn có chắc chắn muốn xóa đánh giá mã <b>@Model.MaDanhGia</b>?</p>
+<form asp-action="DeleteReview" method="post">
+    <input type="hidden" asp-for="MaDanhGia" />
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a href="/Admin/Reviews" class="btn btn-secondary">Hủy</a>
+</form> 

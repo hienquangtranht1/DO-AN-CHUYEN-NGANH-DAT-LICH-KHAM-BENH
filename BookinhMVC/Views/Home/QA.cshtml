@@ -1,0 +1,258 @@
+﻿@using BookinhMVC.Models
+@model IEnumerable<Question>
+
+@{
+    ViewData["Title"] = "Hỏi đáp với bác sĩ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // 1. KIỂM TRA ĐĂNG NHẬP
+    var isLoggedIn = Context.Session.GetInt32("UserId") != null;
+
+    // 2. LẤY DỮ LIỆU TỪ CONTROLLER
+    var doctors = ViewBag.Doctors as List<BacSi>;
+
+    // Kiểm tra quyền hạn
+    var canAskFree = (bool)(ViewBag.CanAskFree ?? false); // Còn lượt miễn phí không?
+    var hasPaid = (bool)(ViewBag.HasPaid ?? false);       // Đã trả tiền cho lượt này chưa?
+
+    // Lấy thông tin tài chính
+    var qaFeeAmount = (long)(ViewBag.QaFeeAmount ?? 10000); // Mặc định 10k nếu null
+    decimal currentBalance = ViewBag.CurrentBalance != null ? (decimal)ViewBag.CurrentBalance : 0;
+
+    // Kiểm tra ví có đủ trả phí không
+    bool isEnoughMoney = currentBalance >= qaFeeAmount;
+
+    // 3. LOGIC QUAN TRỌNG NHẤT: KHI NÀO HIỆN FORM?
+    // Hiện form nếu: (Còn lượt miễn phí) HOẶC (Đã thanh toán thành công)
+    bool showForm = canAskFree || hasPaid;
+}
+
+<style>
+    .qa-header {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 2rem 2rem;
+    }
+
+    .step-circle {
+        width: 30px;
+        height: 30px;
+        background: #e9ecef;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-right: 10px;
+    }
+</style>
+
+<div class="qa-header text-center shadow-sm">
+    <div class="container">
+        <h1 class="fw-bold"><i class="fas fa-user-md me-3"></i>Hỏi đáp chuyên gia</h1>
+        <p class="lead opacity-75">Gửi câu hỏi và nhận tư vấn trực tiếp từ đội ngũ bác sĩ hàng đầu</p>
+    </div>
+</div>
+
+<div class="container pb-5">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>@TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!isLoggedIn)
+    {
+        @* TRƯỜNG HỢP 1: CHƯA ĐĂNG NHẬP *@
+        <div class="alert alert-warning text-center p-5 rounded-4 shadow-sm border-0">
+            <div class="mb-3"><i class="fas fa-lock fa-3x text-warning"></i></div>
+            <h4>Yêu cầu đăng nhập</h4>
+            <p class="text-muted">Vui lòng đăng nhập để sử dụng tính năng hỏi đáp với bác sĩ.</p>
+            <a asp-action="Login" asp-controller="User" class="btn btn-warning px-4 fw-bold mt-2">Đăng nhập ngay</a>
+        </div>
+    }
+    else if (!showForm)
+    {
+        @* TRƯỜNG HỢP 2: HẾT LƯỢT MIỄN PHÍ & CHƯA THANH TOÁN -> HIỆN UI THANH TOÁN *@
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                    <div class="card-header bg-danger text-white text-center py-3">
+                        <h5 class="mb-0 fw-bold"><i class="fas fa-ticket-alt me-2"></i>HẾT LƯỢT HỎI MIỄN PHÍ</h5>
+                    </div>
+                    <div class="card-body p-4 p-md-5 text-center">
+                        <p class="text-muted mb-4">Bạn đã sử dụng hết số câu hỏi miễn phí. Vui lòng thanh toán phí dịch vụ để tiếp tục.</p>
+
+                        <div class="price-tag bg-light rounded-3 p-3 mb-4 border">
+                            <small class="text-uppercase text-muted fw-bold">Phí tư vấn</small>
+                            <div class="display-4 fw-bold text-primary my-2">@qaFeeAmount.ToString("N0")<span class="fs-4">đ</span></div>
+                            <small class="text-muted">cho 1 câu hỏi</small>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center p-3 mb-4 rounded-3 border @(isEnoughMoney ? "bg-success-subtle border-success" : "bg-danger-subtle border-danger")">
+                            <span class="fw-bold text-dark"><i class="fas fa-wallet me-2"></i>Số dư ví của bạn:</span>
+                            <span class="fs-4 fw-bold text-dark">@currentBalance.ToString("N0") đ</span>
+                        </div>
+
+                        @if (isEnoughMoney)
+                        {
+                            <form asp-action="PayWithWallet" asp-controller="Payment" method="post">
+
+                                @* QUAN TRỌNG: Chỉ gửi đúng số tiền phí (10k) *@
+                                <input type="hidden" name="amount" value="@qaFeeAmount" />
+                                <input type="hidden" name="returnUrl" value="/Home/QA" />
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg fw-bold py-3 shadow-sm"
+                                            onclick="return confirm('Xác nhận thanh toán @qaFeeAmount.ToString("N0")đ từ ví?')">
+                                        <i class="fas fa-check-circle me-2"></i> XÁC NHẬN THANH TOÁN NGAY
+                                    </button>
+                                </div>
+                                <small class="text-muted mt-2 d-block">Hệ thống sẽ trừ tiền và mở form câu hỏi ngay lập tức.</small>
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning small py-2 mb-3">
+                                <i class="fas fa-info-circle me-1"></i> Số dư không đủ. Vui lòng nạp thêm tiền.
+                            </div>
+
+                            <form asp-action="Checkout" asp-controller="Payment" method="post">
+                                <input type="hidden" name="amount" value="@qaFeeAmount" />
+                                <input type="hidden" name="orderInfo" value="Nap tien QA" />
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-warning btn-lg fw-bold py-3 shadow-sm text-dark">
+                                        <i class="fas fa-qrcode me-2"></i> NẠP @qaFeeAmount.ToString("N0")đ QUA QR
+                                    </button>
+                                </div>
+                            </form>
+                            <p class="text-muted small mt-3 mb-0">
+                                *Sau khi quét mã QR thành công, tiền sẽ vào ví và bạn sẽ được quay lại đây để xác nhận thanh toán.
+                            </p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        @* TRƯỜNG HỢP 3: ĐƯỢC PHÉP HỎI (CÒN FREE HOẶC ĐÃ THANH TOÁN) -> HIỆN FORM *@
+        <div class="row justify-content-center" data-aos="fade-up">
+            <div class="col-lg-10">
+                <div class="card border-0 shadow-lg rounded-4">
+                    <div class="card-body p-4 p-md-5">
+
+                        <div class="d-flex align-items-center mb-4">
+                            @if (hasPaid)
+                            {
+                                <div class="badge bg-primary fs-6 py-2 px-3 rounded-pill me-2"><i class="fas fa-check me-1"></i> Đã thanh toán</div>
+                                <span class="text-success fw-bold">Bạn có thể đặt câu hỏi ngay bây giờ!</span>
+                            }
+                            else
+                            {
+                                <div class="badge bg-success fs-6 py-2 px-3 rounded-pill me-2"><i class="fas fa-gift me-1"></i> Miễn phí</div>
+                                <span class="text-success fw-bold">Bạn đang sử dụng lượt hỏi miễn phí.</span>
+                            }
+                        </div>
+
+                        <form asp-action="QA" asp-controller="Home" method="post">
+                            @Html.AntiForgeryToken()
+
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-secondary">Chuyên gia tư vấn <span class="text-danger">*</span></label>
+                                    <select class="form-select form-select-lg bg-light border-0" name="DoctorId" required>
+                                        <option value="">-- Chọn bác sĩ --</option>
+                                        @if (doctors != null)
+                                        {
+                                            foreach (var d in doctors)
+                                            {
+                                                <option value="@d.MaBacSi">BS. @d.HoTen - @(d.Khoa?.TenKhoa)</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-secondary">Tiêu đề ngắn gọn <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control form-control-lg bg-light border-0" name="Title" placeholder="Vd: Đau đầu, mệt mỏi..." required />
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label fw-bold text-secondary">Chi tiết triệu chứng <span class="text-danger">*</span></label>
+                                    <textarea class="form-control bg-light border-0" name="Content" rows="6" placeholder="Mô tả chi tiết các triệu chứng, thời gian mắc bệnh, tiền sử bệnh án..." required></textarea>
+                                </div>
+
+                                <div class="col-12 text-center mt-3">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow-sm hover-scale">
+                                        <i class="fas fa-paper-plane me-2"></i> GỬI CÂU HỎI
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="mt-5 pt-5 border-top">
+        <h3 class="text-center fw-bold mb-4 text-secondary">Lịch sử tư vấn</h3>
+        <div class="row justify-content-center g-4">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <div class="col-lg-10">
+                        <div class="card border-0 shadow-sm rounded-3">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary fw-bold">@item.Title</h5>
+                                <p class="card-text text-muted mb-3 border-start border-3 border-primary ps-3">@item.Content</p>
+
+                                <div class="bg-light p-3 rounded-3 mt-3">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <img src="/images/doctor-avatar-placeholder.png" class="rounded-circle me-2" style="width:30px; height:30px; object-fit:cover;" onerror="this.src='https://via.placeholder.com/30'" />
+                                        <strong class="text-success">BS. @(item.Doctor?.HoTen ?? "Tư vấn viên") trả lời:</strong>
+                                    </div>
+                                    <p class="mb-0 text-dark">@item.Answer</p>
+                                </div>
+                                <div class="text-end mt-2">
+                                    <small class="text-muted fst-italic">@item.AnsweredAt?.ToString("dd/MM/yyyy HH:mm")</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center text-muted py-5">
+                    <i class="far fa-folder-open fa-3x mb-3 text-secondary opacity-50"></i>
+                    <p>Chưa có câu hỏi nào được trả lời.</p>
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+    </script>
+}

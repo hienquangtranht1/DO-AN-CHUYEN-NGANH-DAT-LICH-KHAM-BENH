@@ -1,0 +1,154 @@
+﻿@model BookinhMVC.Models.Article
+@{
+    ViewData["Title"] = "Chi Tiết Bài Viết: " + Model.Title;
+    Layout = "~/Views/Shared/_AdminLayout.cshtml"; // Sử dụng layout Admin
+}
+
+<style>
+    /* CSS CHỈ DÀNH CHO KHU VỰC NỘI DUNG CHI TIẾT */
+    .article-preview-content {
+        font-family: 'Arial', sans-serif;
+        line-height: 1.7;
+        color: #333;
+        padding: 15px; /* Thêm padding bên trong box */
+    }
+
+        /* Định dạng tiêu đề */
+        .article-preview-content h1,
+        .article-preview-content h2,
+        .article-preview-content h3,
+        .article-preview-content h4 {
+            color: #0d6efd;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        /* Định dạng ảnh */
+        .article-preview-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Định dạng bảng */
+        .article-preview-content table {
+            width: 100% !important;
+            margin: 15px 0;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        .article-preview-content th,
+        .article-preview-content td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .article-preview-content th {
+            background-color: #f8f9fa;
+        }
+
+        /* Định dạng danh sách */
+        .article-preview-content ul,
+        .article-preview-content ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        /* Định dạng trích dẫn */
+        .article-preview-content blockquote {
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin: 15px 0;
+            font-style: italic;
+            background-color: #fffaf0;
+        }
+</style>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">Chi Tiết Bài Viết: @Model.Title</h6>
+        <div>
+            <a asp-action="EditArticle" asp-route-id="@Model.ArticleId" class="btn btn-warning btn-sm me-2">
+                <i class="fas fa-edit"></i> Chỉnh Sửa
+            </a>
+            <a asp-action="Articles" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Quay lại Danh sách
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col-md-8">
+                <h5 class="mb-3 text-primary">Thông tin cơ bản</h5>
+                <dl class="row mb-4">
+                    <dt class="col-sm-3">ID Bài viết:</dt>
+                    <dd class="col-sm-9">@Model.ArticleId</dd>
+
+                    <dt class="col-sm-3">Danh mục:</dt>
+                    <dd class="col-sm-9">@Model.Category.CategoryName</dd>
+
+                    <dt class="col-sm-3">Tác giả:</dt>
+                    <dd class="col-sm-9">@Model.Author.TenDangNhap</dd>
+
+                    <dt class="col-sm-3">Ngày xuất bản:</dt>
+                    <dd class="col-sm-9">@Model.PublishDate.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-3">Trạng thái:</dt>
+                    <dd class="col-sm-9">
+                        <span class="badge @(Model.IsPublished ? "bg-success" : "bg-warning text-dark")">
+                            @(Model.IsPublished ? "Đã Xuất Bản" : "Bản Nháp")
+                        </span>
+                    </dd>
+
+                    <dt class="col-sm-3">Lượt xem:</dt>
+                    <dd class="col-sm-9">@Model.ViewsCount</dd>
+
+                    <dt class="col-sm-3">Slug (URL):</dt>
+                    <dd class="col-sm-9 text-break"><code>@Model.Slug</code></dd>
+                </dl>
+
+                <hr />
+
+                <h5 class="mb-3 text-primary">Tóm tắt (Summary)</h5>
+                <div class="p-3 mb-4 border rounded" style="background-color: #f8f9fa;">
+                    @Model.Summary
+                </div>
+            </div>
+
+            <div class="col-md-4 text-center">
+                <h5 class="mb-3 text-primary">Ảnh Đại diện</h5>
+                @if (!string.IsNullOrEmpty(Model.FeatureImageUrl))
+                {
+                    <img src="@Url.Content(Model.FeatureImageUrl)" alt="Ảnh đại diện"
+                         style="max-width: 100%; height: auto; object-fit: cover;" class="img-thumbnail rounded shadow-sm" />
+                }
+                else
+                {
+                    <div class="alert alert-secondary">Không có ảnh đại diện.</div>
+                }
+            </div>
+        </div>
+
+        <hr class="mt-4 mb-4" />
+
+        <h5 class="mb-3 text-primary">Nội dung chi tiết (Content)</h5>
+        <div class="p-4 border rounded" style="min-height: 300px; overflow-x: auto; background-color: #ffffff;">
+            @* Áp dụng class CSS để định dạng nội dung HTML từ TinyMCE *@
+            <div class="article-preview-content">
+                @Html.Raw(Model.Content)
+            </div>
+        </div>
+
+    </div>
+    <div class="card-footer text-end">
+        <a asp-action="Articles" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại Danh sách
+        </a>
+    </div>
+</div>

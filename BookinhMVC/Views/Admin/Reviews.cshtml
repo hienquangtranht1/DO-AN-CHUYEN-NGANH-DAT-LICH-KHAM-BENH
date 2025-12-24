@@ -1,0 +1,429 @@
+@model IEnumerable<BookinhMVC.Models.DanhGia>
+@{
+    Layout = "_AdminLayout";
+    ViewBag.Active = "Reviews";
+    ViewBag.Title = "Quản lý Đánh giá";
+
+    // --- PHẦN GIẢ ĐỊNH DỮ LIỆU PHÂN TRANG TỪ CONTROLLER ---
+    var totalPages = ViewBag.TotalPages ?? 3;
+    var currentPage = ViewBag.CurrentPage ?? 1;
+    var hasPreviousPage = currentPage > 1;
+    var hasNextPage = currentPage < totalPages;
+}
+
+@section Styles {
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #0dcaf0;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+        }
+
+        /* === HEADER MANAGEMENT SECTION STYLES === */
+        .management-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #6366f1 100%);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .title-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .icon-wrapper {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.75rem;
+            border-radius: 50%;
+            backdrop-filter: blur(5px);
+        }
+
+            .icon-wrapper i {
+                font-size: 1.75rem;
+                color: white;
+            }
+
+        .main-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .subtitle {
+            margin-top: 0.25rem;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .btn-add-review {
+            background: var(--success-color);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            border: none;
+        }
+
+            .btn-add-review:hover {
+                background: #059669;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+                color: white;
+            }
+
+        /* === TABLE STYLES === */
+        .table-card {
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08) !important;
+            border-radius: 12px !important;
+        }
+
+        .table-responsive {
+            border-radius: 12px;
+        }
+
+        .table thead th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            vertical-align: middle;
+            white-space: nowrap;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .table td {
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+
+        /* Cho phép Nhận xét hiển thị nhiều dòng và rút gọn */
+        .review-column {
+            max-width: 350px;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .review-content-box {
+            max-height: 3.5em; /* Giới hạn 2-3 dòng */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-secondary);
+        }
+
+        .rating-stars {
+            color: var(--warning-color);
+            font-size: 1.1em;
+            white-space: nowrap;
+        }
+
+        .action-column {
+            min-width: 150px;
+        }
+
+        /* CONTAINER CHO CÁC NÚT THAO TÁC */
+        .action-cell-wrapper {
+            display: flex;
+            gap: 4px; /* Khoảng cách nhỏ giữa các nút */
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap; /* Ngăn các nút xuống dòng */
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Nút hành động trong bảng */
+        .action-column .btn {
+            border-radius: 8px;
+            padding: 6px 8px;
+            font-size: 0.8rem;
+            margin: 0; /* Đặt margin về 0 để gap kiểm soát khoảng cách */
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-info {
+            color: var(--info-color) !important;
+            border-color: var(--info-color);
+        }
+
+        .btn-outline-warning {
+            color: var(--warning-color) !important;
+            border-color: var(--warning-color);
+        }
+
+        .btn-outline-danger {
+            color: var(--danger-color) !important;
+            border-color: var(--danger-color);
+        }
+
+        /* === FOOTER PAGINATION STYLES (Đồng bộ) === */
+        .pagination-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 1rem 0;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .pagination-arrow {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #6366f1 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.75rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+            transition: all 0.3s ease;
+        }
+
+            .pagination-arrow.disabled {
+                background: #e5e7eb;
+                color: #9ca3af;
+                pointer-events: none;
+            }
+
+        .pagination {
+            margin-bottom: 0 !important;
+        }
+
+            .pagination .page-item .page-link {
+                border-radius: 8px !important;
+                margin: 0 4px;
+                border-color: #e5e7eb;
+                color: var(--text-primary);
+                width: 40px;
+                height: 40px;
+            }
+
+        @@media (max-width: 768px) {
+            .management-header {
+                padding: 1rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-column {
+                min-width: 120px;
+            }
+
+                .action-column .btn span {
+                    display: none !important;
+                }
+
+            .pagination-footer {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .pagination-arrow {
+                width: 100%;
+            }
+
+            .pagination-footer nav {
+                display: none !important;
+            }
+        }
+    </style>
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="management-header">
+                <div class="header-content">
+                    <div class="title-section">
+                        <div class="icon-wrapper">
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <div>
+                            <h2 class="main-title">@ViewBag.Title</h2>
+                            <p class="subtitle">Danh sách các đánh giá từ bệnh nhân</p>
+                        </div>
+                    </div>
+                    <a href="/Admin/CreateReview" class="btn btn-add-review">
+                        <i class="fas fa-plus me-2"></i>Thêm mới
+                    </a>
+                </div>
+            </div>
+
+            <div class="card shadow-lg rounded-4 table-card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%;">ID</th>
+                                    <th style="width: 15%;">Bác sĩ</th>
+                                    <th style="width: 15%;">Bệnh nhân</th>
+                                    <th style="width: 10%;" class="text-center">Điểm</th>
+                                    <th style="width: 35%;">Nhận xét</th>
+                                    <th style="width: 20%;" class="action-column text-center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var r in Model)
+                                    {
+                                        <tr>
+                                            <td>#@r.MaDanhGia</td>
+                                            <td class="fw-bold">@r.BacSi?.HoTen</td>
+                                            <td>@r.BenhNhan?.HoTen</td>
+                                            <td class="text-center">
+                                                <div class="rating-stars">
+                                                    @for (int i = 0; i < r.DiemDanhGia; i++)
+                                                    {
+                                                        <i class="fas fa-star"></i>
+                                                    }
+                                                    @if (r.DiemDanhGia < 5)
+                                                    {
+                                                        for (int i = r.DiemDanhGia; i < 5; i++)
+                                                        {
+                                                            <i class="far fa-star"></i>
+                                                        }
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td class="review-column">
+                                                <div class="review-content-box">
+                                                    @{
+                                                        string fullReview = r.NhanXet ?? "";
+                                                        int maxLength = 200;
+                                                        // Cắt chuỗi và hiển thị HTML
+                                                        string truncatedReview = fullReview.Length > maxLength ? fullReview.Substring(0, maxLength) + "..." : fullReview;
+                                                    }
+                                                    @Html.Raw(truncatedReview)
+                                                </div>
+                                            </td>
+                                            <td class="text-center action-column">
+                                                <div class="action-cell-wrapper">
+                                                    <a href="/Admin/ReviewDetails/@r.MaDanhGia" class="btn btn-sm btn-outline-info" title="Xem chi tiết">
+                                                        <i class="fas fa-eye"></i> <span class="d-none d-lg-inline">Xem</span>
+                                                    </a>
+                                                    <a href="/Admin/EditReview/@r.MaDanhGia" class="btn btn-sm btn-outline-warning" title="Sửa">
+                                                        <i class="fas fa-edit"></i> <span class="d-none d-lg-inline">Sửa</span>
+                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger delete-btn"
+                                                            data-id="@r.MaDanhGia" data-name="@r.BenhNhan?.HoTen"
+                                                            data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal"
+                                                            title="Xóa">
+                                                        <i class="fas fa-trash-alt"></i> <span class="d-none d-lg-inline">Xóa</span>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4 text-muted">Không có đánh giá nào được tìm thấy.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12 d-flex justify-content-center">
+        <div class="pagination-footer full-width">
+
+            <a href="/Admin/Reviews?page=@(currentPage - 1)" class="pagination-arrow prev-arrow @(!hasPreviousPage ? "disabled" : "")">
+                <i class="fas fa-chevron-left"></i>
+                <span>Trước</span>
+            </a>
+
+            <nav class="d-none d-sm-block">
+                <ul class="pagination justify-content-center mb-0">
+                    <li class="page-item active"><a class="page-link page-num-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link page-num-link" href="#">2</a></li>
+                </ul>
+            </nav>
+
+            <a href="/Admin/Reviews?page=@(currentPage + 1)" class="pagination-arrow next-arrow @(!hasNextPage ? "disabled" : "")">
+                <span>Sau</span>
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel"><i class="fas fa-exclamation-triangle me-2"></i>Xác nhận Xóa Đánh giá</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa đánh giá này (ID: <span id="reviewId"></span>) không?
+                Hành động này không thể hoàn tác.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <form asp-controller="Admin" asp-action="DeleteReview" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="confirmDeleteId" />
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt me-2"></i>Xóa vĩnh viễn</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Logic Modal Xác nhận Xóa
+            var deleteModalElement = document.getElementById('deleteConfirmationModal');
+            if (deleteModalElement) {
+                var deleteModal = new bootstrap.Modal(deleteModalElement);
+                var deleteButtons = document.querySelectorAll('.delete-btn');
+                var confirmDeleteIdInput = document.getElementById('confirmDeleteId');
+
+                deleteButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        const id = this.getAttribute('data-id');
+
+                        document.getElementById('reviewId').textContent = id;
+                        confirmDeleteIdInput.value = id; // Gán ID vào input ẩn
+
+                        deleteModal.show();
+                    });
+                });
+            }
+        });
+    </script>
+}

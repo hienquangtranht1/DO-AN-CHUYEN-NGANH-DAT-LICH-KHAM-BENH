@@ -1,0 +1,182 @@
+@{
+    ViewData["Title"] = "Lịch hẹn của tôi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var lichHens = ViewBag.LichHens as List<BookinhMVC.Models.LichHen> ?? new List<BookinhMVC.Models.LichHen>();
+    decimal balance = ViewBag.Balance ?? 0m;
+    var paidAppointments = ViewBag.PaidAppointments as System.Collections.Generic.HashSet<int> ?? new System.Collections.Generic.HashSet<int>();
+    var userId = Context.Session.GetInt32("UserId") ?? 0;
+}
+
+<div class="container py-5">
+    <h2 class="mb-4 text-center fw-bold text-primary">
+        <i class="bi bi-calendar-heart me-2"></i> Lịch hẹn của tôi với bác sĩ
+    </h2>
+
+    <div class="d-flex justify-content-end mb-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body d-flex align-items-center gap-3">
+                <i class="fas fa-wallet fa-2x text-success"></i>
+                <div>
+                    <div class="small text-muted">Số dư tài khoản</div>
+                    <div id="walletBalance" class="h5 mb-0">@balance.ToString("N0") VND</div>
+                </div>
+                <a href="@Url.Action("TopUp", "Payment")" class="btn btn-outline-primary btn-sm ms-3">Nạp tiền</a>
+            </div>
+        </div>
+    </div>
+
+    @if (lichHens != null && lichHens.Count > 0)
+    {
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-primary text-white">
+                            <tr>
+                                <th class="text-center">Ngày giờ</th>
+                                <th>Bác sĩ</th>
+                                <th>Triệu chứng</th>
+                                <th class="text-center">Trạng thái</th>
+                                <th class="text-center">Thanh toán</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var lh in lichHens)
+                            {
+                                var statusClass = lh.TrangThai switch
+                                {
+                                    "Đang chờ" => "badge bg-warning text-dark",
+                                    "Đã xác nhận" => "badge bg-success",
+                                    "Đã hủy" => "badge bg-danger",
+                                    _ => "badge bg-secondary"
+                                };
+
+                                <tr class="table-row-hover" data-appointment-id="@lh.MaLich">
+                                    <td class="text-center fw-semibold">@lh.NgayGio.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>@lh.BacSi?.HoTen</td>
+                                    <td>@lh.TrieuChung</td>
+                                    <td class="text-center">
+                                        <span class="@statusClass">@lh.TrangThai</span>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (paidAppointments.Contains(lh.MaLich))
+                                        {
+                                            <span class="badge bg-success">Đã thanh toán</span>
+                                        }
+                                        else if (lh.TrangThai == "Đã hủy")
+                                        {
+                                            <span class="text-muted">Không áp dụng</span>
+                                        }
+                                        else if (!string.Equals(lh.TrangThai?.Trim(), "Đã xác nhận", System.StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <span class="text-muted">Chỉ thanh toán khi đã xác nhận</span>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn btn-sm btn-primary pay-btn" data-id="@lh.MaLich">Thanh toán 50.000</button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center mt-4 rounded-4 shadow-sm p-4">
+            <i class="bi bi-info-circle-fill me-2"></i> Bạn chưa có lịch hẹn nào.
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+    <script>
+        (function () {
+            const userId = '@userId';
+            const hubUrl = `/bookingHub?userId=${userId}&role=BenhNhan`;
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl(hubUrl)
+                .withAutomaticReconnect()
+                .build();
+
+            connection.start()
+                .then(() => console.log('SignalR connected for payments'))
+                .catch(err => console.error('SignalR error:', err));
+
+            connection.on('PaymentUpdated', function (payload) {
+                try {
+                    if (!payload) return;
+                    const apptId = payload.appointmentId;
+                    const newBalance = payload.newBalance;
+                    const message = payload.message || 'Thanh toán cập nhật';
+                    document.getElementById('walletBalance').innerText = newBalance.toLocaleString('vi-VN') + ' VND';
+                    if (apptId) {
+                        const row = document.querySelector(`tr[data-appointment-id='${apptId}']`);
+                        if (row) {
+                            const cell = row.querySelector('td:last-child');
+                            if (cell) {
+                                cell.innerHTML = '<span class="badge bg-success">Đã thanh toán</span>';
+                            }
+                        }
+                    }
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-success position-fixed end-0 bottom-0 m-4';
+                    alertDiv.style.zIndex = 2000;
+                    alertDiv.innerText = message;
+                    document.body.appendChild(alertDiv);
+                    setTimeout(() => alertDiv.remove(), 3500);
+                } catch (e) { console.error(e); }
+            });
+
+            document.querySelectorAll('.pay-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const apptId = this.dataset.id;
+                    if (!confirm('Xác nhận thanh toán 50.000 VND cho lịch hẹn này?')) return;
+
+                    const formData = new FormData();
+                    formData.append('appointmentId', apptId);
+
+                    fetch('@Url.Action("PayAppointment", "User")', {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        body: formData
+                    })
+                    .then(r => r.json())
+                    .then(res => {
+                        if (!res) return;
+                        if (res.success) {
+                            document.getElementById('walletBalance').innerText = Number(res.newBalance).toLocaleString('vi-VN') + ' VND';
+                            const row = document.querySelector(`tr[data-appointment-id='${apptId}']`);
+                            if (row) row.querySelector('td:last-child').innerHTML = '<span class="badge bg-success">Đã thanh toán</span>';
+                            const s = document.createElement('div');
+                            s.className = 'alert alert-success position-fixed end-0 bottom-0 m-4';
+                            s.style.zIndex = 2000;
+                            s.innerText = res.message || 'Thanh toán thành công';
+                            document.body.appendChild(s);
+                            setTimeout(() => s.remove(), 3000);
+                        } else if (res.insufficient) {
+                            if (confirm(res.message + ' Bạn muốn nạp tiền ngay?')) {
+                                window.location.href = '@Url.Action("TopUp", "Payment")';
+                            }
+                        } else {
+                            const e = document.createElement('div');
+                            e.className = 'alert alert-danger position-fixed end-0 bottom-0 m-4';
+                            e.style.zIndex = 2000;
+                            e.innerText = res.message || 'Lỗi khi thanh toán';
+                            document.body.appendChild(e);
+                            setTimeout(() => e.remove(), 3500);
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('Lỗi kết nối. Vui lòng thử lại.');
+                    });
+                });
+            });
+        })();
+    </script>
+}

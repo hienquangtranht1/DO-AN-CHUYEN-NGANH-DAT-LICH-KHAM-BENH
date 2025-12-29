@@ -1,0 +1,66 @@
+name: booking
+description: Mobile client for Four Rock booking
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.18.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  signalr_core: ^1.0.2
+  speech_to_text: ^7.0.0
+  permission_handler: ^11.3.0 # Xin quyền Micro
+  qr_flutter: ^4.0.0
+  shared_preferences: ^2.2.0
+  flutter_local_notifications: ^17.0.0
+  timezone: ^0.9.0 # Để lên lịch theo giờ
+  # Thư viện gọi API (Dùng cho ApiService)
+  http: ^0.13.6
+  # Thư viện chọn ảnh từ thư viện/camera (Dùng cho ProfileScreen)
+  image_picker: ^0.8.7+4
+
+  # Thư viện lấy đường dẫn máy (Hỗ trợ lưu cache ảnh)
+  path_provider: ^2.0.15
+
+  # Xử lý định dạng ngày tháng và tiền tệ (Dùng cho Booking/Appointments)
+  intl: ^0.19.0
+
+  # Lấy thông tin phiên bản ứng dụng (Dùng cho SettingsScreen)
+  package_info_plus: ^4.0.0
+
+  # Thư viện mở URL bên ngoài ứng dụng
+  url_launcher: ^6.2.1 # Added url_launcher here
+
+  # Icon chuẩn iOS
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  # Danh sách hình ảnh sử dụng trong ứng dụng
+  assets:
+    - assets/background.png
+    - assets/besthospital.png
+    - assets/hospital.png
+    - assets/househospital.png
+    - assets/khamtongquat.png
+    - assets/new1.png
+    - assets/new2.png
+    - assets/new3.png
+    - assets/service1.png
+    - assets/service2.png
+    - assets/slide1.png
+    - assets/slide2.png
+    - assets/slide3.png
+    - assets/techhospital.png
+    - assets/test.png
+    - assets/timmach.png

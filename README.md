@@ -1,5 +1,18 @@
 # 🏥 Four Rock Hospital - Smart Healthcare Management & Appointment Booking System
 
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://your-demo-url.com)
+[![.NET](https://img.shields.io/badge/.NET-6.0+-512BD4?logo=.net)](https://dotnet.microsoft.com/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+## 🌐 Live Demo
+
+**[🚀 View Live Demo]([http://kimhung-001-site1.ntempurl.com/])**
+
+Demo Accounts:
+- **Patient**: `Hung` / `123456`
+- **Staff**: `admin` / `1234`
+- **Doctor**: `Anh` / `123456`
+
 ## 📖 Project Overview
 
 Four Rock Hospital is a comprehensive digital transformation platform for healthcare facilities, built on ASP.NET Core MVC. The project aims to address overcrowding issues in medical facilities by bringing appointment scheduling, payment processing, and consultation services online.

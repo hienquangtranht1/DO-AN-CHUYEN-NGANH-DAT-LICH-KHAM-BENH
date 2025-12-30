@@ -6,7 +6,7 @@
 
 ## 🌐 Live Demo
 
-**[🚀 View Live Demo]([http://kimhung-001-site1.ntempurl.com/])**
+**[🚀 View Live Demo](http://kimhung-001-site1.ntempurl.com/)**
 
 Demo Accounts:
 - **Patient**: `Hung` / `123456`
@@ -193,6 +193,13 @@ Contributions are welcome! Please follow these steps:
 ## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 📧 Contact
+
+For questions or support, please contact:
+
+- Project Repository: [https://github.com/your-username/FourRockHospital](https://github.com/your-username/FourRockHospital)
+- Email: your-email@example.com
 
 ## 🙏 Acknowledgments
 
